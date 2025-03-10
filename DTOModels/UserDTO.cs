@@ -1,6 +1,9 @@
 namespace BrainsToDo.DTOModels;
 
-public class UserDTO
-{
+    public class GetUserDTO
+    {
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+    }
+
     
-}
