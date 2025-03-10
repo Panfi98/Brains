@@ -1,3 +1,4 @@
+using BrainsToDo.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
-
+builder.Services.AddDbContext<DataContext>();
 //builder.Services.AddDbContext<WorkerContext>(options => options.UseInMemoryDatabase("WorkersDatabase"));
 
 var app = builder.Build();
