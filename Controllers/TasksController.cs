@@ -9,7 +9,7 @@ namespace BrainsToDo.Controllers
     [Route("Tasks")]
     public class TasksController
     {
-        private readonly TasksContext _context = context;
+        private readonly DataContext _context = context;
 
         [HttpGet]
         public IActionResult GetAllTasks()
@@ -22,7 +22,7 @@ namespace BrainsToDo.Controllers
         [HttpGet("{id}")]
         public IActionResult GetTaskById(int id)
         {
-            var tasks = _context.Tasks.Find(id);
+            var task = _context.Tasks.Find(id);
             if (!task) return NotFound("Task not found");
             return Ok(task);
         }
