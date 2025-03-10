@@ -7,38 +7,39 @@ namespace BrainsToDo.Controllers
 {
     [ApiController]
     [Route("Tasks")]
-    public class TasksController
+    public class TasksController(DataContext dataContext):ControllerBase
     {
-        private readonly DataContext _context = context;
+        private readonly DataContext _context = dataContext;
 
         [HttpGet]
         public IActionResult GetAllTasks()
         {
             var tasks = _context.Tasks.ToList();
             if (tasks.Count == 0) return NotFound("No tasks found");
-            return Ok(tasts);
+            return Ok(tasks);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetTaskById(int id)
         {
             var task = _context.Tasks.Find(id);
-            if (!task) return NotFound("Task not found");
+            if (task == null) return NotFound("Task not found");
             return Ok(task);
         }
 
         [HttpPost]
-        public IActionResult CreateTask(ViewTasks task)
+        public IActionResult CreateTask(TasksDTO task)
         {
             var tasks = _context.Tasks.ToList();
             var oldTask = tasks.Find(x => x.name == task.name);
-            if (task) return BadRequest("Task already exists");
+            if (task != null) return BadRequest("Task already exists");
 
             Tasks newTask = new Tasks()
             {
                 name = task.name,
                 description = task.description,
                 createdAt = DateTime.Now,
+                updatedAT = DateTime.Now,
             };
 
             _context.Tasks.Add(newTask);
@@ -51,7 +52,7 @@ namespace BrainsToDo.Controllers
         {
             var oldTask = _context.Tasks.Find(task.Id);
             
-            if(!oldTask) return NotFound("Task not found");
+            if(oldTask == null) return NotFound("Task not found");
             
             _context.Tasks.Remove(oldTask);
             _context.Tasks.Add(task);
@@ -63,7 +64,7 @@ namespace BrainsToDo.Controllers
         public IActionResult DeleteTask(int id)
         {
             var task = _context.Tasks.Find(id);
-            if(!task) return NotFound ("Task not found");
+            if(task == null) return NotFound ("Task not found");
 
             _context.Tasks.Remove(task);
             _context.SaveChanges();

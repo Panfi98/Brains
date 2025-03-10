@@ -7,8 +7,8 @@ namespace BrainsToDo.Models
     public class Tasks
     {
         [Key]
-        [Column("taskId")]
-        public int id { get; set; }
+        [Column("Id")]
+        public int Id { get; set; }
         [Column("names")]
         public string name { get; set; }
         [Column("descriptions")]
@@ -17,7 +17,11 @@ namespace BrainsToDo.Models
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
         public DateTime updatedAT { get; set; }
+        
+        [ForeignKey("User")]
         [Column("userId")]
-        public int userId { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
+ 
     }
 }
