@@ -31,10 +31,6 @@ namespace BrainsToDo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("userId");
-
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
@@ -54,8 +50,6 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("updatedAt");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
                 });
@@ -90,17 +84,6 @@ namespace BrainsToDo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.Tasks", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

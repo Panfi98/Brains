@@ -18,10 +18,10 @@ namespace BrainsToDo.Models
         [Column("updatedAt")]
         public DateTime updatedAT { get; set; }
         
-        [ForeignKey("User")]
-        [Column("userId")]
-        public int UserId { get; set; }
-        public User User { get; set; }
- 
+        // [ForeignKey("User")]
+        // [Column("userId")]
+        // public int UserId { get; set; }
+        // public User User { get; set; }
+        
     }
 }

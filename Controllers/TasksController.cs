@@ -32,14 +32,14 @@ namespace BrainsToDo.Controllers
         {
             var tasks = _context.Tasks.ToList();
             var oldTask = tasks.Find(x => x.name == task.name);
-            if (task != null) return BadRequest("Task already exists");
+            if (task == null) return BadRequest("Empty request");
 
             Tasks newTask = new Tasks()
             {
                 name = task.name,
                 description = task.description,
-                createdAt = DateTime.Now,
-                updatedAT = DateTime.Now,
+                createdAt = DateTime.UtcNow,
+                updatedAT = DateTime.UtcNow,
             };
 
             _context.Tasks.Add(newTask);
