@@ -25,4 +25,7 @@ namespace BrainsToDo.Models;
         
         [Column("updatedAt")]
         public DateTime updatedAt { get; set; } 
+        
+        [InverseProperty("Tasks")]
+        public ICollection<Tasks> Tasks { get; set; }
     }
