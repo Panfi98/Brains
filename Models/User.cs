@@ -21,4 +21,5 @@ namespace BrainsToDo.Models;
         public DateTime deletedAt { get; set; }
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
+
     }
