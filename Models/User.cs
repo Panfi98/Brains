@@ -9,20 +9,16 @@ namespace BrainsToDo.Models;
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        
-        
-        [Column("firstName")]
-        public string firstName { get; set; }
-        
-        
-        [Column("lastName")]
-        public string lastName { get; set; }
-        
-        
+        [Column("Name")]
+        public string Name { get; set; }
+        [Column("Password")]
+        public string Password { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
-        
-        
         [Column("updatedAt")]
-        public DateTime updatedAt { get; set; } 
+        public DateTime updatedAt { get; set; }
+        [Column("deletedAt")]
+        public DateTime deletedAt { get; set; }
+        [Column("SoftDeleted")]
+        public bool SoftDeleted { get; set; }
     }
