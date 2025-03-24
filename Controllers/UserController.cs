@@ -32,10 +32,10 @@ namespace BrainsToDo.Models;
         public IActionResult CreateProduct(User users) 
         {
             var user = _context.Users.ToList();
-            var oldUser = user.Find(x => x.lastName == users.lastName);
+            var oldUser = user.Find(x => x.Name == users.Name);
             if (oldUser != null) return BadRequest("User with provided name already exists");
 
-            User newUser = new User() { lastName = users.lastName, firstName = users.firstName };
+            User newUser = new User() { Name = users.Name };
 
             _context.Users.Add(newUser);
             _context.SaveChanges();
@@ -47,7 +47,7 @@ namespace BrainsToDo.Models;
             var oldUser = _context.Users.Find(user.Id);
 
             if (oldUser == null) return NotFound("User not found");
-            if (oldUser.lastName.Equals(user.lastName)) return BadRequest("User with the provided name already exists.");
+            if (oldUser.Name.Equals(user.Name)) return BadRequest("User with the provided name already exists.");
 
             _context.Users.Remove(oldUser);
             _context.Users.Add(user);

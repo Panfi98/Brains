@@ -1,18 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BrainsToDo.Models;
-
-    [Table("User")]
-    public class User
+namespace BrainsToDo.Models
+{
+    [Table("CVTemplate")]
+    public class CVTemplate
     {
         [Key]
         [Column("Id")]
         public int Id { get; set; }
         [Column("Name")]
         public string Name { get; set; }
-        [Column("Password")]
-        public string Password { get; set; }
+        [Column("Order")]
+        public int Order { get; set; }
+        [Column("CategoriesIncluded")]
+        public int CategoriesIncluded { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
@@ -21,5 +23,5 @@ namespace BrainsToDo.Models;
         public DateTime deletedAt { get; set; }
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
-
     }
+}
