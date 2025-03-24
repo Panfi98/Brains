@@ -41,5 +41,10 @@ namespace BrainsToDo.Models
         [Column("PersonId")]
         public int PersonId { get; set; }
         public Person Person { get; set; }
+        
+        [ForeignKey("CV")]
+        [Column("CVId")]
+        public int CvId { get; set; }
+        public CV Cv { get; set; }
     }
 }
