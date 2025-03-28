@@ -31,13 +31,13 @@ namespace BrainsToDo.Controllers
         public IActionResult CreateTask(TasksDTO task)
         {
             var tasks = _context.Tasks.ToList();
-            var oldTask = tasks.Find(x => x.name == task.name);
+            var oldTask = tasks.Find(x => x.Name == task.Name);
             if (task == null) return BadRequest("Empty request");
 
             Tasks newTask = new Tasks()
             {
-                name = task.name,
-                description = task.description,
+                Name = task.Name,
+                Description = task.Description,
                 createdAt = DateTime.UtcNow,
                 updatedAT = DateTime.UtcNow,
             };

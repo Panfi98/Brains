@@ -10,9 +10,9 @@ namespace BrainsToDo.Models
         [Column("Id")]
         public int Id { get; set; }
         [Column("names")]
-        public string name { get; set; }
+        public string Name { get; set; }
         [Column("descriptions")]
-        public string description { get; set; }
+        public string Description { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
