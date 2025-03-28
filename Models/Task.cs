@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BrainsToDo.Models
 {
     [Table("Tasks")]
-    public class Tasks
+    public class Task
     {
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        [Column("names")]
-        public string name { get; set; }
+        [Column("Name")]
+        public string Name { get; set; }
         [Column("descriptions")]
-        public string description { get; set; }
+        public string Description { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]

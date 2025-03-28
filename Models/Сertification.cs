@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BrainsToDo.Models
 {   
     [Table("Sertification")]
-    public class Sertification
+    public class Сertification
     {
         [Key]
         [Column("Id")]
