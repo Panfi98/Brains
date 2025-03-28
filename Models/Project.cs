@@ -9,8 +9,8 @@ namespace BrainsToDo.Models
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        [Column("Title")]
-        public string Title { get; set; }
+        [Column("Name")]
+        public string Name { get; set; }
         [Column("Description")]
         public string Description { get; set; }
         [Column("StartedAt")]

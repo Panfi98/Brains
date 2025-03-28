@@ -2,7 +2,7 @@
 
 public class ExperienceDTO
 {
-    public string Title { get; set; }
+    public string Name { get; set; }
     public string Organisation { get; set; }
     public string Type { get; set; }
     public string Position { get; set; }

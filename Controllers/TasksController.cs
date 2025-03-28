@@ -2,6 +2,7 @@ using BrainsToDo.Models;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Data;
 using Microsoft.AspNetCore.Mvc;
+using Task = BrainsToDo.Models.Task;
 
 namespace BrainsToDo.Controllers
 {
@@ -28,13 +29,13 @@ namespace BrainsToDo.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTask(TasksDTO task)
+        public IActionResult CreateTask(TaskDTO task)
         {
             var tasks = _context.Tasks.ToList();
             var oldTask = tasks.Find(x => x.Name == task.Name);
             if (task == null) return BadRequest("Empty request");
 
-            Tasks newTask = new Tasks()
+            Task newTask = new Task()
             {
                 Name = task.Name,
                 Description = task.Description,
@@ -48,7 +49,7 @@ namespace BrainsToDo.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(Tasks task, int id)
+        public IActionResult UpdateTask(Task task, int id)
         {
             var oldTask = _context.Tasks.Find(task.Id);
             

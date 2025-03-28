@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BrainsToDo.Models
 {
     [Table("Tasks")]
-    public class Tasks
+    public class Task
     {
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        [Column("names")]
+        [Column("Name")]
         public string Name { get; set; }
         [Column("descriptions")]
         public string Description { get; set; }

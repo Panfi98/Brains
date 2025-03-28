@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using BrainsToDo.Models;
+using Task = BrainsToDo.Models.Task;
 
 namespace BrainsToDo.Data
 {
@@ -21,7 +22,7 @@ namespace BrainsToDo.Data
     }
     
     public DbSet<User> Users { get; set; }
-    public DbSet<Tasks> Tasks { get; set; }
+    public DbSet<Task> Tasks { get; set; }
 
   }  
 }
