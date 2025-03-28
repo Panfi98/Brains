@@ -1,6 +1,6 @@
 ﻿namespace BrainsToDo.DTOModels;
 
-public class CVDTO
+public class ResumeDTO
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
