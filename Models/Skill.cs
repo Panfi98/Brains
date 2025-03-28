@@ -28,22 +28,22 @@ namespace BrainsToDo.Models
         
         [ForeignKey("Resume")]
         [Column("ResumeId")]
-        public int ResumeId { get; set; }
-        public Resume Resume { get; set; }
+        public int? ResumeId { get; set; }
+        public Resume? Resume { get; set; }
         
         [ForeignKey("Project")]
         [Column("ProjectId")]
-        public int ProjectId { get; set; }
-        public Project Project { get; set; }
+        public int? ProjectId { get; set; }
+        public Project? Project { get; set; }
         
         [ForeignKey("Experience")]
         [Column("ExperienceId")]
-        public int ExperienceId { get; set; }
-        public Experience Experience { get; set; }
+        public int? ExperienceId { get; set; }
+        public Experience? Experience { get; set; }
         
         [ForeignKey("Education")]
         [Column("EducationId")]
-        public int EducationId { get; set; }
-        public Education Education { get; set; }
+        public int? EducationId { get; set; }
+        public Education? Education { get; set; }
     }
 }
