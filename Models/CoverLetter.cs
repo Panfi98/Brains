@@ -17,5 +17,10 @@ public class CoverLetter
     [Column("deletedAt")]
     public DateTime deletedAt { get; set; }
     [Column("SoftDeleted")]
-    public bool SoftDeleted { get; set; } 
+    public bool SoftDeleted { get; set; }
+    
+    [ForeignKey("JobApplicational")]
+    [Column("JobApplicationalId")]
+    public int JobApplicationId { get; set; }
+    public User JobApplicational { get; set; }
 }
