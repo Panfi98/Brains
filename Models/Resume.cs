@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BrainsToDo.Models
 {
-    [Table("CV")]
-    public class CV
+    [Table("Resume")]
+    public class Resume
     {
         [Key]
         [Column("Id")]
@@ -32,19 +32,11 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
         
-        [ForeignKey("User")]
-        [Column("UserId")]
-        public int UserId { get; set; }
-        public User User { get; set; }
-        
         [ForeignKey("Person")]
         [Column("PersonId")]
         public int PersonId { get; set; }
         public Person Person { get; set; }
         
-        [ForeignKey("CV")]
-        [Column("CVId")]
-        public int CvId { get; set; }
-        public CV Cv { get; set; }
+        
     }
 }

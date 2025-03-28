@@ -3,18 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BrainsToDo.Models
 {
-    [Table("CVTemplate")]
-    public class CVTemplate
+    [Table("Job")]
+    public class Job
     {
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        [Column("Name")]
-        public string Name { get; set; }
-        [Column("Order")]
-        public int Order { get; set; }
-        [Column("CategoriesIncluded")]
-        public int CategoriesIncluded { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]

@@ -30,9 +30,9 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
         
-        [ForeignKey("CV")] 
-        [Column("CVId")]
-        public int CvId { get; set; }
-        public CV Cv { get; set; }
+        [ForeignKey("Resume")] 
+        [Column("ResumeId")]
+        public int ResumeId { get; set; }
+        public Resume Resume { get; set; }
     }
 }
