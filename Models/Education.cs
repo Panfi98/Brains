@@ -11,16 +11,16 @@ namespace BrainsToDo.Models
         public int Id { get; set; }
         [Column("Name")]
         public string Name { get; set; }
-        [Column("Type")]
-        public string Type { get; set; }
+        [Column("Description")]
+        public string Description { get; set; }
         [Column("StartedAt")]
         public DateTime StartDate { get; set; }
         [Column("EndedAt")]
         public DateTime EndDate { get; set; }
-        [Column("Description")]
-        public string Description { get; set; }
         [Column("Degree")]
         public string Degree { get; set; }
+        [Column("Category")]
+        public string Category { get; set; }
         [Column("Place")]
         public string Place { get; set; }
         [Column("Active")]
@@ -34,9 +34,9 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
         
-        [ForeignKey("Resume")]
-        [Column("ResumeId")]
-        public int ResumeId { get; set; }
-        public Resume Resume { get; set; }
+        [ForeignKey("Person")]
+        [Column("PersonId")]
+        public int? PersonId { get; set; }
+        public Person? Person { get; set; }
     }
 }

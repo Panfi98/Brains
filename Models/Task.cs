@@ -22,10 +22,10 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } 
         
-        [ForeignKey("User")]
+       /* [ForeignKey("User")]
         [Column("userId")]
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; }*/
         
     }
 }
