@@ -7,7 +7,7 @@ using Task = BrainsToDo.Models.Task;
 namespace BrainsToDo.Controllers
 {
     [ApiController]
-    [Route("Tasks")]
+    [Route("Task")]
     public class TasksController(DataContext dataContext):ControllerBase
     {
         private readonly DataContext _context = dataContext;
@@ -15,7 +15,7 @@ namespace BrainsToDo.Controllers
         [HttpGet]
         public IActionResult GetAllTasks()
         {
-            var tasks = _context.Tasks.ToList();
+            var tasks = _context.Task.ToList();
             if (tasks.Count == 0) return NotFound("No tasks found");
             return Ok(tasks);
         }
@@ -23,7 +23,7 @@ namespace BrainsToDo.Controllers
         [HttpGet("{id}")]
         public IActionResult GetTaskById(int id)
         {
-            var task = _context.Tasks.Find(id);
+            var task = _context.Task.Find(id);
             if (task == null) return NotFound("Task not found");
             return Ok(task);
         }
@@ -31,7 +31,7 @@ namespace BrainsToDo.Controllers
         [HttpPost]
         public IActionResult CreateTask(TaskDTO task)
         {
-            var tasks = _context.Tasks.ToList();
+            var tasks = _context.Task.ToList();
             var oldTask = tasks.Find(x => x.Name == task.Name);
             if (task == null) return BadRequest("Empty request");
 
@@ -43,7 +43,7 @@ namespace BrainsToDo.Controllers
                 updatedAT = DateTime.UtcNow,
             };
 
-            _context.Tasks.Add(newTask);
+            _context.Task.Add(newTask);
             _context.SaveChanges();
             return Created($"http://localhost:5202/tasks/{newTask.Id}", newTask);
         }
@@ -51,12 +51,12 @@ namespace BrainsToDo.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateTask(Task task, int id)
         {
-            var oldTask = _context.Tasks.Find(task.Id);
+            var oldTask = _context.Task.Find(task.Id);
             
             if(oldTask == null) return NotFound("Task not found");
             
-            _context.Tasks.Remove(oldTask);
-            _context.Tasks.Add(task);
+            _context.Task.Remove(oldTask);
+            _context.Task.Add(task);
             _context.SaveChanges();
             return Created($"http://localhost:5202/tasks/{task.Id}", task);
         }
@@ -64,10 +64,10 @@ namespace BrainsToDo.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteTask(int id)
         {
-            var task = _context.Tasks.Find(id);
+            var task = _context.Task.Find(id);
             if(task == null) return NotFound ("Task not found");
 
-            _context.Tasks.Remove(task);
+            _context.Task.Remove(task);
             _context.SaveChanges();
             return Ok(task);
         }
