@@ -10,7 +10,7 @@ public class JobMatch
     [Column("Id")]
     public int Id { get; set; }
     [Column("MatchScore")]
-    public string MatchScore { get; set; }
+    public int MatchScore { get; set; }
     
     [ForeignKey("Job")]
     [Column("JobId")]

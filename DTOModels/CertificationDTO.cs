@@ -1,6 +1,6 @@
 ﻿namespace BrainsToDo.DTOModels;
 
-public class СertificationDTO
+public class CertificationDTO
 {
     public string Name { get; set; }
     public string Description { get; set; }
