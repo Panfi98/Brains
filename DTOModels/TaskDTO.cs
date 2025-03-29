@@ -1,4 +1,4 @@
-﻿namespace BrainsToDo.DTOModels;
+namespace BrainsToDo.DTOModels;
 
 public class TaskDTO
 {

@@ -11,12 +11,12 @@ public class JobApplication
     public int Id { get; set; }
     [Column("Name")]
     public string Name { get; set; }
+    [Column("Description")]
+    public string Description { get; set; }
     [Column("Status")]
     public string Status { get; set; }
     [Column("ApliedAt")]
     public DateTime ApliedAt { get; set; }
-    [Column("Description")]
-    public string Description { get; set; }
     [Column("createdAt")]
     public DateTime createdAt { get; set; }
     [Column("updatedAt")]

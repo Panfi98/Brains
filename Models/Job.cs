@@ -9,14 +9,6 @@ namespace BrainsToDo.Models
         [Key]
         [Column("Id")]
         public int Id { get; set; }
-        [Column("Name")]
-        public string Name { get; set; }
-        [Column("Description")]
-        public string Description { get; set; }
-        [Column("Place")]
-        public string Place { get; set; }
-        [Column("Position")]
-        public string Position { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
@@ -25,10 +17,5 @@ namespace BrainsToDo.Models
         public DateTime deletedAt { get; set; }
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
-        
-        [ForeignKey("Company")]
-        [Column("CompanyId")]
-        public int? CompanyId { get; set; }
-        public Company? Company  { get; set; }
     }
 }
