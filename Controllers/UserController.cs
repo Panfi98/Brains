@@ -1,69 +1,70 @@
 ﻿using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
+using BrainsToDo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace BrainsToDo.Models;
 
-[ApiController]
+    [ApiController]
     [Route("user")]
-    public class ProductController(DataContext context) : ControllerBase
+    public class UserController(ICrudRepository<User> repository) : ControllerBase
     {
-        private readonly DataContext _context = context;
+        private readonly ICrudRepository<User> _repository = repository;
 
         [HttpGet]
-        public IActionResult GetAllProducts() 
+        public IActionResult GetAllUsers()
         {
-            var products = _context.Users.ToList();
-            if(products.Count == 0) return NotFound("No users were found.");
-            return Ok(products);
+            var users = _repository.GetAllEntities();
+            if(!users.Any()) return NotFound("No users found");
+            return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct(int id)
+        public IActionResult GetUserById(int id)
         {
-            var user = _context.Users.Find(id);
+            if(id <= 0) return NotFound("Invalid user ID");
+            var user = _repository.GetEntityById(id);
             if (user == null) return NotFound("User not found");
             return Ok(user);
         }
         [HttpPost]
-        public IActionResult CreateProduct(User users) 
+        public IActionResult CreateUser(User user) 
         {
-            var user = _context.Users.ToList();
-            var oldUser = user.Find(x => x.Name == users.Name);
-            if (oldUser != null) return BadRequest("User with provided name already exists");
+            if(user == null) return NotFound("Invalid user data");
 
-            User newUser = new User() { Name = users.Name };
-
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
-            return Created($"http://localhost:5179/users/{newUser.Id}", newUser);
+            var newUser = new User()
+            {
+                Name = user.Name,
+                Password = user.Password,
+                createdAt = DateTime.UtcNow,
+                updatedAt = DateTime.UtcNow,
+            };
+            
+            var createdUser = _repository.AddEntity(newUser);
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
-        [HttpPut]
-        public IActionResult UpdateProduct(User user)
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, User user)
         {
-            var oldUser = _context.Users.Find(user.Id);
-
-            if (oldUser == null) return NotFound("User not found");
-            if (oldUser.Name.Equals(user.Name)) return BadRequest("User with the provided name already exists.");
-
-            _context.Users.Remove(oldUser);
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return Created($"http://localhost:5179/users/{user.Id}", user);
+            if(id <= 0) return NotFound("Invalid user ID");
+            if(user == null) return NotFound("Invalid user data");
+            
+            var updatedUser = _repository.UpdateEntity(id, user);
+            if(updatedUser.Equals(user)) return Ok("No changes detected");
+            if(updatedUser == null) return NotFound("User not found");
+            return Ok(updatedUser);
         }
 
         [HttpDelete]
-        public IActionResult DeleteProduct(int id)
+        public IActionResult DeletedUser(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user is null) return NotFound("User not found.");
-
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return Ok(user);
+            if(id <= 0) return NotFound("Invalid user ID");
+            var deletedUser = _repository.DeleteEntity(id);
+            if (deletedUser == null) return NotFound("User not found");
+            return Ok(deletedUser);
         }
 
 }

@@ -19,10 +19,10 @@ namespace BrainsToDo.Models
         public string PhoneNumber { get; set; }
         [Column("Address")]
         public string Address { get; set; }
-        [Column("PictureURL")]
-        public string PictureURL { get; set; }
         [Column("BirthDate")]
         public DateTime BirthDate { get; set; }
+        [Column("PictureURL")]
+        public string PictureURL { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]

@@ -1,4 +1,6 @@
 using BrainsToDo.Data;
+using BrainsToDo.Repositories;
+using BrainsToDo.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
+builder.Services.AddScoped<ICrudRepository<User>, UserRepository>();
+builder.Services.AddScoped<ICrudRepository<Person>, PersonRepository>();
+
+
 //builder.Services.AddDbContext<WorkerContext>(options => options.UseInMemoryDatabase("WorkersDatabase"));
 
 var app = builder.Build();
