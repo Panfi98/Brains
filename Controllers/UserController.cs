@@ -18,8 +18,19 @@ namespace BrainsToDo.Models;
         public IActionResult GetAllUsers()
         {
             var users = _repository.GetAllEntities();
+            List<GetUserDTO> userDTOs = new();
+            foreach (var user in users)
+            {
+                GetUserDTO userDTO = new()
+                {
+                    Name = user.Name,
+                    Password = user.Password,
+                };
+                userDTOs.Add(userDTO);
+            }
+            
             if(!users.Any()) return NotFound("No users found");
-            return Ok(users);
+            return Ok(userDTOs);
         }
 
         [HttpGet("{id}")]

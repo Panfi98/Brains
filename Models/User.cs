@@ -18,9 +18,9 @@ namespace BrainsToDo.Models;
         [Column("updatedAt")]
         public DateTime updatedAt { get; set; }
         [Column("deletedAt")]
-        public DateTime deletedAt { get; set; }
+        public DateTime? deletedAt { get; set; }
         [Column("SoftDeleted")]
-        public bool SoftDeleted { get; set; }
+        public bool SoftDeleted { get; set; } = false;
 
         public List<Skill> Skills { get; } = [];
         public List<UserSkill> UserSkills { get; } = [];
