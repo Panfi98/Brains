@@ -3,6 +3,7 @@ using System;
 using BrainsToDo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250331151039_202503311710")]
+    partial class _202503311710
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,36 +434,6 @@ namespace BrainsToDo.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("JobApplication");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobSkill", b =>
-                {
-                    b.Property<int>("JobId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SkillId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("JobId", "SkillId");
-
-                    b.HasIndex("SkillId");
-
-                    b.ToTable("JobSkill");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobUser", b =>
-                {
-                    b.Property<int>("JobId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("JobId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("JobUser");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Person", b =>
@@ -1004,13 +977,13 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.CoverLetter", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.JobApplication", "JobApplication")
+                    b.HasOne("BrainsToDo.Models.User", "JobApplicational")
                         .WithMany()
                         .HasForeignKey("JobApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("JobApplication");
+                    b.Navigation("JobApplicational");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Education", b =>
@@ -1042,7 +1015,7 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.JobApplication", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.Resume", "Resume")
+                    b.HasOne("BrainsToDo.Models.User", "Resume")
                         .WithMany()
                         .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1057,36 +1030,6 @@ namespace BrainsToDo.Migrations
                     b.Navigation("Resume");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobSkill", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.Job", null)
-                        .WithMany("JobSkills")
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BrainsToDo.Models.Skill", null)
-                        .WithMany("JobSkills")
-                        .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobUser", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.Job", null)
-                        .WithMany("JobUsers")
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BrainsToDo.Models.User", null)
-                        .WithMany("JobUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Person", b =>
@@ -1218,24 +1161,13 @@ namespace BrainsToDo.Migrations
                     b.Navigation("Resume");
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.Job", b =>
-                {
-                    b.Navigation("JobSkills");
-
-                    b.Navigation("JobUsers");
-                });
-
             modelBuilder.Entity("BrainsToDo.Models.Skill", b =>
                 {
-                    b.Navigation("JobSkills");
-
                     b.Navigation("UserSkills");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.User", b =>
                 {
-                    b.Navigation("JobUsers");
-
                     b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618

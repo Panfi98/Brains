@@ -22,5 +22,5 @@ public class CoverLetter
     [ForeignKey("JobApplicational")]
     [Column("JobApplicationalId")]
     public int JobApplicationId { get; set; }
-    public User JobApplicational { get; set; }
+    public JobApplication JobApplication { get; set; }
 }

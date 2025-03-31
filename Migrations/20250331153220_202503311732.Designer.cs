@@ -3,6 +3,7 @@ using System;
 using BrainsToDo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250331153220_202503311732")]
+    partial class _202503311732
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1004,13 +1007,13 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.CoverLetter", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.JobApplication", "JobApplication")
+                    b.HasOne("BrainsToDo.Models.User", "JobApplicational")
                         .WithMany()
                         .HasForeignKey("JobApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("JobApplication");
+                    b.Navigation("JobApplicational");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Education", b =>
@@ -1042,7 +1045,7 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.JobApplication", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.Resume", "Resume")
+                    b.HasOne("BrainsToDo.Models.User", "Resume")
                         .WithMany()
                         .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade)
