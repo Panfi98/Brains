@@ -1,4 +1,5 @@
 using BrainsToDo.Data;
+using BrainsToDo.Mapper;
 using BrainsToDo.Repositories;
 using BrainsToDo.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<ICrudRepository<User>, UserRepository>();
 builder.Services.AddScoped<ICrudRepository<Person>, PersonRepository>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 //builder.Services.AddDbContext<WorkerContext>(options => options.UseInMemoryDatabase("WorkersDatabase"));

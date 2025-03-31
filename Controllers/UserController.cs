@@ -1,4 +1,5 @@
-﻿using BrainsToDo.Data;
+﻿using AutoMapper;
+using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
 using BrainsToDo.Repositories;
@@ -10,24 +11,16 @@ namespace BrainsToDo.Models;
 
     [ApiController]
     [Route("user")]
-    public class UserController(ICrudRepository<User> repository) : ControllerBase
+    public class UserController(ICrudRepository<User> repository, IMapper mapper) : ControllerBase
     {
         private readonly ICrudRepository<User> _repository = repository;
+        private readonly IMapper _mapper = mapper;
 
         [HttpGet]
         public IActionResult GetAllUsers()
         {
             var users = _repository.GetAllEntities();
-            List<GetUserDTO> userDTOs = new();
-            foreach (var user in users)
-            {
-                GetUserDTO userDTO = new()
-                {
-                    Name = user.Name,
-                    Password = user.Password,
-                };
-                userDTOs.Add(userDTO);
-            }
+            var userDTOs = mapper.Map<List<GetUserDTO>>(users);
             
             if(!users.Any()) return NotFound("No users found");
             return Ok(userDTOs);
