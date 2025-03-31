@@ -10,24 +10,24 @@ namespace BrainsToDo.Repositories
 
         public IEnumerable<Person> GetAllEntities()
         {
-            return _context.Persons.ToList();
+            return _context.Person.ToList();
         }
 
         public Person? GetEntityById(int id)
         {
-            return _context.Persons.Find(id);
+            return _context.Person.Find(id);
         }
 
         public Person AddEntity(Person entity)
         {
-            _context.Persons.Add(entity);
+            _context.Person.Add(entity);
             _context.SaveChanges();
             return entity;
         }
 
         public Person? UpdateEntity(int id, Person entity)
         {
-            var oldEntity = _context.Persons.Find(id);
+            var oldEntity = _context.Person.Find(id);
             if (oldEntity == null) return null;
 
             oldEntity.FirstName = entity.FirstName;
@@ -45,10 +45,10 @@ namespace BrainsToDo.Repositories
 
         public bool DeleteEntity(int id)
         {
-            var entity = _context.Persons.Find(id);
+            var entity = _context.Person.Find(id);
             if (entity == null) return false;
 
-            _context.Persons.Remove(entity);
+            _context.Person.Remove(entity);
             _context.SaveChanges();
             return true;
         }
