@@ -2,13 +2,13 @@ namespace BrainsToDo.Repositories;
 
 public interface ICrudRepository<T>
 {
-    IEnumerable<T> GetAllTasks();
+    IEnumerable<T> GetAllEntities();
     
-    T? GetTaskById(int id);
+    T? GetEntityById(int id);
     
-    T AddTask(T task);
+    T AddEntity(T entity);
     
-    T? UpdateTask(int id, T task);
+    T? UpdateEntity(int id, T entity);
     
-    bool DeleteTask(int id);
+    bool DeleteEntity(int id);
 }

@@ -1,6 +1,6 @@
 ﻿namespace BrainsToDo.DTOModels;
 
-public class FileDTO
+public class WorkDTO
 {
     public string Name { get; set; }
 }

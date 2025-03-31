@@ -11,8 +11,6 @@ namespace BrainsToDo.Models
         public int Id { get; set; }
         [Column("Name")]
         public string Name { get; set; }
-        [Column("Path")]
-        public string Path { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
