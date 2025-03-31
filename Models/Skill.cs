@@ -48,5 +48,8 @@ namespace BrainsToDo.Models
 
         public List<User> Users { get; } = [];
         public List<UserSkill> UserSkills { get; } = [];
+        
+        public List<Job> Jobs { get; } = [];
+        public List<JobSkill> JobSkills { get; } = [];
     }
 }

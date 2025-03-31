@@ -30,5 +30,9 @@ namespace BrainsToDo.Models
         [Column("CompanyId")]
         public int? CompanyId { get; set; }
         public Company? Company  { get; set; }
+        
+        public List <Skill> Skills { get; set; } = [];
+        public List <JobSkill> JobSkills { get; set; } = [];
+        
     }
 }
