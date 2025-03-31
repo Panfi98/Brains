@@ -433,51 +433,6 @@ namespace BrainsToDo.Migrations
                     b.ToTable("JobApplication");
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.JobMatch", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("JobId")
-                        .HasColumnType("integer")
-                        .HasColumnName("JobId");
-
-                    b.Property<string>("MatchScore")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("MatchScore");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("JobMatch");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobSkill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("JobId")
-                        .HasColumnType("integer")
-                        .HasColumnName("JobId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("JobSkills");
-                });
-
             modelBuilder.Entity("BrainsToDo.Models.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -925,18 +880,13 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.UserSkill", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("SkillId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("UserId");
+                        .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("SkillId", "UserId");
 
                     b.HasIndex("UserId");
 
@@ -1004,7 +954,7 @@ namespace BrainsToDo.Migrations
 
                     b.HasIndex("ResumeId");
 
-                    b.ToTable("Sertification");
+                    b.ToTable("Certification");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Contact", b =>
@@ -1077,28 +1027,6 @@ namespace BrainsToDo.Migrations
                     b.Navigation("Resume");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobMatch", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.Job", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Job");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.JobSkill", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.Job", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Person", b =>
@@ -1206,13 +1134,17 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.UserSkill", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("BrainsToDo.Models.Skill", null)
+                        .WithMany("UserSkills")
+                        .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("BrainsToDo.Models.User", null)
+                        .WithMany("UserSkills")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Сertification", b =>
@@ -1224,6 +1156,16 @@ namespace BrainsToDo.Migrations
                         .IsRequired();
 
                     b.Navigation("Resume");
+                });
+
+            modelBuilder.Entity("BrainsToDo.Models.Skill", b =>
+                {
+                    b.Navigation("UserSkills");
+                });
+
+            modelBuilder.Entity("BrainsToDo.Models.User", b =>
+                {
+                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

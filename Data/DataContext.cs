@@ -15,6 +15,15 @@ namespace BrainsToDo.Data
       _connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnectionString")!;
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      modelBuilder.Entity<User>()
+        .HasMany(e => e.Skills)
+        .WithMany(e => e.Users)
+        .UsingEntity<UserSkill>();
+
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.UseNpgsql(_connectionString);
@@ -30,17 +39,13 @@ namespace BrainsToDo.Data
     public DbSet<Experience> Experience { get; set; }
     public DbSet<Job> Job { get; set; }
     public DbSet<JobApplication> JobApplication { get; set; }
-    public DbSet<JobMatch> JobMatch { get; set; }
-    public DbSet<JobSkill> JobSkill { get; set; }
     public DbSet<Person> Person { get; set; }
     public DbSet<Project> Project { get; set; }
     public DbSet<Reference> Reference { get; set; }
     public DbSet<Resume> Resume { get; set; }
     public DbSet<ResumeTemplate> ResumeTemplate { get; set; }
     public DbSet<Skill> Skill { get; set; }
-    public DbSet<UserSkill> UserSkill { get; set; }
     public DbSet<Сertification> Сertification { get; set; }
-
   }  
 }
 

@@ -45,5 +45,8 @@ namespace BrainsToDo.Models
         [Column("EducationId")]
         public int? EducationId { get; set; }
         public Education? Education { get; set; }
+
+        public List<User> Users { get; } = [];
+        public List<UserSkill> UserSkills { get; } = [];
     }
 }

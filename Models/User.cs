@@ -22,4 +22,7 @@ namespace BrainsToDo.Models;
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; }
 
+        public List<Skill> Skills { get; } = [];
+        public List<UserSkill> UserSkills { get; } = [];
+
     }

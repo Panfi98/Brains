@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BrainsToDo.Models
 {   
-    [Table("Sertification")]
+    [Table("Certification")]
     public class Сertification
     {
         [Key]
