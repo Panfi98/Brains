@@ -34,5 +34,5 @@ public class JobApplication
     [ForeignKey("Resume")]
     [Column("ResumeId")]
     public int ResumeId { get; set; }
-    public User Resume { get; set; }
+    public Resume Resume { get; set; }
 }
