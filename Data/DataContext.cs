@@ -27,7 +27,10 @@ namespace BrainsToDo.Data
         .WithMany(e => e.Jobs)
         .UsingEntity<JobSkill>();
       
-      
+      modelBuilder.Entity<Job>()
+        .HasMany(e => e.Users)
+        .WithMany(e => e.Jobs)
+        .UsingEntity<JobUser>();
 
     }
 

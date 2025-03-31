@@ -31,8 +31,11 @@ namespace BrainsToDo.Models
         public int? CompanyId { get; set; }
         public Company? Company  { get; set; }
         
-        public List <Skill> Skills { get; set; } = [];
-        public List <JobSkill> JobSkills { get; set; } = [];
+        public List <Skill> Skills { get;  } = [];
+        public List <JobSkill> JobSkills { get; } = [];
+        
+        public List <User> Users { get; } = [];
+        public List <JobUser> JobUsers { get; } = [];
         
     }
 }
