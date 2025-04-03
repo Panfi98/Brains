@@ -9,8 +9,6 @@ public class JobMap : Profile
 {
     public JobMap()
     {
-        CreateMap<Job, GetJobDTO>()
-            .ForMember(dest => dest.CompanyId, opt => opt.Ignore())  
-            .ReverseMap();
+        CreateMap<Job, GetJobDTO>().ReverseMap();
     }
 }
