@@ -12,37 +12,39 @@ namespace BrainsToDo.Models;
 [ApiController]
 [Route("job")]
 
-public class JobController(ICrudRepository<Job> repository, IMapper mapper): ControllerBase
+public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<Company> CompanyRepository, IMapper mapper): ControllerBase
 {
-    private readonly ICrudRepository<Job> _repository = repository;
+    private readonly ICrudRepository<Job> _repositoryJob = JobRepository;
+    private readonly ICrudRepository<Company> _repositoryCompany = CompanyRepository;
     public readonly IMapper _mapper = mapper;
-    private readonly DataContext _context;
-
+    
+    
+    [HttpGet]
     [HttpGet]
     public IActionResult GetAllJobs()
     {
-        var jobs = _repository.GetAllEntities().ToList();
+        var jobs = _repositoryJob.GetAllEntities().ToList();
         var jobsDTOs = _mapper.Map<List<GetJobDTO>>(jobs);
-
+        
         foreach (var jobDTO in jobsDTOs)
         {
             if (jobDTO.CompanyId.HasValue)
             {
-                var company = _context.Company.Find(jobDTO.CompanyId.Value);
-            
+                var company = _repositoryCompany.GetEntityById(jobDTO.CompanyId.Value);
+                
                 if (company != null)
                 {
                     jobDTO.Company = _mapper.Map<GetCompanyDTO>(company);
                 }
             }
         }
-
+        
         if (!jobs.Any())
         {
             return Ok(new List<GetJobDTO>());
         }
 
-        return Ok(jobsDTOs);
+        return Ok(jobsDTOs); 
     }
 
     [HttpGet("{id}")]
@@ -53,7 +55,7 @@ public class JobController(ICrudRepository<Job> repository, IMapper mapper): Con
             return NotFound("Invalid job ID");
         }
 
-        var job = _repository.GetEntityById(id);
+        var job = _repositoryJob.GetEntityById(id);
 
         if (job == null)
         {
@@ -61,11 +63,10 @@ public class JobController(ICrudRepository<Job> repository, IMapper mapper): Con
         }
 
         var jobDTO = _mapper.Map<GetJobDTO>(job);
-        
+
         if (jobDTO.CompanyId.HasValue)
         {
-            var company = _context.Company.Find(jobDTO.CompanyId.Value);
-        
+            var company = _repositoryCompany.GetEntityById(jobDTO.CompanyId.Value);
             if (company != null)
             {
                 jobDTO.Company = _mapper.Map<GetCompanyDTO>(company);
@@ -74,30 +75,26 @@ public class JobController(ICrudRepository<Job> repository, IMapper mapper): Con
 
         return Ok(jobDTO);
     }
-
+    
     [HttpPost]
-    public IActionResult CreateJobAndCompany(Job job)
+    public IActionResult CreateJob(Job job)
     {
-        
         if (job == null)
         {
             return BadRequest("Invalid job data");
         }
-        
+
         job.createdAt = DateTime.UtcNow;
         job.updatedAt = DateTime.UtcNow;
-        
-        var createdJob = _repository.AddEntity(job);
+
+        var createdJob = _repositoryJob.AddEntity(job);
 
         return CreatedAtAction(nameof(GetJobById), new { id = createdJob.Id }, createdJob);
     }
     
-   
-    
     [HttpPut("{id}")]
     public IActionResult UpdateJob(int id, Job job)
     {
-       
         if (id <= 0)
         {
             return NotFound("Invalid job ID");
@@ -108,22 +105,17 @@ public class JobController(ICrudRepository<Job> repository, IMapper mapper): Con
             return BadRequest("Invalid job data");
         }
 
-        var existingJob = _repository.GetEntityById(id);
+        var GetJob = _repositoryJob.GetEntityById(id);
 
-        if (existingJob == null)
+        if (GetJob == null)
         {
             return NotFound("Job not found");
         }
         
-        existingJob.Name = job.Name;
-        existingJob.Description = job.Description;
-        existingJob.Place = job.Place;
-        existingJob.Position = job.Position;
-        existingJob.CompanyId = job.CompanyId;  
-        existingJob.updatedAt = DateTime.UtcNow;
-       
-        var updatedJob = _repository.UpdateEntity(id, existingJob);
-
+        _mapper.Map(job, GetJob);
+        
+        var updatedJob = _repositoryJob.UpdateEntity(id, job);
+        
         return Ok(updatedJob);
     }
     
@@ -135,7 +127,7 @@ public class JobController(ICrudRepository<Job> repository, IMapper mapper): Con
             return NotFound("Invalid job ID");
         }
 
-        var deletedJob = _repository.DeleteEntity(id);
+        var deletedJob = _repositoryJob.DeleteEntity(id);
 
         if (deletedJob == false)
         {

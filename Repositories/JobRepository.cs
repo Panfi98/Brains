@@ -10,12 +10,12 @@ namespace BrainsToDo.Repositories
 
         public IEnumerable<Job> GetAllEntities()
         {
-            return _context.Job.ToList();
+            return _context.Job.Include(j => j.Company).ToList();
         }
 
-        public Job? GetEntityById(int id)
+        public Job GetEntityById(int id)
         {
-            return _context.Job.Find(id);
+            return _context.Job.Include(j => j.Company).FirstOrDefault(j => j.Id == id);
         }
 
         public Job AddEntity(Job entity)
@@ -25,7 +25,7 @@ namespace BrainsToDo.Repositories
             return entity;
         }
 
-        public Job? UpdateEntity(int id, Job entity)
+        public Job UpdateEntity(int id, Job entity)
         {
             var oldEntity = _context.Job.Find(id);
             
@@ -38,7 +38,6 @@ namespace BrainsToDo.Repositories
             oldEntity.Description = entity.Description;
             oldEntity.Place = entity.Place;
             oldEntity.Position = entity.Position;
-            oldEntity.CompanyId = entity.CompanyId;
             oldEntity.updatedAt = DateTime.UtcNow;
             
             _context.SaveChanges();
