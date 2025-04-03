@@ -7,7 +7,6 @@ namespace BrainsToDo.Models;
 [Table("Company")]
 public class Company
 {
-
     [Key]
     [Column("Id")]
     public int Id { get; set; }
@@ -20,12 +19,11 @@ public class Company
     [Column("Type")]
     public string Type { get; set; }
     [Column("createdAt")]
-    public DateTimeOffset createdAt { get; set; }
+    public DateTime createdAt { get; set; }
     [Column("updatedAt")]
-    public DateTimeOffset updatedAt { get; set; }
+    public DateTime updatedAt { get; set; }
     [Column("deletedAt")]
-    public DateTimeOffset? deletedAt { get; set; } = null; 
+    public DateTime? deletedAt { get; set; } = null; 
     [Column("SoftDeleted")]
     public bool SoftDeleted { get; set; }  = false;
-    
 }

@@ -38,7 +38,7 @@ namespace BrainsToDo.Repositories
             oldEntity.Description = entity.Description;
             oldEntity.Address = entity.Address;
             oldEntity.Type = entity.Type;
-            oldEntity.updatedAt = DateTimeOffset.UtcNow;
+            oldEntity.updatedAt = DateTime.UtcNow;
             
             _context.SaveChanges();
             return oldEntity;

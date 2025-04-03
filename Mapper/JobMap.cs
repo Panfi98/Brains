@@ -1,6 +1,14 @@
-﻿namespace BrainsToDo.Mapper;
+﻿using BrainsToDo.DTOModels;
+using BrainsToDo.Models;
 
-public class JobMap
+namespace BrainsToDo.Mapper;
+
+using AutoMapper;
+
+public class JobMap : Profile
 {
-    
+    public JobMap()
+    {
+        CreateMap<Job,GetJobDTO>().ReverseMap();
+    }
 }
