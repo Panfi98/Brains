@@ -18,8 +18,6 @@ public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<C
     private readonly ICrudRepository<Company> _repositoryCompany = CompanyRepository;
     public readonly IMapper _mapper = mapper;
     
-    
-    [HttpGet]
     [HttpGet]
     public IActionResult GetAllJobs()
     {

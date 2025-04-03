@@ -1,6 +1,14 @@
-﻿namespace BrainsToDo.Mapper;
+﻿using BrainsToDo.DTOModels;
+using BrainsToDo.Models;
 
-public class ContactMap
+namespace BrainsToDo.Mapper;
+
+using AutoMapper;
+
+public class ContactMap : Profile
 {
-    
+    public ContactMap()
+    {
+        CreateMap<Contact,GetContactDTO>().ReverseMap();
+    }
 }

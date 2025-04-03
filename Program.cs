@@ -16,6 +16,7 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<ICrudRepository<User>, UserRepository>();
 builder.Services.AddScoped<ICrudRepository<Company>, CompanyRepository>();
 builder.Services.AddScoped<ICrudRepository<Job>, JobRepository>();
+builder.Services.AddScoped<ICrudRepository<Contact>, ContactRepository>();
 builder.Services.AddScoped<ICrudRepository<Person>, PersonRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
