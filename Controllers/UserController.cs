@@ -34,6 +34,7 @@ namespace BrainsToDo.Models;
             if (user == null) return NotFound("User not found");
             return Ok(user);
         }
+        
         [HttpPost]
         public IActionResult CreateUser(User user) 
         {

@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.VisualBasic;
 
 namespace BrainsToDo.Models;
 
 [Table("Company")]
 public class Company
 {
+
     [Key]
     [Column("Id")]
     public int Id { get; set; }
@@ -18,11 +20,12 @@ public class Company
     [Column("Type")]
     public string Type { get; set; }
     [Column("createdAt")]
-    public DateTime createdAt { get; set; }
+    public DateTimeOffset createdAt { get; set; }
     [Column("updatedAt")]
-    public DateTime updatedAt { get; set; }
+    public DateTimeOffset updatedAt { get; set; }
     [Column("deletedAt")]
-    public DateTime deletedAt { get; set; }
+    public DateTimeOffset? deletedAt { get; set; } = null; 
     [Column("SoftDeleted")]
-    public bool SoftDeleted { get; set; }
+    public bool SoftDeleted { get; set; }  = false;
+    
 }
