@@ -1,5 +1,6 @@
 ﻿using BrainsToDo.Data;
 using BrainsToDo.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BrainsToDo.Repositories
@@ -8,26 +9,26 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
 
-        public IEnumerable<Company> GetAllEntities()
+        public async Task<IEnumerable<Company>> GetAllEntities()
         {
-            return _context.Company.ToList();
+            return await _context.Company.ToListAsync();
         }
 
-        public Company? GetEntityById(int id)
+        public async Task<Company?> GetEntityById(int id)
         {
-            return _context.Company.Find(id);
+            return await _context.Company.FindAsync(id);
         }
 
-        public Company AddEntity(Company entity)
+        public async Task<Company> AddEntity(Company entity)
         {
             _context.Company.Add(entity);
-            _context.SaveChanges();
-            return entity;
+            await _context.SaveChangesAsync();
+             return entity;
         }
 
-        public Company? UpdateEntity(int id, Company entity)
+        public async Task<Company?> UpdateEntity(int id, Company entity)
         {
-            var oldEntity = _context.Company.Find(id);
+            var oldEntity = await _context.Company.FindAsync(id);
             
             if (oldEntity == null)
             {
@@ -40,23 +41,23 @@ namespace BrainsToDo.Repositories
             oldEntity.Type = entity.Type;
             oldEntity.updatedAt = DateTime.UtcNow;
             
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
             return oldEntity;
         }
 
-        public bool DeleteEntity(int id)
+        public async Task<Company> DeleteEntity(int id)
         {
-            var entity = _context.Company.Find(id);
+            var entity = await _context.Company.FindAsync(id);
 
             if (entity == null)
             {
-                return false;
+                throw new KeyNotFoundException("Company not found");
             }
 
             _context.Company.Remove(entity);
-            _context.SaveChanges();
+          await  _context.SaveChangesAsync();
             
-            return true;
+            return entity;
         }
     }
 }

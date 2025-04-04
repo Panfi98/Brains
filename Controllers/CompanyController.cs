@@ -18,9 +18,9 @@ public class CompanyController(ICrudRepository<Company> repository, IMapper mapp
     public readonly IMapper _mapper = mapper;
     
     [HttpGet]
-    public IActionResult GetAllCompanies()
+    public async Task<IActionResult> GetAllCompanies()
     {
-        var companies = _repository.GetAllEntities();
+        var companies = await _repository.GetAllEntities();
         var companiesDTOs = _mapper.Map<List<GetCompanyDTO>>(companies);
             
         if(!companies.Any()) 
@@ -32,14 +32,14 @@ public class CompanyController(ICrudRepository<Company> repository, IMapper mapp
     }
     
     [HttpGet("{id}")]
-    public IActionResult GetCompanyById(int id)
+    public async Task<IActionResult> GetCompanyById(int id)
     {
         if (id <= 0)
         {
             return NotFound("Invalid company ID");
         }
         
-        var company = _repository.GetEntityById(id);
+        var company = await _repository.GetEntityById(id);
 
         if (company == null)
         {
@@ -52,7 +52,7 @@ public class CompanyController(ICrudRepository<Company> repository, IMapper mapp
     }
 
     [HttpPost]
-    public IActionResult CreateCompany(Company company)
+    public async Task<IActionResult> CreateCompany(Company company)
     {
         if (company == null)
         {
@@ -61,13 +61,13 @@ public class CompanyController(ICrudRepository<Company> repository, IMapper mapp
         
         var newCompany = _mapper.Map<Company>(company);
         
-        var createdCompany = _repository.AddEntity(newCompany);
+        var createdCompany = await _repository.AddEntity(newCompany);
         
         return CreatedAtAction(nameof(GetCompanyById), new { id = createdCompany.Id }, createdCompany);
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateCompany(int id, Company company)
+    public async Task<IActionResult> UpdateCompany(int id, Company company)
     {
         {
             if (id <= 0)
@@ -80,7 +80,7 @@ public class CompanyController(ICrudRepository<Company> repository, IMapper mapp
                 return BadRequest("Invalid company data");
             }
             
-            var GetCompany = _repository.GetEntityById(id);
+            var GetCompany = await  _repository.GetEntityById(id);
         
             if (GetCompany == null)
             {
@@ -89,21 +89,21 @@ public class CompanyController(ICrudRepository<Company> repository, IMapper mapp
         
             _mapper.Map(company, GetCompany);
         
-            var updatedCompany = _repository.UpdateEntity(id, company);
+            var updatedCompany = await _repository.UpdateEntity(id, company);
         
             return Ok(updatedCompany);
         } 
     }
     
     [HttpDelete]
-    public IActionResult DeletedCompany(int id)
+    public async Task<IActionResult> DeletedCompany(int id)
     {
         if(id <= 0) 
         {
             return NotFound("Invalid company ID");
         }
         
-        var deletedCompany = _repository.DeleteEntity(id);
+        var deletedCompany = await _repository.DeleteEntity(id);
 
         if (deletedCompany == null)
         {

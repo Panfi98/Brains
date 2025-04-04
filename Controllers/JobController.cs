@@ -19,9 +19,9 @@ public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<C
     public readonly IMapper _mapper = mapper;
     
     [HttpGet]
-    public IActionResult GetAllJobs()
+    public async Task<IActionResult> GetAllJobs()
     {
-        var jobs = _repositoryJob.GetAllEntities().ToList();
+        var jobs = await _repositoryJob.GetAllEntities();
         var jobsDTOs = _mapper.Map<List<GetJobDTO>>(jobs);
         
         foreach (var jobDTO in jobsDTOs)
@@ -91,7 +91,7 @@ public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<C
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateJob(int id, Job job)
+    public async Task<IActionResult> UpdateJob(int id, Job job)
     {
         if (id <= 0)
         {
@@ -103,7 +103,7 @@ public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<C
             return BadRequest("Invalid job data");
         }
 
-        var GetJob = _repositoryJob.GetEntityById(id);
+        var GetJob = await _repositoryJob.GetEntityById(id);
 
         if (GetJob == null)
         {
@@ -112,22 +112,22 @@ public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<C
         
         _mapper.Map(job, GetJob);
         
-        var updatedJob = _repositoryJob.UpdateEntity(id, job);
+        var updatedJob = await _repositoryJob.UpdateEntity(id, job);
         
         return Ok(updatedJob);
     }
     
     [HttpDelete]
-    public IActionResult DeletedJob(int id)
+    public async Task<IActionResult> DeletedJob(int id)
     {
         if (id <= 0)
         {
             return NotFound("Invalid job ID");
         }
 
-        var deletedJob = _repositoryJob.DeleteEntity(id);
+        var deletedJob = await _repositoryJob.DeleteEntity(id);
 
-        if (deletedJob == false)
+        if (deletedJob == null)
         {
             return NotFound("Job not found");
         }

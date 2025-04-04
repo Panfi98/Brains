@@ -8,31 +8,31 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
 
-        public IEnumerable<Contact> GetAllEntities()
+        public async Task<IEnumerable<Contact>> GetAllEntities()
         {
-            return _context.Contact
+            return await _context.Contact
                 .Include(c => c.Company)
                 .Include(c => c.Job)
-                .ToList();
+                .ToListAsync();
             
         }
 
-        public Contact GetEntityById(int id)
+        public async Task<Contact> GetEntityById(int id)
         {
-            return _context.Contact.Include(c => c.Company).Include(c => c.Job).FirstOrDefault(c => c.Id == id);
+            return await _context.Contact.Include(c => c.Company).Include(c => c.Job).FirstOrDefaultAsync(c => c.Id == id);
       
         }
 
-        public Contact AddEntity(Contact entity)
+        public async Task<Contact> AddEntity(Contact entity)
         {
             _context.Contact.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return entity;
         }
 
-        public Contact UpdateEntity(int id, Contact entity)
+        public async Task<Contact> UpdateEntity(int id, Contact entity)
         {
-            var oldEntity = _context.Contact.Find(id);
+            var oldEntity = await _context.Contact.FindAsync(id);
             
             if (oldEntity == null)
             {
@@ -44,23 +44,23 @@ namespace BrainsToDo.Repositories
             oldEntity.PhoneNumber = entity.PhoneNumber;
             oldEntity.updatedAt = DateTime.UtcNow;
             
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return oldEntity;
         }
 
-        public bool DeleteEntity(int id)
+        public async Task<Contact> DeleteEntity(int id)
         {
-            var entity = _context.Contact.Find(id);
+            var entity = await _context.Contact.FindAsync(id);
 
             if (entity == null)
             {
-                return false;
+                throw new KeyNotFoundException("Contact not found");
             }
 
             _context.Contact.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             
-            return true;
+            return entity;
         }
     }
 }

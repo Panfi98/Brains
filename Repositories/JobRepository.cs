@@ -8,26 +8,26 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
 
-        public IEnumerable<Job> GetAllEntities()
+        public async Task<IEnumerable<Job>>GetAllEntities()
         {
-            return _context.Job.Include(j => j.Company).ToList();
+            return await _context.Job.Include(j => j.Company).ToListAsync();
         }
 
-        public Job GetEntityById(int id)
+        public async Task<Job> GetEntityById(int id)
         {
-            return _context.Job.Include(j => j.Company).FirstOrDefault(j => j.Id == id);
+            return await _context.Job.Include(j => j.Company).FirstOrDefaultAsync(j => j.Id == id);
         }
 
-        public Job AddEntity(Job entity)
+        public async Task<Job> AddEntity(Job entity)
         {
             _context.Job.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return entity;
         }
 
-        public Job UpdateEntity(int id, Job entity)
+        public async Task<Job> UpdateEntity(int id, Job entity)
         {
-            var oldEntity = _context.Job.Find(id);
+            var oldEntity = await _context.Job.FindAsync(id);
             
             if (oldEntity == null)
             {
@@ -40,23 +40,23 @@ namespace BrainsToDo.Repositories
             oldEntity.Position = entity.Position;
             oldEntity.updatedAt = DateTime.UtcNow;
             
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return oldEntity;
         }
 
-        public bool DeleteEntity(int id)
+        public async Task<Job>DeleteEntity(int id)
         {
-            var entity = _context.Job.Find(id);
+            var entity = await _context.Job.FindAsync(id);
 
             if (entity == null)
             {
-                return false;
+                throw new KeyNotFoundException("Job not found");
             }
 
             _context.Job.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             
-            return true;
+            return entity;
         }
     }
 }
