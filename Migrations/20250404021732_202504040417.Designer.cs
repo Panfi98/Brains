@@ -3,6 +3,7 @@ using System;
 using BrainsToDo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250404021732_202504040417")]
+    partial class _202504040417
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
-                    b.Property<DateTime?>("deletedAt")
+                    b.Property<DateTime>("deletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deletedAt");
 
@@ -202,14 +205,14 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Name");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer")
-                        .HasColumnName("PersonId");
-
                     b.Property<string>("Place")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Place");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ResumeId");
 
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean")
@@ -238,7 +241,7 @@ namespace BrainsToDo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("ResumeId");
 
                     b.ToTable("Education");
                 });
@@ -1031,13 +1034,13 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.Education", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.Person", "Person")
+                    b.HasOne("BrainsToDo.Models.Resume", "Resume")
                         .WithMany()
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Person");
+                    b.Navigation("Resume");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Experience", b =>

@@ -1,14 +1,16 @@
+using BrainsToDo.Models;
+
 namespace BrainsToDo.Repositories;
 
 public interface ICrudRepository<T>
 {
-    IEnumerable<T> GetAllEntities();
+    Task<IEnumerable<T>> GetAllEntities();
     
-    T? GetEntityById(int id);
+    Task<T?> GetEntityById(int id);
     
-    T AddEntity(T entity);
+    Task<T> AddEntity(T entity);
     
-    T? UpdateEntity(int id, T entity);
+    Task <T?> UpdateEntity(int id, T entity);
     
-    bool DeleteEntity(int id);
+    Task<T?> DeleteEntity(int id);
 }

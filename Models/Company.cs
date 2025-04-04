@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.VisualBasic;
 
 namespace BrainsToDo.Models;
 
@@ -22,7 +23,7 @@ public class Company
     [Column("updatedAt")]
     public DateTime updatedAt { get; set; }
     [Column("deletedAt")]
-    public DateTime deletedAt { get; set; }
+    public DateTime? deletedAt { get; set; } = null; 
     [Column("SoftDeleted")]
-    public bool SoftDeleted { get; set; }
+    public bool SoftDeleted { get; set; }  = false;
 }

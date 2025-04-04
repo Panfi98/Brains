@@ -8,44 +8,51 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
         
-        public IEnumerable<User> GetAllEntities()
+        public async Task<IEnumerable<User>> GetAllEntities()
         {
-            return _context.User.ToList();    
+            return await _context.User.ToListAsync();    
         }
 
-        public User? GetEntityById(int id)
+        public async Task<User?> GetEntityById(int id)
         {
-            return _context.User.Find(id);
+            return await _context.User.FindAsync(id);
         }
         
-        public User AddEntity(User entity)
+        public async Task<User> AddEntity(User entity)
         {
             _context.User.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return entity;
         }
 
-        public User? UpdateEntity(int id, User entity)
+        public async Task<User?> UpdateEntity(int id, User entity)
         {
-            var oldEntity = _context.User.Find(id);
-            if(oldEntity == null) return null;
+            var oldEntity = await _context.User.FindAsync(id);
+            if(oldEntity == null)
+            {
+                throw new KeyNotFoundException("Entity not found");
+            };
             
             oldEntity.Name = entity.Name;
             oldEntity.Password = entity.Password;
-            oldEntity.updatedAt = DateTime.Now;
+            //oldEntity.updatedAt = DateTime.Now;
             
-            _context.SaveChanges();
+            _context.User.Update(oldEntity);
+            await _context.SaveChangesAsync();
             return oldEntity;
         }
 
-        public bool DeleteEntity(int id)
+        public async Task<User?> DeleteEntity(int id)
         {
-            var entity = _context.User.Find(id);
-            if(entity == null) return false;
+            var entity = await _context.User.FindAsync(id);
+            if (entity == null)
+            {
+                throw new KeyNotFoundException("Entity not found");
+            }
             
             _context.User.Remove(entity);
-            _context.SaveChanges();
-            return true;
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

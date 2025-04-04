@@ -10,5 +10,6 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<User,GetUserDTO>();
+        CreateMap<PostUserDTO,User>();
     }
 }
