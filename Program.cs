@@ -13,8 +13,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<ICrudRepository<User>, UserRepository>();
-builder.Services.AddScoped<ICrudRepository<Person>, PersonRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<PersonRepository>();
+builder.Services.AddScoped<EducationRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
