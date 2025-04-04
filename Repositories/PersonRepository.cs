@@ -8,27 +8,33 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
 
-        public IEnumerable<Person> GetAllEntities()
+        public async Task<IEnumerable<Person>> GetAllEntities()
         {
-            return _context.Person.ToList();
+            return await _context.Person
+                .Include(p => p.User) 
+                .ToListAsync();
         }
 
-        public Person? GetEntityById(int id)
+        public async Task<Person?> GetEntityById(int id)
         {
-            return _context.Person.Find(id);
+            return await _context.Person.Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public Person AddEntity(Person entity)
+        public async Task<Person> AddEntity(Person entity)
         {
             _context.Person.Add(entity);
-            _context.SaveChanges();
-            return entity;
+            await _context.SaveChangesAsync();
+            return _context.Person.Include(p => p.User).FirstOrDefault(p => p.Id == entity.Id);
         }
 
-        public Person? UpdateEntity(int id, Person entity)
+        public async Task<Person?> UpdateEntity(int id, Person entity)
         {
-            var oldEntity = _context.Person.Find(id);
-            if (oldEntity == null) return null;
+            var oldEntity = await _context.Person.FindAsync(id);
+            if (oldEntity == null)
+            {
+                throw new KeyNotFoundException("Person not found");
+            }
 
             oldEntity.FirstName = entity.FirstName;
             oldEntity.LastName = entity.LastName;
@@ -37,20 +43,24 @@ namespace BrainsToDo.Repositories
             oldEntity.Address = entity.Address;
             oldEntity.BirthDate = entity.BirthDate;
             oldEntity.PictureURL = entity.PictureURL;
-            oldEntity.updatedAt = DateTime.Now;
+            //oldEntity.updatedAt = DateTime.Now;
 
-            _context.SaveChanges();
+            _context.Person.Update(oldEntity);
+            await _context.SaveChangesAsync();
             return oldEntity;
         }
 
-        public bool DeleteEntity(int id)
+        public async Task<Person> DeleteEntity(int id)
         {
-            var entity = _context.Person.Find(id);
-            if (entity == null) return false;
+            var entity = await _context.Person.FindAsync(id);
+            if (entity == null)
+            {
+                throw new KeyNotFoundException("Person not found");
+            };
 
             _context.Person.Remove(entity);
-            _context.SaveChanges();
-            return true;
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BrainsToDo.DTOModels;
 
 namespace BrainsToDo.Models
 {   
@@ -28,9 +29,9 @@ namespace BrainsToDo.Models
         [Column("updatedAt")]
         public DateTime updatedAt { get; set; }
         [Column("deletedAt")]
-        public DateTime deletedAt { get; set; }
+        public DateTime? deletedAt { get; set; }
         [Column("SoftDeleted")]
-        public bool SoftDeleted { get; set; }
+        public bool? SoftDeleted { get; set; } = false;
         
         [ForeignKey("User")]
         [Column("UserId")]
