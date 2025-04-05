@@ -36,7 +36,8 @@ namespace BrainsToDo.Models;
                 var key = Encoding.UTF8.GetBytes("ThisIsYourSecretKeyMakeItAtLeast32CharactersLong");
                 
                 //Parse stuff from appsettings.json . If not it sets to default stuff
-                int expirationHours = int.TryParse(configuration["Jwt:ExpiryTime"], out var parsed) ? parsed : 3;
+               
+                int expirationHours = int.TryParse(configuration["Jwt:ExpireHours"], out var parsed) ? parsed : 3;
                 string issuer = configuration["Jwt:Issuer"] ?? "defaultIssuer";
                 string audience = configuration["Jwt:Audience"] ?? "defaultAudience";
                 
