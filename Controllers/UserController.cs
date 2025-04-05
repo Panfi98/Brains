@@ -1,19 +1,69 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using System.Text;
+using AutoMapper;
 using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
 using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
+using BrainsToDo.Repositories.LoginLogic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BrainsToDo.Models;
 
     [ApiController]
     [Route("user")]
-    public class UserController(UserRepository repository, IMapper mapper) : ControllerBase
+    [Authorize]
+    public class UserController(UserRepository repository, IMapper mapper, LoginRepository loginRepository, IConfiguration configuration) : ControllerBase
     {
+        [HttpPost]
+        [Authorize]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] UserLogin login)
+        {
+            try
+            {
+                var user = await loginRepository.GetUserByUsernameAndPassword(login.Username, login.Password);
+            
+                if (user == null)
+                {
+                    return NotFound("Invalid username or password");
+                }
+                
+                var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes("your_secret_key_here");
+                
+                //Parse stuff from appsettings.json . If not it sets to default stuff
+                int expirationHours = int.TryParse(configuration["Jwt:ExpiryTime"], out var parsed) ? parsed : 3;
+                string issuer = configuration["Jwt:Issuer"] ?? "defaultIssuer";
+                
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Name),
+                    }),
+                    Expires = DateTime.UtcNow.AddHours(expirationHours),
+                    Issuer = "_con",
+                    Audience = "yourAudience",
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+            
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
         [HttpGet()]
         public async Task<IActionResult> GetAllUsers(IMapper mapper)
         {
