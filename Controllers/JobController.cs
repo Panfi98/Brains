@@ -3,6 +3,7 @@ using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
 using BrainsToDo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace BrainsToDo.Models;
 
 [ApiController]
 [Route("job")]
+[Authorize]
 
 public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<Company> CompanyRepository, IMapper mapper): ControllerBase
 {

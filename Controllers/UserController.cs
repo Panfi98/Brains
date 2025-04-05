@@ -1,20 +1,73 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using System.Text;
+using AutoMapper;
 using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
 using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
+using BrainsToDo.Repositories.LoginLogic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BrainsToDo.Models;
 
     [ApiController]
     [Route("user")]
-    public class UserController(UserRepository repository, IMapper mapper) : ControllerBase
+    public class UserController(UserRepository repository, IMapper mapper, LoginRepository loginRepository, IConfiguration configuration) : ControllerBase
     {
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] UserLogin login)
+        {
+            try
+            {
+                var user = await loginRepository.GetUserByUsernameAndPassword(login.Username, login.Password);
+            
+                if (user == null)
+                {
+                    return NotFound("Invalid username or password");
+                }
+                
+                var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes("ThisIsYourSecretKeyMakeItAtLeast32CharactersLong");
+                
+                //Parse stuff from appsettings.json . If not it sets to default stuff
+               
+                int expirationHours = int.TryParse(configuration["Jwt:ExpireHours"], out var parsed) ? parsed : 3;
+                string issuer = configuration["Jwt:Issuer"] ?? "defaultIssuer";
+                string audience = configuration["Jwt:Audience"] ?? "defaultAudience";
+                
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Name),
+                    }),
+                    Expires = DateTime.UtcNow.AddHours(expirationHours),
+                    Issuer = issuer,
+                    Audience = audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwtToken = tokenHandler.WriteToken(token);
+            
+                return Ok(new { token = jwtToken });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
         [HttpGet()]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers(IMapper mapper)
         {
             var users = await repository.GetAllEntities();
@@ -32,6 +85,7 @@ namespace BrainsToDo.Models;
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult> GetUserById(int id, IMapper mapper)
         {
             var user = await repository.GetEntityById(id);
@@ -55,6 +109,7 @@ namespace BrainsToDo.Models;
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateUser(IMapper mapper, PostUserDTO userDTO) 
         {
             if(userDTO == null)
@@ -75,6 +130,7 @@ namespace BrainsToDo.Models;
         }
         
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateUser(int id, PostUserDTO userDTO, IMapper mapper)
         {
             User user = mapper.Map<User>(userDTO);
@@ -108,6 +164,7 @@ namespace BrainsToDo.Models;
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeletedUser(IMapper mapper, int id)
         {
             if(id <= 0)

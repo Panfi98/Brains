@@ -3,12 +3,14 @@ using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
 using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrainsToDo.Controllers;
 
     [ApiController]
     [Route("person")]
+    [Authorize]
     public class PersonController(PersonRepository repository, IMapper mapper) : ControllerBase
     {
         [HttpGet]
