@@ -1,6 +1,7 @@
 using BrainsToDo.Models;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Task = BrainsToDo.Models.Task;
 
@@ -8,6 +9,7 @@ namespace BrainsToDo.Controllers
 {
     [ApiController]
     [Route("Tasks")]
+    [Authorize]
     public class TasksController(DataContext dataContext):ControllerBase
     {
         private readonly DataContext _context = dataContext;

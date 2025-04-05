@@ -3,12 +3,14 @@ using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
 using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrainsToDo.Controllers;
 
     [ApiController]
     [Route("education")]
+    [Authorize]
     public class EducationController(EducationRepository repository, IMapper mapper) : ControllerBase
     {
         [HttpGet()]
