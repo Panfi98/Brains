@@ -31,8 +31,16 @@ namespace BrainsToDo.Data
         .HasMany(e => e.Users)
         .WithMany(e => e.Jobs)
         .UsingEntity<JobUser>();
+      
+      modelBuilder.Entity<Job>()
+        .HasOne(j => j.Company)
+        .WithMany()
+        .HasForeignKey(j => j.CompanyId)
+        .OnDelete(DeleteBehavior.SetNull);
 
     }
+    
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

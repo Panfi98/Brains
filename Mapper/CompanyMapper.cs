@@ -5,9 +5,9 @@ namespace BrainsToDo.Mapper;
 
 using AutoMapper;
 
-public class CompanyMap : Profile
+public class CompanyMapper : Profile
 {
-    public CompanyMap()
+    public CompanyMapper()
     {
         CreateMap<Company,GetCompanyDTO>().ReverseMap();
         CreateMap<Company,PostCompanyDTO>().ReverseMap();

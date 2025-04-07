@@ -5,10 +5,10 @@ namespace BrainsToDo.Mapper;
 
 using AutoMapper;
 
-public class JobMap : Profile
+public class ContactMapper : Profile
 {
-    public JobMap()
+    public ContactMapper()
     {
-        CreateMap<Job, GetJobDTO>().ReverseMap();
+        CreateMap<Contact,GetContactDTO>().ReverseMap();
     }
 }

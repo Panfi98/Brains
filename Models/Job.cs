@@ -29,7 +29,7 @@ namespace BrainsToDo.Models
         [ForeignKey("Company")]
         [Column("CompanyId")]
         public int? CompanyId { get; set; }
-        public Company? Company  { get; set; }
+        public Company Company  { get; set; }
         
         public List <Skill> Skills { get;  } = [];
         public List <JobSkill> JobSkills { get; } = [];
