@@ -17,7 +17,7 @@ namespace BrainsToDo.Models;
 
     [ApiController]
     [Route("company")]
-    public class CompanyController(CompanyRepository repository, IMapper mapper, LoginRepository loginRepository, IConfiguration configuration) : ControllerBase
+    public class CompanyController(CompanyRepository repository, IMapper mapper, IConfiguration configuration) : ControllerBase
     {
         [HttpGet()]
         [Authorize]

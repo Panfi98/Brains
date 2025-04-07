@@ -10,5 +10,6 @@ public class CompanyMap : Profile
     public CompanyMap()
     {
         CreateMap<Company,GetCompanyDTO>().ReverseMap();
+        CreateMap<Company,PostCompanyDTO>().ReverseMap();
     }
 }

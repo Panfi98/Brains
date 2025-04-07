@@ -56,11 +56,10 @@ builder.Services.AddSwaggerGen(c =>
 });;
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<ICrudRepository<User>, UserRepository>();
-builder.Services.AddScoped<ICrudRepository<Company>, CompanyRepository>();
-builder.Services.AddScoped<ICrudRepository<Job>, JobRepository>();
-builder.Services.AddScoped<ICrudRepository<Contact>, ContactRepository>();
-builder.Services.AddScoped<ICrudRepository<Person>, PersonRepository>();
+builder.Services.AddScoped<CompanyRepository>();
+builder.Services.AddScoped<JobRepository>();
+builder.Services.AddScoped<ContactRepository>();
+builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<EducationRepository>();
