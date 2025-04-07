@@ -20,6 +20,9 @@ namespace BrainsToDo.Repositories
         
         public async Task<Company> AddEntity(Company entity)
         {
+            entity.updatedAt = DateTime.UtcNow;
+            entity.createdAt = DateTime.UtcNow;
+            
             _context.Company.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
@@ -51,6 +54,10 @@ namespace BrainsToDo.Repositories
             {
                 throw new KeyNotFoundException("Entity not found");
             }
+            
+            entity.deletedAt = DateTime.UtcNow;
+            entity.updatedAt = DateTime.UtcNow;
+            entity.SoftDeleted = true;
             
             _context.Company.Remove(entity);
             await _context.SaveChangesAsync();

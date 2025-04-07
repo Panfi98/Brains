@@ -22,7 +22,14 @@ namespace BrainsToDo.Repositories
         }
 
         public async Task<Job> AddEntity(Job entity)
-        {
+        {   
+            if (entity.CompanyId == 0)
+            {
+                entity.CompanyId = null;
+            }
+            entity.createdAt = DateTime.UtcNow;
+            entity.updatedAt = DateTime.UtcNow;
+            
             _context.Job.Add(entity);
             await _context.SaveChangesAsync();
             return _context.Job.Include(j => j.Company).FirstOrDefault(j => j.Id == entity.Id);
@@ -42,6 +49,16 @@ namespace BrainsToDo.Repositories
             oldEntity.Position = entity.Position;
             oldEntity.updatedAt = DateTime.UtcNow;
 
+            if (entity.CompanyId != 0)
+            {
+                oldEntity.CompanyId = entity.CompanyId;
+            }
+            else
+            {
+                oldEntity.CompanyId = null;
+            }
+            
+            
             _context.Job.Update(oldEntity);
             await _context.SaveChangesAsync();
             return oldEntity;
@@ -54,7 +71,11 @@ namespace BrainsToDo.Repositories
             {
                 throw new KeyNotFoundException("Job not found");
             };
-
+            
+            entity.deletedAt = DateTime.UtcNow;
+            entity.updatedAt = DateTime.UtcNow;
+            entity.SoftDeleted = true;
+            
             _context.Job.Remove(entity);
             await _context.SaveChangesAsync();
             return entity;
