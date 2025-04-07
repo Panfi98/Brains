@@ -14,12 +14,8 @@ public class ContactMapper : Profile
             .ForMember(dest => dest.updatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.deletedAt, opt => opt.Ignore())
             .ForMember(dest => dest.SoftDeleted, opt => opt.Ignore())
-            .ReverseMap()
-            .ForMember(dest => dest.createdAt, opt => opt.Ignore())
-            .ForMember(dest => dest.updatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.deletedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.SoftDeleted, opt => opt.Ignore());
-
+            .ReverseMap();
+            
         CreateMap<Contact, PostContactDTO>().ReverseMap()
             .ForMember(dest => dest.Name, opt => opt.Condition(src => !string.IsNullOrEmpty(src.Name)))
             .ForMember(dest => dest.Email, opt => opt.Condition(src => !string.IsNullOrEmpty(src.Email)))
