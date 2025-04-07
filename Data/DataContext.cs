@@ -56,7 +56,7 @@ namespace BrainsToDo.Data
     public DbSet<Resume> Resume { get; set; }
     public DbSet<ResumeTemplate> ResumeTemplate { get; set; }
     public DbSet<Skill> Skill { get; set; }
-    public DbSet<Сertification> Сertification { get; set; }
+    public DbSet<Certification> Certification { get; set; }
   }  
 }
 

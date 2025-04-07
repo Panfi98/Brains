@@ -17,7 +17,7 @@ namespace BrainsToDo.Models;
 
     [ApiController]
     [Route("resumetemplate")]
-    public class ResumeTemplateCotroller(ResumeTemplateRepository repository, IMapper mapper, IConfiguration configuration) : ControllerBase
+    public class ResumeTemplateController(ResumeTemplateRepository repository, IMapper mapper, IConfiguration configuration) : ControllerBase
     {
         [HttpGet()]
         [Authorize]
