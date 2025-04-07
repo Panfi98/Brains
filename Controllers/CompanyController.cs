@@ -1,117 +1,144 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using System.Text;
+using AutoMapper;
 using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
+using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
+using BrainsToDo.Repositories.LoginLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BrainsToDo.Models;
 
-[ApiController]
-[Route("company")]
-[Authorize]
-public class CompanyController(ICrudRepository<Company> repository, IMapper mapper): ControllerBase
-{
-    private readonly ICrudRepository<Company> _repository = repository;
-    public readonly IMapper _mapper = mapper;
-    
-    [HttpGet]
-    public async Task<IActionResult> GetAllCompanies()
+    [ApiController]
+    [Route("company")]
+    public class CompanyController(CompanyRepository repository, IMapper mapper, LoginRepository loginRepository, IConfiguration configuration) : ControllerBase
     {
-        var companies = await _repository.GetAllEntities();
-        var companiesDTOs = _mapper.Map<List<GetCompanyDTO>>(companies);
+        [HttpGet()]
+        [Authorize]
+        public async Task<IActionResult> GetAllCompanies(IMapper mapper)
+        {
+            var companies = await repository.GetAllEntities();
+            if(!companies.Any())
+            {
+                return NotFound("No company found");
+            }
+            var companiesDTOs = mapper.Map<IEnumerable<GetCompanyDTO>>(companies);
+
+            var payload = new Payload<IEnumerable<GetCompanyDTO>>
+            {
+                Data = companiesDTOs
+            };
+            return Ok(payload);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult> GetCompanyById(int id, IMapper mapper)
+        {
+            var company = await repository.GetEntityById(id);
+            var companyDTO = mapper.Map<GetCompanyDTO>(company);
             
-        if(!companies.Any()) 
-        {
-            return Ok (new List<GetCompanyDTO>());
-        }
-        
-       return Ok(companiesDTOs);
-    }
-    
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetCompanyById(int id)
-    {
-        if (id <= 0)
-        {
-            return NotFound("Invalid company ID");
-        }
-        
-        var company = await _repository.GetEntityById(id);
-
-        if (company == null)
-        {
-            return NotFound("Company not found");
-        }
-        
-        var companyDTO = _mapper.Map<GetCompanyDTO>(company);
-        
-        return Ok(companyDTO);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateCompany(Company company)
-    {
-        if (company == null)
-        {
-            return BadRequest("Invalid company data");
-        }
-        
-        var newCompany = _mapper.Map<Company>(company);
-        
-        var createdCompany = await _repository.AddEntity(newCompany);
-        
-        return CreatedAtAction(nameof(GetCompanyById), new { id = createdCompany.Id }, createdCompany);
-    }
-    
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCompany(int id, Company company)
-    {
-        {
-            if (id <= 0)
+            if(id <= 0)
             {
                 return NotFound("Invalid company ID");
             }
-
             if (company == null)
             {
-                return BadRequest("Invalid company data");
+                return NotFound("Company not found");
+            }
+
+            var payload = new Payload<GetCompanyDTO>
+            {
+                Data = companyDTO
+            };
+            
+            return Ok(payload);
+        }
+        
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateCompany(IMapper mapper, PostCompanyDTO companyDTO) 
+        {
+            if(companyDTO == null)
+            {
+                return NotFound("Invalid company data");
+            };
+            
+            Company company = mapper.Map<Company>(companyDTO);
+            var createdCompany = await repository.AddEntity(company);
+            
+            var getCompanyDTO = mapper.Map<GetCompanyDTO>(createdCompany);
+            var payload = new Payload<GetCompanyDTO>
+            {
+                Data = getCompanyDTO
+            };
+            
+            return CreatedAtAction(nameof(GetCompanyById), new { id = createdCompany.Id }, payload);
+        }
+        
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateCompany(int id, PostCompanyDTO companyDTO, IMapper mapper)
+        {
+            Company company = mapper.Map<Company>(companyDTO);
+            Company updatedCompany = await repository.UpdateEntity(id, company);
+            
+            if(id <= 0)
+            {
+                return NotFound("Invalid company ID");
+            }
+            if(company == null)
+            {
+                return NotFound("Invalid company data");
+            }
+            if(updatedCompany.Equals(company))
+            {
+                return Ok("No changes detected");
+            }
+            if(updatedCompany == null)
+            {
+                return NotFound("Company not found");
             }
             
-            var GetCompany = await  _repository.GetEntityById(id);
-        
-            if (GetCompany == null)
-            {
-                return NotFound ("Company not found");
-            }
-        
-            _mapper.Map(company, GetCompany);
-        
-            var updatedCompany = await _repository.UpdateEntity(id, company);
-        
-            return Ok(updatedCompany);
-        } 
-    }
-    
-    [HttpDelete]
-    public async Task<IActionResult> DeletedCompany(int id)
-    {
-        if(id <= 0) 
-        {
-            return NotFound("Invalid company ID");
-        }
-        
-        var deletedCompany = await _repository.DeleteEntity(id);
+            var getCompanyDTO = mapper.Map<GetCompanyDTO>(updatedCompany);
 
-        if (deletedCompany == null)
-        {
-            return NotFound("Company not found");
+            var payload = new Payload<GetCompanyDTO>
+            {
+                Data = getCompanyDTO
+            };
+            
+            return Ok(payload);
         }
-        
-        return Ok(deletedCompany);
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeletedCompany(IMapper mapper, int id)
+        {
+            if(id <= 0)
+            {
+                return NotFound("Invalid company ID");
+            }
+            
+            var deletedCompany = await repository.DeleteEntity(id);
+            
+            if (deletedCompany == null)
+            {
+                return NotFound("Company not found");
+            }
+            
+            var getCompanyDTO = mapper.Map<GetCompanyDTO>(deletedCompany);
+
+            var payload = new Payload<GetCompanyDTO>
+            {
+                Data = getCompanyDTO
+            };
+            
+            return Ok(payload);
+        }
     }
-    
-}
