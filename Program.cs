@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json.Serialization;
 using BrainsToDo.Data;
 using BrainsToDo.Mapper;
 using BrainsToDo.Repositories;
@@ -54,6 +55,13 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });;
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+    });
+
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<CompanyRepository>();
@@ -81,8 +89,6 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes("ThisIsYourSecretKeyMakeItAtLeast32CharactersLong"))
         };
     });
-
-
 
 var app = builder.Build();
 

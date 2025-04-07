@@ -14,7 +14,7 @@ public class GetEducationDTO
     public bool Active { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public DateTime DeletedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
     public bool SoftDeleted { get; set; }
     public Person Person { get; set; }
 }

@@ -9,11 +9,16 @@ public class JobMapper : Profile
 {
     public JobMapper()
     {
-        CreateMap<Job, GetJobDTO>().ReverseMap()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
+        CreateMap<Contact, GetContactDTO>()
             .ForMember(dest => dest.createdAt, opt => opt.Ignore())
             .ForMember(dest => dest.updatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.deletedAt, opt => opt.Ignore());
+            .ForMember(dest => dest.deletedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.SoftDeleted, opt => opt.Ignore())
+            .ReverseMap()
+            .ForMember(dest => dest.createdAt, opt => opt.Ignore())
+            .ForMember(dest => dest.updatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.deletedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.SoftDeleted, opt => opt.Ignore());
 
         CreateMap<Job, PostJobDTO>().ReverseMap()
             .ForMember(dest => dest.Name, opt => opt.Condition(src => !string.IsNullOrEmpty(src.Name)))

@@ -41,7 +41,7 @@ namespace BrainsToDo.Controllers;
             
             if(id <= 0)
             {
-                return NotFound("Invalid company ID");
+                return NotFound("Invalid job ID");
             }
             if(job == null)
             {

@@ -19,18 +19,19 @@ public class Contact
     public DateTime createdAt { get; set; }
     [Column("updatedAt")]
     public DateTime updatedAt { get; set; }
-    [Column("deletedAt")]
-    public DateTime deletedAt { get; set; }
+    [Column("deletedAt")] 
+    public DateTime? deletedAt { get; set; } = null;
     [Column("SoftDeleted")]
-    public bool SoftDeleted { get; set; }
+    public bool SoftDeleted { get; set; } = false;
     
     [ForeignKey("Company")]
     [Column("CompanyId")]
-    public int? CompanyID { get; set; }
+    public int? CompanyId { get; set; }
     public Company? Company { get; set; }
     
     [ForeignKey("Job")]
     [Column("JobId")]
     public int? JobId { get; set; }
     public Job? Job { get; set; }
+    
 }
