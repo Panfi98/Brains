@@ -27,10 +27,10 @@ namespace BrainsToDo.Models
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
         public DateTime updatedAt { get; set; }
-        [Column("deletedAt")]
-        public DateTime deletedAt { get; set; }
+        [Column("deletedAt")] 
+        public DateTime? deletedAt { get; set; } = null;
         [Column("SoftDeleted")]
-        public bool SoftDeleted { get; set; }
+        public bool SoftDeleted { get; set; } = false;
         
         [ForeignKey("Person")]
         [Column("PersonId")]

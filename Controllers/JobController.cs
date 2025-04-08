@@ -1,140 +1,139 @@
 ﻿using AutoMapper;
-using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Models;
+using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
-namespace BrainsToDo.Models;
+namespace BrainsToDo.Controllers;
 
-[ApiController]
-[Route("job")]
-[Authorize]
-
-public class JobController(ICrudRepository<Job> JobRepository, ICrudRepository<Company> CompanyRepository, IMapper mapper): ControllerBase
-{
-    private readonly ICrudRepository<Job> _repositoryJob = JobRepository;
-    private readonly ICrudRepository<Company> _repositoryCompany = CompanyRepository;
-    public readonly IMapper _mapper = mapper;
-    
-    [HttpGet]
-    public async Task<IActionResult> GetAllJobs()
+    [ApiController]
+    [Route("job")]
+    [Authorize]
+    public class JobController(JobRepository repository, IMapper mapper) : ControllerBase
     {
-        var jobs = await _repositoryJob.GetAllEntities();
-        var jobsDTOs = _mapper.Map<List<GetJobDTO>>(jobs);
-        
-        foreach (var jobDTO in jobsDTOs)
+        [HttpGet]
+        public async Task<IActionResult> GetAllJobs(IMapper mapper)
         {
-            if (jobDTO.CompanyId.HasValue)
+            var jobs = await repository.GetAllEntities();
+            
+            if (!jobs.Any())
             {
-                var company = _repositoryCompany.GetEntityById(jobDTO.CompanyId.Value);
-                
-                if (company != null)
-                {
-                    jobDTO.Company = _mapper.Map<GetCompanyDTO>(company);
-                }
+                return NotFound("No job found");
             }
-        }
-        
-        if (!jobs.Any())
-        {
-            return Ok(new List<GetJobDTO>());
-        }
 
-        return Ok(jobsDTOs); 
-    }
+            var jobDTOs = mapper.Map<IEnumerable<GetJobDTO>>(jobs);
 
-    [HttpGet("{id}")]
-    public IActionResult GetJobById(int id)
-    {
-        if (id <= 0)
-        {
-            return NotFound("Invalid job ID");
-        }
-
-        var job = _repositoryJob.GetEntityById(id);
-
-        if (job == null)
-        {
-            return NotFound("Job not found");
-        }
-
-        var jobDTO = _mapper.Map<GetJobDTO>(job);
-
-        if (jobDTO.CompanyId.HasValue)
-        {
-            var company = _repositoryCompany.GetEntityById(jobDTO.CompanyId.Value);
-            if (company != null)
+            var payload = new Payload<IEnumerable<GetJobDTO>>()
             {
-                jobDTO.Company = _mapper.Map<GetCompanyDTO>(company);
+                Data = jobDTOs
+            };
+            
+            return Ok(payload);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetJobById(int id, IMapper mapper)
+        {
+            var job = await repository.GetEntityById(id);
+            var jobDTO = mapper.Map<GetJobDTO>(job);
+            
+            if(id <= 0)
+            {
+                return NotFound("Invalid job ID");
             }
+            if(job == null)
+            {
+                return NotFound("No job found");
+            }
+
+            var payload = new Payload<GetJobDTO>()
+            {
+                Data = jobDTO
+            };
+            
+            return Ok(payload);
         }
 
-        return Ok(jobDTO);
+        [HttpPost]
+        public async Task<ActionResult> CreateJob(PostJobDTO jobDTO, IMapper mapper)
+        {
+            if(jobDTO == null)
+            {
+                return NotFound("Invalid request");
+            }
+            
+            Job job = mapper.Map<Job>(jobDTO);
+            job.CompanyId = jobDTO.CompanyId;
+            
+            var createdJob = await repository.AddEntity(job);
+            
+            var getJobDTO = mapper.Map<GetJobDTO>(createdJob);
+
+            var payload = new Payload<GetJobDTO>()
+            {
+                Data = getJobDTO
+            };
+            
+            return CreatedAtAction(nameof(GetJobById), new { id = createdJob.Id }, payload);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateJob(int id, PostJobDTO jobDTO, IMapper mapper)
+        {
+            Job job = mapper.Map<Job>(jobDTO);
+            Job updatedJob = await repository.UpdateEntity(id, job);
+            
+            if(id <= 0)
+            {
+                return NotFound("Invalid job ID");
+            }
+            if(job == null)
+            {
+                return NotFound("Invalid job data");
+            }
+            if(updatedJob.Equals(job))
+            {
+                return Ok("No changes detected");
+            }
+            if(updatedJob == null)
+            {
+                return NotFound("No job found");
+            }
+            
+            var getJobDTO = mapper.Map<GetJobDTO>(updatedJob);
+
+            var payload = new Payload<GetJobDTO>()
+            {
+                Data = getJobDTO
+            };
+            
+            return Ok(payload);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteJob(int id, IMapper mapper)
+        {
+            if(id <= 0)
+            {
+                return NotFound("Invalid job ID");
+            }
+            
+            var deletedJob = await repository.DeleteEntity(id);
+            
+            if(deletedJob == null)
+            {
+                return NotFound("No job found");
+            }
+            
+            var getJobDTO = mapper.Map<GetJobDTO>(deletedJob);
+
+            var payload = new Payload<GetJobDTO>()
+            {
+                Data = getJobDTO
+            };
+            
+            return Ok(payload);
+        }
     }
-    
-    [HttpPost]
-    public IActionResult CreateJob(Job job)
-    {
-        if (job == null)
-        {
-            return BadRequest("Invalid job data");
-        }
-
-        job.createdAt = DateTime.UtcNow;
-        job.updatedAt = DateTime.UtcNow;
-
-        var createdJob = _repositoryJob.AddEntity(job);
-
-        return CreatedAtAction(nameof(GetJobById), new { id = createdJob.Id }, createdJob);
-    }
-    
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateJob(int id, Job job)
-    {
-        if (id <= 0)
-        {
-            return NotFound("Invalid job ID");
-        }
-
-        if (job == null)
-        {
-            return BadRequest("Invalid job data");
-        }
-
-        var GetJob = await _repositoryJob.GetEntityById(id);
-
-        if (GetJob == null)
-        {
-            return NotFound("Job not found");
-        }
-        
-        _mapper.Map(job, GetJob);
-        
-        var updatedJob = await _repositoryJob.UpdateEntity(id, job);
-        
-        return Ok(updatedJob);
-    }
-    
-    [HttpDelete]
-    public async Task<IActionResult> DeletedJob(int id)
-    {
-        if (id <= 0)
-        {
-            return NotFound("Invalid job ID");
-        }
-
-        var deletedJob = await _repositoryJob.DeleteEntity(id);
-
-        if (deletedJob == null)
-        {
-            return NotFound("Job not found");
-        }
-
-        return NoContent();  
-    }
-    
-}
