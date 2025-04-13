@@ -1057,7 +1057,8 @@ namespace BrainsToDo.Migrations
                 {
                     b.HasOne("BrainsToDo.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Company");
                 });

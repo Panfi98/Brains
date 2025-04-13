@@ -12,14 +12,13 @@ namespace BrainsToDo.Models
         [Column("Name")]
         public string Name { get; set; }
         [Column("Order")]
-        public string Order { get; set; }
+        public int Order { get; set; }
         [Column("CategoriesIncluded")]
-        public string CategoriesIncluded { get; set; }
+        public int CategoriesIncluded { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
         public DateTime updatedAt { get; set; }
-
         [Column("deletedAt")] 
         public DateTime? deletedAt { get; set; } = null;
         [Column("SoftDeleted")]
