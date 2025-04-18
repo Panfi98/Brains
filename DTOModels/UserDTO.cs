@@ -4,6 +4,7 @@ namespace BrainsToDo.DTOModels;
     {
         public string Name { get; set; }
         public string Password { get; set; }
+        public string Email { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
         public DateTime? deletedAt { get; set; }
@@ -14,6 +15,7 @@ namespace BrainsToDo.DTOModels;
     {
         public string Name { get; set; }
         public string Password { get; set; }
+        public string Email { get; set; }
     }
 
     public class UserSkillDTO
