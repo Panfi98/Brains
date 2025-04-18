@@ -109,7 +109,6 @@ namespace BrainsToDo.Models;
         }
         
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateUser(IMapper mapper, PostUserDTO userDTO) 
         {
             if(userDTO == null)
