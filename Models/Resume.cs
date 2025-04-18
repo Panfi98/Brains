@@ -23,6 +23,8 @@ namespace BrainsToDo.Models
         public string PictureURL { get; set; }
         [Column("BirthDate")]
         public DateTime BirthDate { get; set; }
+        [Column("Summary")]
+        public string Summary { get; set; }
         [Column("Status")]
         public Status Status { get; set; }
         [Column("createdAt")]
