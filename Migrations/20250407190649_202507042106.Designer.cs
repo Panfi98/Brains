@@ -3,6 +3,7 @@ using System;
 using BrainsToDo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250407190649_202507042106")]
+    partial class _202507042106
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -731,9 +734,8 @@ namespace BrainsToDo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CategoriesIncluded")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("CategoriesIncluded")
+                        .HasColumnType("integer")
                         .HasColumnName("CategoriesIncluded");
 
                     b.Property<string>("Name")
@@ -1057,8 +1059,7 @@ namespace BrainsToDo.Migrations
                 {
                     b.HasOne("BrainsToDo.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CompanyId");
 
                     b.Navigation("Company");
                 });

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BrainsToDo.Models
 {   
     [Table("Certification")]
-    public class Сertification
+    public class Certification
     {
         [Key]
         [Column("Id")]
@@ -32,7 +32,7 @@ namespace BrainsToDo.Models
         
         [ForeignKey("Resume")] 
         [Column("ResumeId")]
-        public int ResumeId { get; set; }
-        public Resume Resume { get; set; }
+        public int? ResumeId { get; set; }
+        public Resume? Resume { get; set; }
     }
 }

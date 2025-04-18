@@ -10,4 +10,10 @@ public class ExperienceDTO
     public DateTime StartedAt { get; set; }
     public DateTime EndedAt { get; set; }
     public bool Active { get; set; }
+    
+    public DateTime createdAt { get; set; }
+    public DateTime updatedAt { get; set; }
+    public DateTime? deletedAt { get; set; }
+    public bool SoftDeleted { get; set; }
+
 }

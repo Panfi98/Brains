@@ -34,8 +34,13 @@ namespace BrainsToDo.Models
         
         [ForeignKey("Person")]
         [Column("PersonId")]
-        public int PersonId { get; set; }
-        public Person Person { get; set; }
+        public int? PersonId { get; set; }
+        public Person? Person { get; set; }
+        
+        [ForeignKey("ResumeTemplate")]
+        [Column("ResumeTemplateId")]
+        public int? ResumeTemplateId { get; set; }
+        public ResumeTemplate? ResumeTemplate { get; set; }
         
         
     }
