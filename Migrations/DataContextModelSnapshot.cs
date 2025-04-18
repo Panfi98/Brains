@@ -22,6 +22,70 @@ namespace BrainsToDo.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("BrainsToDo.Models.Certification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("Date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Name");
+
+                    b.Property<int?>("ResumeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ResumeId");
+
+                    b.Property<bool>("SoftDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("SoftDeleted");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Type");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("URL");
+
+                    b.Property<DateTime>("ValidTo")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ValidTo");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdAt");
+
+                    b.Property<DateTime?>("deletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletedAt");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResumeId");
+
+                    b.ToTable("Certification");
+                });
+
             modelBuilder.Entity("BrainsToDo.Models.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -685,7 +749,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("text")
                         .HasColumnName("LastName");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int?>("PersonId")
                         .HasColumnType("integer")
                         .HasColumnName("PersonId");
 
@@ -698,6 +762,10 @@ namespace BrainsToDo.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("PictureURL");
+
+                    b.Property<int?>("ResumeTemplateId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ResumeTemplateId");
 
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean")
@@ -719,6 +787,8 @@ namespace BrainsToDo.Migrations
 
                     b.HasIndex("PersonId");
 
+                    b.HasIndex("ResumeTemplateId");
+
                     b.ToTable("Resume");
                 });
 
@@ -731,9 +801,8 @@ namespace BrainsToDo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CategoriesIncluded")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("CategoriesIncluded")
+                        .HasColumnType("integer")
                         .HasColumnName("CategoriesIncluded");
 
                     b.Property<string>("Name")
@@ -741,9 +810,8 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Name");
 
-                    b.Property<string>("Order")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("Order")
+                        .HasColumnType("integer")
                         .HasColumnName("Order");
 
                     b.Property<bool>("SoftDeleted")
@@ -941,68 +1009,13 @@ namespace BrainsToDo.Migrations
                     b.ToTable("UserSkill");
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.Сertification", b =>
+            modelBuilder.Entity("BrainsToDo.Models.Certification", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
+                    b.HasOne("BrainsToDo.Models.Resume", "Resume")
+                        .WithMany()
+                        .HasForeignKey("ResumeId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("Date");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Description");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Name");
-
-                    b.Property<int>("ResumeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("ResumeId");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("SoftDeleted");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Type");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("URL");
-
-                    b.Property<DateTime>("ValidTo")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("ValidTo");
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createdAt");
-
-                    b.Property<DateTime?>("deletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deletedAt");
-
-                    b.Property<DateTime>("updatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ResumeId");
-
-                    b.ToTable("Certification");
+                    b.Navigation("Resume");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Contact", b =>
@@ -1057,8 +1070,7 @@ namespace BrainsToDo.Migrations
                 {
                     b.HasOne("BrainsToDo.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CompanyId");
 
                     b.Navigation("Company");
                 });
@@ -1149,11 +1161,15 @@ namespace BrainsToDo.Migrations
                 {
                     b.HasOne("BrainsToDo.Models.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PersonId");
+
+                    b.HasOne("BrainsToDo.Models.ResumeTemplate", "ResumeTemplate")
+                        .WithMany()
+                        .HasForeignKey("ResumeTemplateId");
 
                     b.Navigation("Person");
+
+                    b.Navigation("ResumeTemplate");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Skill", b =>
@@ -1207,17 +1223,6 @@ namespace BrainsToDo.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.Сertification", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.Resume", "Resume")
-                        .WithMany()
-                        .HasForeignKey("ResumeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Resume");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Job", b =>

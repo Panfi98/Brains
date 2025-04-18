@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     /// <inheritdoc />
-    public partial class _202503311710 : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,7 +24,7 @@ namespace BrainsToDo.Migrations
                     Type = table.Column<string>(type: "text", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -43,30 +43,12 @@ namespace BrainsToDo.Migrations
                     CategoriesIncluded = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ResumeTemplate", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tasks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    descriptions = table.Column<string>(type: "text", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,7 +61,7 @@ namespace BrainsToDo.Migrations
                     Password = table.Column<string>(type: "text", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -99,7 +81,7 @@ namespace BrainsToDo.Migrations
                     Position = table.Column<string>(type: "text", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -114,79 +96,21 @@ namespace BrainsToDo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CoverLetter",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    JobApplicationalId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CoverLetter", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CoverLetter_User_JobApplicationalId",
-                        column: x => x.JobApplicationalId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "JobApplication",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    ApliedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    ResumeId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobApplication", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_JobApplication_User_ResumeId",
-                        column: x => x.ResumeId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_JobApplication_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Person",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PictureURL = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PictureURL = table.Column<string>(type: "text", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -196,6 +120,31 @@ namespace BrainsToDo.Migrations
                     table.ForeignKey(
                         name: "FK_Person_User_UserId",
                         column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tasks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    descriptions = table.Column<string>(type: "text", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tasks_User_userId",
+                        column: x => x.userId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -212,7 +161,7 @@ namespace BrainsToDo.Migrations
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: true),
                     JobId = table.Column<int>(type: "integer", nullable: true)
@@ -233,24 +182,48 @@ namespace BrainsToDo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "JobUser",
+                columns: table => new
+                {
+                    JobId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobUser", x => new { x.JobId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_JobUser_Job_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Job",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobUser_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Education",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     Degree = table.Column<string>(type: "text", nullable: false),
-                    Category = table.Column<string>(type: "text", nullable: false),
                     Place = table.Column<string>(type: "text", nullable: false),
                     Active = table.Column<bool>(type: "boolean", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: true)
+                    PersonId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -259,6 +232,70 @@ namespace BrainsToDo.Migrations
                         name: "FK_Education_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Resume",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    PictureURL = table.Column<string>(type: "text", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    PersonId = table.Column<int>(type: "integer", nullable: true),
+                    ResumeTemplateId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Resume", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Resume_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Resume_ResumeTemplate_ResumeTemplateId",
+                        column: x => x.ResumeTemplateId,
+                        principalTable: "ResumeTemplate",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Certification",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    URL = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ResumeId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Certification", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Certification_Resume_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resume",
                         principalColumn: "Id");
                 });
 
@@ -278,51 +315,49 @@ namespace BrainsToDo.Migrations
                     Active = table.Column<bool>(type: "boolean", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: true)
+                    ResumeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Experience", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Experience_Person_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Person",
-                        principalColumn: "Id");
+                        name: "FK_Experience_Resume_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resume",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Resume",
+                name: "JobApplication",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    ApliedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    ResumeTemplateId = table.Column<int>(type: "integer", nullable: false)
+                    ResumeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Resume", x => x.Id);
+                    table.PrimaryKey("PK_JobApplication", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Resume_Person_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Person",
+                        name: "FK_JobApplication_Resume_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resume",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Resume_ResumeTemplate_ResumeTemplateId",
-                        column: x => x.ResumeTemplateId,
-                        principalTable: "ResumeTemplate",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Resume_User_UserId",
+                        name: "FK_JobApplication_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
@@ -342,58 +377,15 @@ namespace BrainsToDo.Migrations
                     Completed = table.Column<bool>(type: "boolean", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    ExperienceId = table.Column<int>(type: "integer", nullable: false),
-                    EducationId = table.Column<int>(type: "integer", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Project", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Project_Education_EducationId",
-                        column: x => x.EducationId,
-                        principalTable: "Education",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Project_Experience_ExperienceId",
-                        column: x => x.ExperienceId,
-                        principalTable: "Experience",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Project_Person_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Person",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Certification",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    URL = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     ResumeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Certification", x => x.Id);
+                    table.PrimaryKey("PK_Project", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Certification_Resume_ResumeId",
+                        name: "FK_Project_Resume_ResumeId",
                         column: x => x.ResumeId,
                         principalTable: "Resume",
                         principalColumn: "Id",
@@ -413,7 +405,7 @@ namespace BrainsToDo.Migrations
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     ResumeId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -424,6 +416,30 @@ namespace BrainsToDo.Migrations
                         name: "FK_Reference_Resume_ResumeId",
                         column: x => x.ResumeId,
                         principalTable: "Resume",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CoverLetter",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    JobApplicationalId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CoverLetter", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CoverLetter_JobApplication_JobApplicationalId",
+                        column: x => x.JobApplicationalId,
+                        principalTable: "JobApplication",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -440,9 +456,9 @@ namespace BrainsToDo.Migrations
                     Level = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: true),
+                    ResumeId = table.Column<int>(type: "integer", nullable: true),
                     ProjectId = table.Column<int>(type: "integer", nullable: true),
                     ExperienceId = table.Column<int>(type: "integer", nullable: true),
                     EducationId = table.Column<int>(type: "integer", nullable: true)
@@ -461,15 +477,39 @@ namespace BrainsToDo.Migrations
                         principalTable: "Experience",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Skills_Person_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Person",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Skills_Project_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Project",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Skills_Resume_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resume",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobSkill",
+                columns: table => new
+                {
+                    JobId = table.Column<int>(type: "integer", nullable: false),
+                    SkillId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobSkill", x => new { x.JobId, x.SkillId });
+                    table.ForeignKey(
+                        name: "FK_JobSkill_Job_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Job",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobSkill_Skills_SkillId",
+                        column: x => x.SkillId,
+                        principalTable: "Skills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -522,9 +562,9 @@ namespace BrainsToDo.Migrations
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Experience_PersonId",
+                name: "IX_Experience_ResumeId",
                 table: "Experience",
-                column: "PersonId");
+                column: "ResumeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Job_CompanyId",
@@ -542,24 +582,24 @@ namespace BrainsToDo.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_JobSkill_SkillId",
+                table: "JobSkill",
+                column: "SkillId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobUser_UserId",
+                table: "JobUser",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Person_UserId",
                 table: "Person",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Project_EducationId",
+                name: "IX_Project_ResumeId",
                 table: "Project",
-                column: "EducationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Project_ExperienceId",
-                table: "Project",
-                column: "ExperienceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Project_PersonId",
-                table: "Project",
-                column: "PersonId");
+                column: "ResumeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reference_ResumeId",
@@ -577,11 +617,6 @@ namespace BrainsToDo.Migrations
                 column: "ResumeTemplateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Resume_UserId",
-                table: "Resume",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Skills_EducationId",
                 table: "Skills",
                 column: "EducationId");
@@ -592,14 +627,19 @@ namespace BrainsToDo.Migrations
                 column: "ExperienceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Skills_PersonId",
-                table: "Skills",
-                column: "PersonId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Skills_ProjectId",
                 table: "Skills",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Skills_ResumeId",
+                table: "Skills",
+                column: "ResumeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_userId",
+                table: "Tasks",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSkill_UserId",
@@ -620,7 +660,10 @@ namespace BrainsToDo.Migrations
                 name: "CoverLetter");
 
             migrationBuilder.DropTable(
-                name: "JobApplication");
+                name: "JobSkill");
+
+            migrationBuilder.DropTable(
+                name: "JobUser");
 
             migrationBuilder.DropTable(
                 name: "Reference");
@@ -632,10 +675,10 @@ namespace BrainsToDo.Migrations
                 name: "UserSkill");
 
             migrationBuilder.DropTable(
-                name: "Job");
+                name: "JobApplication");
 
             migrationBuilder.DropTable(
-                name: "Resume");
+                name: "Job");
 
             migrationBuilder.DropTable(
                 name: "Skills");
@@ -644,19 +687,22 @@ namespace BrainsToDo.Migrations
                 name: "Company");
 
             migrationBuilder.DropTable(
-                name: "ResumeTemplate");
-
-            migrationBuilder.DropTable(
-                name: "Project");
-
-            migrationBuilder.DropTable(
                 name: "Education");
 
             migrationBuilder.DropTable(
                 name: "Experience");
 
             migrationBuilder.DropTable(
+                name: "Project");
+
+            migrationBuilder.DropTable(
+                name: "Resume");
+
+            migrationBuilder.DropTable(
                 name: "Person");
+
+            migrationBuilder.DropTable(
+                name: "ResumeTemplate");
 
             migrationBuilder.DropTable(
                 name: "User");
