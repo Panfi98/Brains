@@ -28,6 +28,9 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
         
+        [Column("Status")]
+        public Status Status { get; set; }
+        
        /* [ForeignKey("Experience")]
         [Column("ExperienceId")]
         public int ExperienceId { get; set; }

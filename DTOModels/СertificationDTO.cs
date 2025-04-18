@@ -18,6 +18,17 @@ public class GetCertificationDTO
 }
 
 public class PostCertificationDTO
+ {
+     public string Name { get; set; }
+     public string Description { get; set; }
+     public DateTime Date { get; set; }
+     public string Url { get; set; }
+     public string Type { get; set; }
+     public DateTime ValidTo { get; set; }
+     public int resumeId { get; set; }
+ }
+ 
+public class PostCertificationDTOForResumeMaker
 {
     public string Name { get; set; }
     public string Description { get; set; }
@@ -25,5 +36,6 @@ public class PostCertificationDTO
     public string Url { get; set; }
     public string Type { get; set; }
     public DateTime ValidTo { get; set; }
+    public Status status { get; set; }
     public int resumeId { get; set; }
 }

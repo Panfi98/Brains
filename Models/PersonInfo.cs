@@ -1,10 +1,12 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BrainsToDo.DTOModels;
+using BrainsToDo.Models;
 
 namespace BrainsToDo.Models
-{
-    [Table("Resume")]
-    public class Resume
+{   
+    [Table("PersonInfo")]
+    public class PersonInfo
     {
         [Key]
         [Column("Id")]
@@ -19,10 +21,10 @@ namespace BrainsToDo.Models
         public string PhoneNumber { get; set; }
         [Column("Address")]
         public string Address { get; set; }
-        [Column("PictureURL")]
-        public string PictureURL { get; set; }
         [Column("BirthDate")]
         public DateTime BirthDate { get; set; }
+        [Column("PictureURL")]
+        public string PictureURL { get; set; }
         [Column("Status")]
         public Status Status { get; set; }
         [Column("createdAt")]
@@ -34,18 +36,11 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
         
-        [ForeignKey("Person")]
-        [Column("PersonId")]
-        public int? PersonId { get; set; }
-        public Person? Person { get; set; }
-        
-        [ForeignKey("ResumeTemplate")]
-        [Column("ResumeTemplateId")]
-        public int? ResumeTemplateId { get; set; }
-        public ResumeTemplate? ResumeTemplate { get; set; }
-        
-        
-        
-        
+        [ForeignKey("Resume")]
+        [Column("ResumeId")]
+        public int ResumeId { get; set; }
+        public Resume Resume { get; set; }
     }
+    
+    
 }
