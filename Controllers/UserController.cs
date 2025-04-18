@@ -68,7 +68,7 @@ namespace BrainsToDo.Models;
         }
         [HttpGet()]
         [Authorize]
-        public async Task<IActionResult> GetAllUsers(IMapper mapper)
+        public async Task<IActionResult> GetAllUsers()
         {
             var users = await repository.GetAllEntities();
             if(!users.Any())
@@ -86,7 +86,7 @@ namespace BrainsToDo.Models;
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult> GetUserById(int id, IMapper mapper)
+        public async Task<ActionResult> GetUserById(int id)
         {
             var user = await repository.GetEntityById(id);
             var userDTO = mapper.Map<GetUserDTO>(user);
@@ -109,7 +109,7 @@ namespace BrainsToDo.Models;
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateUser(IMapper mapper, PostUserDTO userDTO) 
+        public async Task<IActionResult> CreateUser( PostUserDTO userDTO) 
         {
             if(userDTO == null)
             {
@@ -164,7 +164,7 @@ namespace BrainsToDo.Models;
 
         [HttpDelete]
         [Authorize]
-        public async Task<IActionResult> DeletedUser(IMapper mapper, int id)
+        public async Task<IActionResult> DeletedUser( int id)
         {
             if(id <= 0)
             {
