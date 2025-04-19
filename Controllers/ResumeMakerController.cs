@@ -2,181 +2,280 @@
 using AutoMapper;
 using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
-using BrainsToDo.Models;
 using BrainsToDo.Helpers;
+using BrainsToDo.Models;
 using BrainsToDo.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace BrainsToDo.Controllers;
 
 [ApiController]
 [Route("ResumeMaker")]
 [Authorize]
-
-public class ResumeMakerController(ResumeMakerRepository repository, IMapper mapper, DataContext context)
-    : ControllerBase
+public class ResumeMakerController : ControllerBase
 {
-    private readonly DataContext _context = context;
-    private int resumeId, userId;
-    
-    private int GetCurrentPersonId()
+    private readonly ResumeMakerRepository _repository;
+    private readonly DataContext _context;
+    private readonly IMapper _mapper;
+
+    public ResumeMakerController(ResumeMakerRepository repository, DataContext context, IMapper mapper)
     {
-       userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-       return _context.Person
+        _repository = repository;
+        _context = context;
+        _mapper = mapper;
+    }
+
+    private async Task<int> GetCurrentUserId()
+    {
+        if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+        {
+            throw new UnauthorizedAccessException("Invalid user ID in token");
+        }
+        return userId;
+    }
+
+    private async Task<int> GetCurrentPersonId()
+    {
+        var userId = await GetCurrentUserId();
+        var personId = await _context.Person
             .Where(p => p.UserId == userId)
             .Select(p => p.Id)
-            .FirstOrDefault();
-    }
-    
-    private int GetCurrentResumeId()
-    {
-        return _context.Resume
-            .Where(r => r.PersonId == GetCurrentPersonId())
-            .Select(r => r.Id)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
+
+        if (personId == 0)
+        {
+            throw new KeyNotFoundException("User profile not found");
+        }
+
+        return personId;
     }
 
-    [HttpPost("resume")]
+    private async Task<int> GetCurrentResumeId()
+    {
+        var personId = await GetCurrentPersonId();
+        var resumeId = await _context.Resume
+            .Where(r => r.PersonId == personId)
+            .Select(r => r.Id)
+            .FirstOrDefaultAsync();
+
+        if (resumeId == 0)
+        {
+            throw new KeyNotFoundException("Resume not found for current user");
+        }
+
+        return resumeId;
+    }
+
+    [HttpPost("add/resume")]
     public async Task<IActionResult> AddResume([FromBody] PostResumeForResumeMaker resumeDTO)
     {
-        if (resumeDTO == null)
+        try
         {
-            return BadRequest("Invalid request");
+            if (resumeDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
+
+            var personId = await GetCurrentPersonId();
+            var resume = _mapper.Map<Resume>(resumeDTO);
+            var createdResume = await _repository.AddResume(resume, personId);
+
+            return Ok(new Payload<PostResumeForResumeMaker>
+            {
+                Data = _mapper.Map<PostResumeForResumeMaker>(createdResume),
+                Message = "Resume created successfully"
+            });
         }
-
-        Resume resume = mapper.Map<Resume>(resumeDTO);
-        var createdResume = await repository.AddResume(resume, GetCurrentPersonId());
-        var responseDto = mapper.Map<PostResumeForResumeMaker>(createdResume);
-
-        return Ok(new Payload<PostResumeForResumeMaker>
+        catch (Exception ex)
         {
-            Data = responseDto
-        });
+            return HandleException(ex);
+        }
     }
-    
-    [HttpPost("education")]
+
+    [HttpPost("add/education")]
     public async Task<IActionResult> AddEducation([FromBody] PostEducationForResumeMaker educationDTO)
     {
-        if (educationDTO == null)
+        try
         {
-            return BadRequest("Invalid request");
-        }
-        
-        Education education = mapper.Map<Education>(educationDTO);
-        var createdEducation = await repository.AddEducation(education, GetCurrentPersonId());
-        var responseDto = mapper.Map<PostEducationForResumeMaker>(createdEducation);
+            if (educationDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
 
-        return Ok(new Payload<PostEducationForResumeMaker>
+            var personId = await GetCurrentPersonId();
+            var education = _mapper.Map<Education>(educationDTO);
+            var createdEducation = await _repository.AddEducation(education, personId);
+
+            return Ok(new Payload<PostEducationForResumeMaker>
+            {
+                Data = _mapper.Map<PostEducationForResumeMaker>(createdEducation),
+                Message = "Education added successfully"
+            });
+        }
+        catch (Exception ex)
         {
-            Data = responseDto
-        });
+            return HandleException(ex);
+        }
     }
-    
-    [HttpPost("certification")]
-    public async Task<IActionResult> AddCertigication([FromBody] PostCertificationForResumeMaker certificationDTO)
+
+    [HttpPost("add/certification")]
+    public async Task<IActionResult> AddCertification([FromBody] PostCertificationForResumeMaker certificationDTO)
     {
-        if (certificationDTO == null)
+        try
         {
-            return BadRequest("Invalid request");
-        }
-        
-        Certification certification = mapper.Map<Certification>(certificationDTO);
-        var createdCertification = await repository.AddCertification(certification, GetCurrentResumeId());
-        var responseDto = mapper.Map<PostCertificationForResumeMaker>(createdCertification);
+            if (certificationDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
 
-        return Ok(new Payload<PostCertificationForResumeMaker>
+            var resumeId = await GetCurrentResumeId();
+            var certification = _mapper.Map<Certification>(certificationDTO);
+            var createdCertification = await _repository.AddCertification(certification, resumeId);
+
+            return Ok(new Payload<PostCertificationForResumeMaker>
+            {
+                Data = _mapper.Map<PostCertificationForResumeMaker>(createdCertification),
+                Message = "Certification added successfully"
+            });
+        }
+        catch (Exception ex)
         {
-            Data = responseDto
-        });
+            return HandleException(ex);
+        }
     }
-    
-    [HttpPost("experience")]
+
+    [HttpPost("add/experience")]
     public async Task<IActionResult> AddExperience([FromBody] PostExperienceForResumeMaker experienceDTO)
     {
-        if (experienceDTO == null)
+        try
         {
-            return BadRequest("Invalid request");
-        }
-        
-        Experience experience = mapper.Map<Experience>(experienceDTO);
-        var createdExperience = await repository.AddExperience(experience, GetCurrentResumeId());
-        var responseDto = mapper.Map<PostExperienceForResumeMaker>(createdExperience);
+            if (experienceDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
 
-        return Ok(new Payload<PostExperienceForResumeMaker>
+            var resumeId = await GetCurrentResumeId();
+            var experience = _mapper.Map<Experience>(experienceDTO);
+            var createdExperience = await _repository.AddExperience(experience, resumeId);
+
+            return Ok(new Payload<PostExperienceForResumeMaker>
+            {
+                Data = _mapper.Map<PostExperienceForResumeMaker>(createdExperience),
+                Message = "Experience added successfully"
+            });
+        }
+        catch (Exception ex)
         {
-            Data = responseDto
-        });
+            return HandleException(ex);
+        }
     }
-    
-    [HttpPost("project")]
+
+    [HttpPost("add/project")]
     public async Task<IActionResult> AddProject([FromBody] PostProjectForResumeMaker projectDTO)
     {
-        if (projectDTO == null)
+        try
         {
-            return BadRequest("Invalid request");
-        }
-        
-        Project project = mapper.Map<Project>(projectDTO);
-        var createdProject = await repository.AddProject(project, GetCurrentResumeId());
-        var responseDto = mapper.Map<PostProjectForResumeMaker>(createdProject);
+            if (projectDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
 
-        return Ok(new Payload<PostProjectForResumeMaker>
+            var resumeId = await GetCurrentResumeId();
+            var project = _mapper.Map<Project>(projectDTO);
+            var createdProject = await _repository.AddProject(project, resumeId);
+
+            return Ok(new Payload<PostProjectForResumeMaker>
+            {
+                Data = _mapper.Map<PostProjectForResumeMaker>(createdProject),
+                Message = "Project added successfully"
+            });
+        }
+        catch (Exception ex)
         {
-            Data = responseDto
-        });
+            return HandleException(ex);
+        }
     }
-    
-    [HttpPost("skill")]
+
+    [HttpPost("add/skill")]
     public async Task<IActionResult> AddSkill([FromBody] PostSkillForResumeMaker skillDTO)
     {
-        int educationId = _context.Education
-            .Where(e => e.PersonId == GetCurrentPersonId())
-            .Select(e => e.Id)
-            .FirstOrDefault();
-        
-        int experienceId = _context.Experience
-            .Where(e => e.ResumeId == GetCurrentResumeId())
-            .Select(e => e.Id)
-            .FirstOrDefault();
-        
-        int projectId = _context.Project
-            .Where(p => p.ResumeId == GetCurrentResumeId())
-            .Select(p => p.Id)
-            .FirstOrDefault();
-        
-        if (skillDTO == null)
+        try
         {
-            return BadRequest("Invalid request");
-        }
-        
-        Skill skill = mapper.Map<Skill>(skillDTO);
-        var createdSkill = await repository.AddSkill(skill, GetCurrentResumeId(),  educationId, experienceId, projectId);
-        var responseDto = mapper.Map<PostSkillForResumeMaker>(createdSkill);
+            if (skillDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
 
-        return Ok(new Payload<PostSkillForResumeMaker>
+            var resumeId = await GetCurrentResumeId();
+            var personId = await GetCurrentPersonId();
+
+            var educationId = await _context.Education
+                .Where(e => e.PersonId == personId)
+                .Select(e => e.Id)
+                .FirstOrDefaultAsync();
+
+            var experienceId = await _context.Experience
+                .Where(e => e.ResumeId == resumeId)
+                .Select(e => e.Id)
+                .FirstOrDefaultAsync();
+
+            var projectId = await _context.Project
+                .Where(p => p.ResumeId == resumeId)
+                .Select(p => p.Id)
+                .FirstOrDefaultAsync();
+
+            var skill = _mapper.Map<Skill>(skillDTO);
+            var createdSkill = await _repository.AddSkill(skill, resumeId, educationId, experienceId, projectId);
+
+            return Ok(new Payload<PostSkillForResumeMaker>
+            {
+                Data = _mapper.Map<PostSkillForResumeMaker>(createdSkill),
+                Message = "Skill added successfully"
+            });
+        }
+        catch (Exception ex)
         {
-            Data = responseDto
-        });
+            return HandleException(ex);
+        }
     }
-    
-    [HttpPost("reference")]
-    public async Task<IActionResult> AddReference([FromBody] PostReferenceForResumeMaker referencetDTO)
-    {
-        if (referencetDTO == null)
-        {
-            return BadRequest("Invalid request");
-        }
-        
-        Reference reference = mapper.Map<Reference>(referencetDTO);
-        var createdReference = await repository.AddReference(reference, GetCurrentResumeId());
-        var responseDto = mapper.Map<PostReferenceForResumeMaker>(createdReference);
 
-        return Ok(new Payload<PostReferenceForResumeMaker>
+    [HttpPost("add/reference")]
+    public async Task<IActionResult> AddReference([FromBody] PostReferenceForResumeMaker referenceDTO)
+    {
+        try
         {
-            Data = responseDto
-        });
+            if (referenceDTO == null)
+            {
+                return BadRequest(new { Message = "Request body cannot be empty" });
+            }
+
+            var resumeId = await GetCurrentResumeId();
+            var reference = _mapper.Map<Reference>(referenceDTO);
+            var createdReference = await _repository.AddReference(reference, resumeId);
+
+            return Ok(new Payload<PostReferenceForResumeMaker>
+            {
+                Data = _mapper.Map<PostReferenceForResumeMaker>(createdReference),
+                Message = "Reference added successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+
+    private IActionResult HandleException(Exception ex)
+    {
+        return ex switch
+        {
+            UnauthorizedAccessException => Unauthorized(new { ex.Message }),
+            KeyNotFoundException => NotFound(new { ex.Message }),
+            ArgumentException => BadRequest(new { ex.Message }),
+            DbUpdateException => StatusCode(500, new { Message = "Database error occurred" }),
+            _ => StatusCode(500, new { Message = "An unexpected error occurred" })
+        };
     }
 }
-

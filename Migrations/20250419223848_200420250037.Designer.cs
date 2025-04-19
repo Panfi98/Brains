@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250419155203_EnumToString")]
-    partial class EnumToString
+    [Migration("20250419223848_200420250037")]
+    partial class _200420250037
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("ValidTo");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -127,6 +128,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Type");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -180,6 +182,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("SoftDeleted");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -223,6 +226,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("SoftDeleted");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -300,6 +304,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Type");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -377,6 +382,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Type");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -433,6 +439,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("SoftDeleted");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -492,6 +499,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("UserId");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -594,6 +602,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("UserId");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -656,6 +665,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Status");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -721,6 +731,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Status");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -804,6 +815,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Summary");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -855,6 +867,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Status");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -924,6 +937,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("Type");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -976,6 +990,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnName("userId");
 
                     b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("createdAt");
 
@@ -983,7 +998,7 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deletedAt");
 
-                    b.Property<DateTime>("updatedAT")
+                    b.Property<DateTime>("updatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updatedAt");
 

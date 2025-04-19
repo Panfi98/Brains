@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class _200420250037 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,6 +41,7 @@ namespace BrainsToDo.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false),
                     CategoriesIncluded = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -59,6 +60,7 @@ namespace BrainsToDo.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: true),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -223,6 +225,7 @@ namespace BrainsToDo.Migrations
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     PersonId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -249,6 +252,8 @@ namespace BrainsToDo.Migrations
                     Address = table.Column<string>(type: "text", nullable: false),
                     PictureURL = table.Column<string>(type: "text", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Summary = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -282,6 +287,7 @@ namespace BrainsToDo.Migrations
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     URL = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -317,6 +323,7 @@ namespace BrainsToDo.Migrations
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     SoftDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     ResumeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -375,6 +382,7 @@ namespace BrainsToDo.Migrations
                     StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Completed = table.Column<bool>(type: "boolean", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -403,6 +411,7 @@ namespace BrainsToDo.Migrations
                     Position = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -454,6 +463,7 @@ namespace BrainsToDo.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     Level = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     deletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),

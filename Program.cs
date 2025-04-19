@@ -2,22 +2,14 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BrainsToDo.Data;
 using BrainsToDo.Mapper;
-using BrainsToDo.Models;
 using BrainsToDo.Repositories;
 using BrainsToDo.Repositories.LoginLogic;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,10 +27,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Worker API", Version = "v1" });
     
-    c.SchemaFilter<EnumSchemaFilter>();
-    c.UseAllOfToExtendReferenceSchemas();
-    c.UseOneOfForPolymorphism();
-
     // Add JWT Authentication
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -64,6 +52,12 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });;
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();

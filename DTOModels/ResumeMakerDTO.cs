@@ -1,4 +1,4 @@
-﻿using BrainsToDo.Models;
+﻿using BrainsToDo.Enums;
 
 namespace BrainsToDo.DTOModels;
 
@@ -12,7 +12,7 @@ public class PostResumeForResumeMaker
     public DateTime Birthday { get; set; }
     public string PictureURL { get; set; }
     public string Summary { get; set; }
-    public string Status { get; set; }
+    public Status Status { get; set; }
     
 }
 
@@ -26,7 +26,7 @@ public class PostEducationForResumeMaker
     public string Degree { get; set; }
     public string Place { get; set; }
     public bool Active { get; set; }
-    public string Status { get; set; }
+    public Status Status { get; set; }
 }
 
 public class PostCertificationForResumeMaker
@@ -37,7 +37,7 @@ public class PostCertificationForResumeMaker
     public string Url { get; set; }
     public string Type { get; set; }
     public DateTime ValidTo { get; set; }
-    public string Status { get; set; }
+    public Status Status { get; set; }
 }
 
 public class PostProjectForResumeMaker
@@ -47,7 +47,7 @@ public class PostProjectForResumeMaker
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public bool Completed { get; set; }
-    public string Status { get; set; }
+    public Status Status { get; set; }
 }
 
 public class PostExperienceForResumeMaker
@@ -60,7 +60,7 @@ public class PostExperienceForResumeMaker
     public DateTime StartedAt { get; set; }
     public DateTime EndedAt { get; set; }
     public bool Active { get; set; }
-    public string Status { get; set; } 
+    public Status Status { get; set; } 
 }
 
 public class PostSkillForResumeMaker
@@ -69,7 +69,7 @@ public class PostSkillForResumeMaker
     public string Description { get; set; }
     public string Type { get; set; }
     public int Level { get; set; }
-    public string Status { get; set; }
+    public Status Status { get; set; }
 }
 
 public class PostReferenceForResumeMaker
