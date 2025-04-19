@@ -2,7 +2,7 @@
 
 namespace BrainsToDo.DTOModels;
 
-public class PostReferenceDTOForresumeMaker
+public class PostReferenceDTO
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

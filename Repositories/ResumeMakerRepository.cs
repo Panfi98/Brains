@@ -1,36 +1,21 @@
-﻿using System.Security.Claims;
-using BrainsToDo.Data;
+﻿using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
-using BrainsToDo.Models;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace BrainsToDo.Repositories
 {
-    public class ResumeMakerRepository(DataContext context) : IResumeMaker<ResumeMakerDTO>
+    public class ResumeMakerRepository(DataContext context) : IResumeMaker<PostResumeForResumeMaker, PostEducationForResumeMaker, PostCertificationForResumeMaker, PostExperienceForResumeMaker,PostExperienceForResumeMaker, PostProjectForResumeMaker>
     {
         private readonly DataContext _context = context;
 
-        public async Task<ResumeMakerDTO> AddResume(ResumeMakerDTO dto, int personId)
+        public async Task<PostResumeForResumeMaker> AddResume(PostResumeForResumeMaker dto, int personId)
         {
-            dto.Resume.PersonId = personId;
-            _context.Resume.Add(dto.Resume);
+            dto.PersonId = personId;
+            _context.Resume.Add(dto);
             await _context.SaveChangesAsync();
            
             return dto;
         }
-
-        public async Task<ResumeMakerDTO> AddResumeTemplate(ResumeMakerDTO dto)
-        {
-            _context.ResumeTemplate.Add(dto.ResumeTemplate);
-            await _context.SaveChangesAsync();
-
-            dto.Resume.ResumeTemplateId = dto.ResumeTemplate.Id;
-            await _context.SaveChangesAsync();
-            
-            return dto;
-        }
-
+        
         public async Task<ResumeMakerDTO> AddEducationList(ResumeMakerDTO dto, int personId)
         {
             foreach (var edu in dto.EducationList)
