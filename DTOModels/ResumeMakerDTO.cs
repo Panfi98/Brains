@@ -1,4 +1,5 @@
-﻿
+﻿using BrainsToDo.Models;
+
 namespace BrainsToDo.DTOModels;
 
 public class PostResumeForResumeMaker
@@ -9,7 +10,6 @@ public class PostResumeForResumeMaker
     public string PhoneNumber { get; set; }
     public string Address { get; set; }
     public DateTime Birthday { get; set; }
-    
     public string PictureURL { get; set; }
     public string Summary { get; set; }
     public string Status { get; set; }
@@ -79,9 +79,7 @@ public class PostReferenceForResumeMaker
     public string Position { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public string Status { get; set; }
-    public int ResumeId { get; set; }
-    
+    public Status Status { get; set; }
 }
 
 

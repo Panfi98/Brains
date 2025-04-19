@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace BrainsToDo.Models;
 
 [Table("Reference")] 
@@ -21,7 +20,7 @@ public class Reference
     [Column("PhoneNumber")]
     public string PhoneNumber { get; set; }
     [Column("Status")]
-    public string Status { get; set; }
+    public Status Status { get; set; }
     [Column("createdAt")]
     public DateTime createdAt { get; set; }
     [Column("updatedAt")]

@@ -22,20 +22,18 @@ namespace BrainsToDo.Data
         .HasMany(e => e.Skills)
         .WithMany(e => e.Users)
         .UsingEntity<UserSkill>();
-      
+
       modelBuilder.Entity<Job>()
         .HasMany(e => e.Skills)
         .WithMany(e => e.Jobs)
         .UsingEntity<JobSkill>();
-      
+
       modelBuilder.Entity<Job>()
         .HasMany(e => e.Users)
         .WithMany(e => e.Jobs)
         .UsingEntity<JobUser>();
     }
-    
-   
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.UseNpgsql(_connectionString);
