@@ -9,7 +9,7 @@ public class PostReferenceDTO
     public string Position { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public Status Status { get; set; }
+    public string Status { get; set; }
     public int ResumeId { get; set; }
     
 }

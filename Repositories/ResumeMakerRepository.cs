@@ -9,9 +9,9 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
       
-        public async Task<Resume> AddResume(Resume dto)
+        public async Task<Resume> AddResume(Resume dto, int personId)
         {
-            
+            dto.PersonId = personId;
             dto.ResumeTemplateId = 1; 
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
@@ -21,8 +21,9 @@ namespace BrainsToDo.Repositories
             return dto;;
         }
         
-        public async Task<Education> AddEducation(Education dto)
+        public async Task<Education> AddEducation(Education dto, int personId)
         {
+            dto.PersonId = personId;
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             _context.Education.Add(dto);
@@ -30,7 +31,7 @@ namespace BrainsToDo.Repositories
             return  dto;;
         }
 
-        public async Task<Certification> AddCertifications(Certification dto, int resumeId)
+        public async Task<Certification> AddCertification(Certification dto, int resumeId)
         {
             dto.ResumeId = resumeId;
             dto.createdAt = DateTime.UtcNow;
@@ -40,9 +41,9 @@ namespace BrainsToDo.Repositories
             return dto;
         }
 
-        public async Task<Experience> AddExperienceList(Experience dto)
+        public async Task<Experience> AddExperience(Experience dto, int resumeId)
         {
-            dto.ResumeId = dto.Resume.Id;
+            dto.ResumeId = resumeId;
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             _context.Experience.Add(dto);
@@ -50,9 +51,9 @@ namespace BrainsToDo.Repositories
             return dto;
         }
 
-        public async Task<Project> AddProjects(Project dto)
+        public async Task<Project> AddProject(Project dto,  int resumeId)
         {
-            dto.ResumeId = dto.Resume.Id;
+            dto.ResumeId = resumeId;
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             _context.Project.Add(dto);
@@ -60,9 +61,12 @@ namespace BrainsToDo.Repositories
             return dto;
         }
 
-        public async Task<Skill> AddSkills(Skill dto)
+        public async Task<Skill> AddSkill(Skill dto,int resumeId, int educationId, int experienceId, int projectId )
         {
-            dto.ResumeId = dto.Resume.Id;
+            dto.ResumeId = resumeId;
+            dto.EducationId = educationId;
+            dto.ExperienceId = experienceId;
+            dto.ProjectId = projectId;
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             _context.Skill.Add(dto);
@@ -70,9 +74,9 @@ namespace BrainsToDo.Repositories
             return dto;
         }
 
-        public async Task<Reference> AddReferences(Reference dto)
+        public async Task<Reference> AddReference(Reference dto, int resumeId)
         {
-            dto.ResumeId = dto.Resume.Id;
+            dto.ResumeId = resumeId;
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             _context.Reference.Add(dto);

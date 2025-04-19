@@ -1,22 +1,6 @@
 ﻿
 namespace BrainsToDo.DTOModels;
 
-public class GetResumeDTOForResumeMaker
-{
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Address { get; set; }
-    public string PictureURL { get; set; }
-    public DateTime BirthDate { get; set; }
-    public DateTime createdAt { get; set; }
-    public DateTime updatedAt { get; set; }
-    public DateTime? deletedAt { get; set; }
-    public bool SoftDeleted { get; set; }
-    
-}
-
 public class PostResumeForResumeMaker
 {
     public string FirstName { get; set; }
@@ -32,22 +16,6 @@ public class PostResumeForResumeMaker
     
 }
 
-public class GetEducationDTOForResumeMaker
-{
-    public string Name { get; set; }
-    public string Type { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public string Description { get; set; }
-    public string Degree { get; set; }
-    public string Place { get; set; }
-    public bool Active { get; set; }
-    public DateTime createdAt { get; set; }
-    public DateTime updatedAt { get; set; }
-    public DateTime? deletedAt { get; set; }
-    public bool SoftDeleted { get; set; }
-}
-
 public class PostEducationForResumeMaker
 {
     public string Name { get; set; }
@@ -59,7 +27,6 @@ public class PostEducationForResumeMaker
     public string Place { get; set; }
     public bool Active { get; set; }
     public string Status { get; set; }
-    
 }
 
 public class PostCertificationForResumeMaker
@@ -105,7 +72,7 @@ public class PostSkillForResumeMaker
     public string Status { get; set; }
 }
 
-public class ResumeTemplateForResumeMaker
+public class PostReferenceForResumeMaker
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -113,6 +80,8 @@ public class ResumeTemplateForResumeMaker
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public string Status { get; set; }
+    public int ResumeId { get; set; }
+    
 }
 
 
