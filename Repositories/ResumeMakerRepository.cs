@@ -1,85 +1,87 @@
 ﻿using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
+using BrainsToDo.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrainsToDo.Repositories
 {
-    public class ResumeMakerRepository(DataContext context) : IResumeMaker<PostResumeForResumeMaker, PostEducationForResumeMaker, PostCertificationForResumeMaker, PostExperienceForResumeMaker,PostExperienceForResumeMaker, PostProjectForResumeMaker>
+    public class ResumeMakerRepository(DataContext context) 
     {
         private readonly DataContext _context = context;
-
-        public async Task<PostResumeForResumeMaker> AddResume(PostResumeForResumeMaker dto, int personId)
+      
+        public async Task<Resume> AddResume(Resume dto, int personId)
         {
             dto.PersonId = personId;
+            dto.ResumeTemplateId = 1; 
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            
             _context.Resume.Add(dto);
             await _context.SaveChangesAsync();
-           
+            return await _context.Resume.Include(r => r.Person)
+                .Include(r => r.ResumeTemplate)
+                .FirstOrDefaultAsync(r => r.Id == dto.Id);;
+        }
+        
+        public async Task<Education> AddEducationList(Education dto, int personId)
+        {
+            dto.PersonId = personId;
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            _context.Education.Add(dto);
+            await _context.SaveChangesAsync();
+            return  _context.Education.Include(e => e.Person).FirstOrDefault(e => e.Id == dto.Id);;
+        }
+
+        public async Task<Certification> AddCertifications(Certification dto, int resumeId)
+        {
+            dto.ResumeId = resumeId;
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            _context.Certification.Add(dto);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
+
+        public async Task<Experience> AddExperienceList(Experience dto)
+        {
+            dto.ResumeId = dto.Resume.Id;
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            _context.Experience.Add(dto);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
+
+        public async Task<Project> AddProjects(Project dto)
+        {
+            dto.ResumeId = dto.Resume.Id;
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            _context.Project.Add(dto);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
+
+        public async Task<Skill> AddSkills(Skill dto)
+        {
+            dto.ResumeId = dto.Resume.Id;
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            _context.Skill.Add(dto);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
+
+        public async Task<Reference> AddReferences(Reference dto)
+        {
+            dto.ResumeId = dto.Resume.Id;
+            dto.createdAt = DateTime.UtcNow;
+            dto.updatedAt = DateTime.UtcNow;
+            _context.Reference.Add(dto);
+            await _context.SaveChangesAsync();
             return dto;
         }
         
-        public async Task<ResumeMakerDTO> AddEducationList(ResumeMakerDTO dto, int personId)
-        {
-            foreach (var edu in dto.EducationList)
-            {
-                edu.PersonId = personId;
-                _context.Education.Add(edu);
-            }
-            
-            return dto;
-        }
-
-        public async Task<ResumeMakerDTO> AddCertifications(ResumeMakerDTO dto)
-        {
-            foreach (var cert in dto.Certifications)
-            {
-                cert.ResumeId = dto.Resume.Id;
-                _context.Certification.Add(cert);
-            }
-            
-            return dto;
-        }
-
-        public async Task<ResumeMakerDTO> AddExperienceList(ResumeMakerDTO dto)
-        {
-            foreach (var exp in dto.ExperienceList)
-            {
-                exp.ResumeId = dto.Resume.Id;
-                _context.Experience.Add(exp);
-            }
-            
-            return dto;
-        }
-
-        public async Task<ResumeMakerDTO> AddProjects(ResumeMakerDTO dto)
-        {
-            foreach (var proj in dto.Projects)
-            {
-                proj.ResumeId = dto.Resume.Id;
-                _context.Project.Add(proj);
-            }
-            
-            return dto;
-        }
-
-        public async Task<ResumeMakerDTO> AddSkills(ResumeMakerDTO dto)
-        {
-            foreach (var skill in dto.Skills)
-            {
-                skill.ResumeId = dto.Resume.Id;
-                _context.Skill.Add(skill);
-            }
-            
-            return dto;
-        }
-
-        public async Task<ResumeMakerDTO> AddReferences(ResumeMakerDTO dto)
-        {
-            foreach (var reference in dto.References)
-            {
-                reference.ResumeId = dto.Resume.Id;
-                _context.Reference.Add(reference);
-            }
-            
-            return dto;
-        }
     }
 }

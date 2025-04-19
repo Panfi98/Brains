@@ -26,7 +26,7 @@ namespace BrainsToDo.Models
         [Column("Summary")]
         public string Summary { get; set; }
         [Column("Status")]
-        public Status Status { get; set; }
+        public string Status { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]

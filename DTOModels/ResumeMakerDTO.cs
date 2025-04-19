@@ -1,5 +1,4 @@
-﻿using BrainsToDo.Models;
-
+﻿
 namespace BrainsToDo.DTOModels;
 
 public class PostResumeForResumeMaker
@@ -9,10 +8,12 @@ public class PostResumeForResumeMaker
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public string Address { get; set; }
+    public DateTime Birthday { get; set; }
+    
     public string PictureURL { get; set; }
-    public Status Status { get; set; }
-    public int PersonId { get; set; }
-    public int? ResumeTemplateId { get; set; }
+    public string Summary { get; set; }
+    public string Status { get; set; }
+    
 }
 
 public class PostEducationForResumeMaker
@@ -25,8 +26,7 @@ public class PostEducationForResumeMaker
     public string Degree { get; set; }
     public string Place { get; set; }
     public bool Active { get; set; }
-    public Status Status { get; set; }
-    public int PersonId { get; set; }
+    public string Status { get; set; }
 }
 
 public class PostCertificationForResumeMaker
@@ -37,8 +37,7 @@ public class PostCertificationForResumeMaker
     public string Url { get; set; }
     public string Type { get; set; }
     public DateTime ValidTo { get; set; }
-    public Status Status { get; set; }
-    public int resumeId { get; set; }
+    public string Status { get; set; }
 }
 
 public class PostProjectForResumeMaker
@@ -48,8 +47,7 @@ public class PostProjectForResumeMaker
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public bool Completed { get; set; }
-    public Status Status { get; set; }
-    public int ResumeId { get; set; }
+    public string Status { get; set; }
 }
 
 public class PostExperienceForResumeMaker
@@ -62,8 +60,7 @@ public class PostExperienceForResumeMaker
     public DateTime StartedAt { get; set; }
     public DateTime EndedAt { get; set; }
     public bool Active { get; set; }
-    public Status Status { get; set; } 
-    public int ResumeId { get; set; }
+    public string Status { get; set; } 
 }
 
 public class PostSkillForResumeMaker
@@ -72,8 +69,7 @@ public class PostSkillForResumeMaker
     public string Description { get; set; }
     public string Type { get; set; }
     public int Level { get; set; }
-    public Status Status { get; set; }
-    public int ResumeId { get; set; }
+    public string Status { get; set; }
 }
 
 public class ResumeTemplateForResumeMaker
@@ -83,8 +79,7 @@ public class ResumeTemplateForResumeMaker
     public string Position { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public Status Status { get; set; }
-    public int ResumeId { get; set; }
+    public string Status { get; set; }
 }
 
 

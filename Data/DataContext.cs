@@ -32,8 +32,9 @@ namespace BrainsToDo.Data
         .HasMany(e => e.Users)
         .WithMany(e => e.Jobs)
         .UsingEntity<JobUser>();
-      
     }
+    
+   
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
