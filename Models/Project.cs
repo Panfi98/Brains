@@ -19,6 +19,8 @@ namespace BrainsToDo.Models
         public DateTime EndDate { get; set; }
         [Column("Completed")]
         public bool Completed { get; set; }
+        [Column("Status")]
+        public string Status { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
@@ -28,8 +30,6 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
         
-        [Column("Status")]
-        public Status Status { get; set; }
         
        /* [ForeignKey("Experience")]
         [Column("ExperienceId")]

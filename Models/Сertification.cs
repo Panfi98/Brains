@@ -19,6 +19,8 @@ namespace BrainsToDo.Models
         public string Url { get; set; }
         [Column("Type")]
         public string Type { get; set; }
+        [Column("Status")]
+        public string Status { get; set; }
         [Column("ValidTo")]
         public DateTime ValidTo { get; set; }
         [Column("createdAt")]
@@ -29,8 +31,7 @@ namespace BrainsToDo.Models
         public DateTime? deletedAt { get; set; } = null;
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
-        [Column("Status")]
-        public Status Status { get; set; }
+       
         
         [ForeignKey("Resume")] 
         [Column("ResumeId")]

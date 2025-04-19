@@ -9,28 +9,25 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
       
-        public async Task<Resume> AddResume(Resume dto, int personId)
+        public async Task<Resume> AddResume(Resume dto)
         {
-            dto.PersonId = personId;
+            
             dto.ResumeTemplateId = 1; 
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             
             _context.Resume.Add(dto);
             await _context.SaveChangesAsync();
-            return await _context.Resume.Include(r => r.Person)
-                .Include(r => r.ResumeTemplate)
-                .FirstOrDefaultAsync(r => r.Id == dto.Id);;
+            return dto;;
         }
         
-        public async Task<Education> AddEducationList(Education dto, int personId)
+        public async Task<Education> AddEducation(Education dto)
         {
-            dto.PersonId = personId;
             dto.createdAt = DateTime.UtcNow;
             dto.updatedAt = DateTime.UtcNow;
             _context.Education.Add(dto);
             await _context.SaveChangesAsync();
-            return  _context.Education.Include(e => e.Person).FirstOrDefault(e => e.Id == dto.Id);;
+            return  dto;;
         }
 
         public async Task<Certification> AddCertifications(Certification dto, int resumeId)

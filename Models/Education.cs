@@ -34,7 +34,7 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
         [Column("Status")]
-        public Status Status { get; set; }
+        public string Status { get; set; }
         
         [ForeignKey("Person")]
         [Column("PersonId")]
