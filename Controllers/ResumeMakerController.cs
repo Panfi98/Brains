@@ -38,7 +38,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
             .FirstOrDefault();
     }
 
-    [HttpPost("resume")]
+    [HttpPost("add/resume")]
     public async Task<IActionResult> AddResume([FromBody] PostResumeForResumeMaker resumeDTO)
     {
         if (resumeDTO == null)
@@ -56,7 +56,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
         });
     }
     
-    [HttpPost("education")]
+    [HttpPost("add/education")]
     public async Task<IActionResult> AddEducation([FromBody] PostEducationForResumeMaker educationDTO)
     {
         if (educationDTO == null)
@@ -74,7 +74,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
         });
     }
     
-    [HttpPost("certification")]
+    [HttpPost("add/certification")]
     public async Task<IActionResult> AddCertigication([FromBody] PostCertificationForResumeMaker certificationDTO)
     {
         if (certificationDTO == null)
@@ -92,7 +92,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
         });
     }
     
-    [HttpPost("experience")]
+    [HttpPost("add/experience")]
     public async Task<IActionResult> AddExperience([FromBody] PostExperienceForResumeMaker experienceDTO)
     {
         if (experienceDTO == null)
@@ -110,7 +110,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
         });
     }
     
-    [HttpPost("project")]
+    [HttpPost("add/project")]
     public async Task<IActionResult> AddProject([FromBody] PostProjectForResumeMaker projectDTO)
     {
         if (projectDTO == null)
@@ -128,7 +128,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
         });
     }
     
-    [HttpPost("skill")]
+    [HttpPost("add/skill")]
     public async Task<IActionResult> AddSkill([FromBody] PostSkillForResumeMaker skillDTO)
     {
         int educationId = _context.Education
@@ -161,7 +161,7 @@ public class ResumeMakerController(ResumeMakerRepository repository, IMapper map
         });
     }
     
-    [HttpPost("reference")]
+    [HttpPost("add/reference")]
     public async Task<IActionResult> AddReference([FromBody] PostReferenceForResumeMaker referencetDTO)
     {
         if (referencetDTO == null)

@@ -11,9 +11,10 @@ public class CoverLetter
     [Column("Description")]
     public string Description { get; set; }
     [Column("createdAt")]
-    public DateTime createdAt { get; set; }
-    [Column("updatedAt")]
-    public DateTime updatedAt { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTime createdAt { get; set; } = DateTime.UtcNow;
+    [Column("updatedAt")] 
+    public DateTime updatedAt { get; set; } = DateTime.UtcNow;
     [Column("deletedAt")] 
     public DateTime? deletedAt { get; set; } = null;
     [Column("SoftDeleted")]

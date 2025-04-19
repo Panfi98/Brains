@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BrainsToDo.Enums;
 
 namespace BrainsToDo.Models
 {
@@ -26,15 +27,16 @@ namespace BrainsToDo.Models
         [Column("Active")]
         public bool Active { get; set; }
         [Column("createdAt")]
-        public DateTime createdAt { get; set; }
-        [Column("updatedAt")]
-        public DateTime updatedAt { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime createdAt { get; set; } = DateTime.UtcNow;
+        [Column("updatedAt")] 
+        public DateTime updatedAt { get; set; } = DateTime.UtcNow;
         [Column("deletedAt")] 
         public DateTime? deletedAt { get; set; } = null;
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
         [Column("Status")]
-        public string Status { get; set; }
+        public Status Status { get; set; }
         
         [ForeignKey("Person")]
         [Column("PersonId")]
