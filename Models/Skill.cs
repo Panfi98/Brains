@@ -17,6 +17,8 @@ namespace BrainsToDo.Models
         public string Type { get; set; }
         [Column("Level")]
         public int Level { get; set; }
+        [Column("Status")]
+        public string Status { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]

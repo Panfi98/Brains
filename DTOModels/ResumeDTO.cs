@@ -1,4 +1,6 @@
-﻿namespace BrainsToDo.DTOModels;
+﻿using BrainsToDo.Models;
+
+namespace BrainsToDo.DTOModels;
 
 public class GetResumeDTO
 {

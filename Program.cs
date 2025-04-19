@@ -1,18 +1,23 @@
-using System.Net.Sockets;
 using System.Text;
 using System.Text.Json.Serialization;
 using BrainsToDo.Data;
 using BrainsToDo.Mapper;
-using BrainsToDo.Repositories;
 using BrainsToDo.Models;
+using BrainsToDo.Repositories;
 using BrainsToDo.Repositories.LoginLogic;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,6 +34,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Worker API", Version = "v1" });
+    
+    c.SchemaFilter<EnumSchemaFilter>();
+    c.UseAllOfToExtendReferenceSchemas();
+    c.UseOneOfForPolymorphism();
 
     // Add JWT Authentication
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -56,12 +65,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });;
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
-    });
-
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<CompanyRepository>();
@@ -74,6 +77,7 @@ builder.Services.AddScoped<EducationRepository>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<CertificationRepository>();
+builder.Services.AddScoped<ResumeMakerRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddAuthentication("Bearer")

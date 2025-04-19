@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace BrainsToDo.Models;
 
 [Table("Reference")] 
@@ -20,6 +19,8 @@ public class Reference
     public string Email { get; set; }
     [Column("PhoneNumber")]
     public string PhoneNumber { get; set; }
+    [Column("Status")]
+    public Status Status { get; set; }
     [Column("createdAt")]
     public DateTime createdAt { get; set; }
     [Column("updatedAt")]
@@ -28,6 +29,7 @@ public class Reference
     public DateTime? deletedAt { get; set; } = null;
     [Column("SoftDeleted")]
     public bool SoftDeleted { get; set; } = false;
+    
         
     [ForeignKey("Resume")]
     [Column("ResumeId")]

@@ -15,6 +15,8 @@ namespace BrainsToDo.Models
         public int Order { get; set; }
         [Column("CategoriesIncluded")]
         public int CategoriesIncluded { get; set; }
+        [Column("Status")]
+        public string Status { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]

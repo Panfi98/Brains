@@ -16,7 +16,7 @@ public class GetEducationDTO
     public DateTime updatedAt { get; set; }
     public DateTime? deletedAt { get; set; }
     public bool SoftDeleted { get; set; }
-    public Person Person { get; set; }
+    public GetPersonDTO Person { get; set; }
 }
 
 public class PostEducationDTO

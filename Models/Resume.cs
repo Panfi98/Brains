@@ -23,6 +23,10 @@ namespace BrainsToDo.Models
         public string PictureURL { get; set; }
         [Column("BirthDate")]
         public DateTime BirthDate { get; set; }
+        [Column("Summary")]
+        public string Summary { get; set; }
+        [Column("Status")]
+        public string Status { get; set; }
         [Column("createdAt")]
         public DateTime createdAt { get; set; }
         [Column("updatedAt")]
@@ -41,6 +45,8 @@ namespace BrainsToDo.Models
         [Column("ResumeTemplateId")]
         public int? ResumeTemplateId { get; set; }
         public ResumeTemplate? ResumeTemplate { get; set; }
+        
+        
         
         
     }
