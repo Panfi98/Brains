@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using BrainsToDo.DTOModels;
+using BrainsToDo.Enums;
 using BrainsToDo.Models;
 using Task = BrainsToDo.Models.Task;
 
@@ -32,6 +33,7 @@ namespace BrainsToDo.Data
         .HasMany(e => e.Users)
         .WithMany(e => e.Jobs)
         .UsingEntity<JobUser>();
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -41,8 +41,7 @@ namespace BrainsToDo.Controllers
             {
                 Name = task.Name,
                 Description = task.Description,
-                createdAt = DateTime.UtcNow,
-                updatedAT = DateTime.UtcNow,
+               
             };
 
             _context.Task.Add(newTask);

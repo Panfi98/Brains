@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BrainsToDo.Enums;
 
 namespace BrainsToDo.Models
 {   
@@ -18,9 +19,10 @@ namespace BrainsToDo.Models
         [Column("Level")]
         public int Level { get; set; }
         [Column("Status")]
-        public string Status { get; set; }
+        public Status Status { get; set; }
         [Column("createdAt")]
-        public DateTime createdAt { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime createdAt { get; set; }= DateTime.UtcNow;
         [Column("updatedAt")]
         public DateTime updatedAt { get; set; }
         [Column("deletedAt")] 

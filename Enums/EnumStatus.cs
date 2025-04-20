@@ -3,10 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace BrainsToDo.Enums;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Status
 {
-    Started,
+    NotStarted,
     InProgress,
     Finished
 }
