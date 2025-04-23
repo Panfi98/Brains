@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BrainsToDo.Controllers;
 
 [ApiController]
-[Route("ResumeMaker")]
+[Route("resume")]
 [Authorize]
 public class Resume : ControllerBase
 {
@@ -38,7 +38,7 @@ public class Resume : ControllerBase
 
    
     
-    [HttpPost("resume")]
+    [HttpPost("")]
     public async Task<IActionResult> AddResume([FromBody] PostResumeForResumeMaker resumeDTO)
     {
         try
@@ -64,7 +64,7 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/education")]
+    [HttpPost("{id}/education")]
     public async Task<IActionResult> AddEducation([FromBody] PostEducationForResumeMaker educationDTO)
     {
         try
@@ -90,7 +90,7 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/certification")]
+    [HttpPost("{id}/certification")]
     public async Task<IActionResult> AddCertification([FromBody] PostCertificationForResumeMaker certificationDTO)
     {
         try
@@ -116,7 +116,7 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/experience")]
+    [HttpPost("{id}/experience")]
     public async Task<IActionResult> AddExperience([FromBody] PostExperienceForResumeMaker experienceDTO)
     {
         try
@@ -142,7 +142,7 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/project")]
+    [HttpPost("{id}/project")]
     public async Task<IActionResult> AddProject([FromBody] PostProjectForResumeMaker projectDTO)
     {
         try
@@ -168,7 +168,7 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/skill")]
+    [HttpPost("{id}/skill")]
     public async Task<IActionResult> AddSkill([FromBody] PostSkillForResumeMaker skillDTO)
     {
         try
@@ -211,7 +211,7 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/reference")]
+    [HttpPost("{id}/reference")]
     public async Task<IActionResult> AddReference([FromBody] PostReferenceForResumeMaker referenceDTO)
     {
         try
