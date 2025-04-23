@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BrainsToDo.Repositories
 {
-    public class ResumeMakerRepository(DataContext context)
+    public class ResumeRepository(DataContext context)
     {
        
         private readonly DataContext _context = context;

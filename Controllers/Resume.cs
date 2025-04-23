@@ -16,11 +16,11 @@ namespace BrainsToDo.Controllers;
 [Authorize]
 public class Resume : ControllerBase
 {
-    private readonly ResumeMakerRepository _repository;
+    private readonly ResumeRepository _repository;
     private readonly DataContext _context;
     private readonly IMapper _mapper;
 
-    public Resume(ResumeMakerRepository repository, DataContext context, IMapper mapper)
+    public Resume(ResumeRepository repository, DataContext context, IMapper mapper)
     {
         _repository = repository;
         _context = context;
@@ -35,10 +35,8 @@ public class Resume : ControllerBase
         }
         return userId;
     }
-
-   
     
-    [HttpPost("resume")]
+    [HttpPost("/")]
     public async Task<IActionResult> AddResume([FromBody] PostResumeForResumeMaker resumeDTO)
     {
         try
@@ -48,7 +46,7 @@ public class Resume : ControllerBase
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
 
-            var personId = await GetCurrentUserId();
+            var userId = await GetCurrentUserId();
             var resume = _mapper.Map<Models.Resume>(resumeDTO);
             var createdResume = await _repository.AddResume(resume, userId);
 
@@ -64,8 +62,8 @@ public class Resume : ControllerBase
         }
     }
 
-    [HttpPost("add/education")]
-    public async Task<IActionResult> AddEducation([FromBody] PostEducationForResumeMaker educationDTO)
+    [HttpPost("{id} iducation")]
+    public async Task<IActionResult> AddEducation(int resumeId, [FromBody] PostEducationForResumeMaker educationDTO)
     {
         try
         {
@@ -74,7 +72,7 @@ public class Resume : ControllerBase
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
 
-            var personId = await GetCurrentPersonId();
+            
             var education = _mapper.Map<Education>(educationDTO);
             var createdEducation = await _repository.AddEducation(education, personId);
 
