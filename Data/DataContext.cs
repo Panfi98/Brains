@@ -1,9 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using BrainsToDo.DTOModels;
-using BrainsToDo.Enums;
 using BrainsToDo.Models;
-using Task = BrainsToDo.Models.Task;
 
 namespace BrainsToDo.Data
 {
@@ -43,7 +40,6 @@ namespace BrainsToDo.Data
     }
     
     public DbSet<User> User { get; set; }
-    public DbSet<Task> Task { get; set; }
     public DbSet<Company> Company { get; set; }
     public DbSet<Contact> Contact { get; set; }
     public DbSet<CoverLetter> CoverLetter { get; set; }

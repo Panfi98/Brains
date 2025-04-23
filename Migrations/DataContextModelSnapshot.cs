@@ -959,53 +959,6 @@ namespace BrainsToDo.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.Task", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("descriptions");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Name");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("SoftDeleted");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("userId");
-
-                    b.Property<DateTime>("createdAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createdAt");
-
-                    b.Property<DateTime?>("deletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deletedAt");
-
-                    b.Property<DateTime>("updatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tasks");
-                });
-
             modelBuilder.Entity("BrainsToDo.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -1254,17 +1207,6 @@ namespace BrainsToDo.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("Resume");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.Task", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.UserSkill", b =>

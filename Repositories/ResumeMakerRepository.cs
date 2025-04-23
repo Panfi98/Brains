@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using BrainsToDo.Data;
 using BrainsToDo.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -11,59 +12,66 @@ namespace BrainsToDo.Repositories
        
         private readonly DataContext _context = context;
         
-        public async Task<Resume> AddResume(Resume dto, int personId)
+        
+        
+        public async Task<Resume> AddResume(Resume resume, int userId)
         {
-            if (dto == null)
+            if (resume == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(resume));
             }
 
-            if (personId <= 0)
+            if (userId <= 0)
             {
-                throw new ArgumentException("Invalid person", nameof(personId));
+                throw new ArgumentException("Invalid person", nameof(userId));
             }
 
-            var personExists = await _context.Person.AnyAsync(p => p.Id == personId);
+            var personExists = await _context.Person.AnyAsync(p => p.Id == userId);
             
             if (!personExists)
             {
-                throw new KeyNotFoundException("Person not found");
+                throw new KeyNotFoundException("User not found");
             }
 
-            dto.PersonId = personId;
-            dto.ResumeTemplateId = 1;
+            resume.UserId = userId;
             
-            await _context.Resume.AddAsync(dto);
+            var ResumeTemplate = await _context.ResumeTemplate.FirstOrDefaultAsync();
+           
+            if (ResumeTemplate == null)
+            {
+                throw new KeyNotFoundException("Resume template not found");
+            }
+            resume.ResumeTemplateId = ResumeTemplate.Id;
+            
+            await _context.Resume.AddAsync(resume);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return resume;
         }
         
-        public async Task<Education> AddEducation(Education dto, int personId)
+        public async Task<Education> AddEducation(Education education, int resumeId)
         {
-            if (dto == null)
+            if (education == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(education));
             }
-
-            if (personId <= 0)
-            {
-                throw new ArgumentException("Invalid person ", nameof(personId));
-            }
-
-            var personExists = await _context.Person.AnyAsync(p => p.Id == personId);
             
-            if (!personExists)
+            if (resumeId <= 0)
             {
-                throw new KeyNotFoundException("Person not found");
+                throw new ArgumentException("Invalid resume", nameof(resumeId));
             }
 
-            dto.PersonId = personId;
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found");
+            }
             
-            await _context.Education.AddAsync(dto);
+            await _context.Education.AddAsync(education);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return education;
         }
         
         public async Task<Certification> AddCertification(Certification dto, int resumeId)

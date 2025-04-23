@@ -18,10 +18,5 @@ namespace BrainsToDo.DTOModels;
         public string Email { get; set; }
     }
 
-    public class UserSkillDTO
-    {
-        public string Name { get; set; }
-        public List<SkillDTO> Skills { get; set; }
-    }
 
     

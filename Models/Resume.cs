@@ -37,15 +37,20 @@ namespace BrainsToDo.Models
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
         
-        [ForeignKey("Person")]
-        [Column("PersonId")]
-        public int? PersonId { get; set; }
-        public Person? Person { get; set; }
+        [ForeignKey("User")]
+        [Column("UserId")]
+        public int UserId { get; set; }
+        public User User { get; set; }
         
         [ForeignKey("ResumeTemplate")]
         [Column("ResumeTemplateId")]
         public int? ResumeTemplateId { get; set; }
         public ResumeTemplate? ResumeTemplate { get; set; }
+        
+        [ForeignKey("Education")]
+        [Column("EducationId")]
+        public int? EducationId { get; set; }
+        public Education? Education { get; set; }
         
         
         
