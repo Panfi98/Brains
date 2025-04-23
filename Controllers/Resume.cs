@@ -64,7 +64,7 @@ public class Resume : ControllerBase
     
     
     [HttpPost("{id}/education")]
-    public async Task<IActionResult> AddEducation(int resumeId, [FromBody] PostEducationDTO educationDTO)
+    public async Task<IActionResult> AddEducation(int id, [FromBody] PostEducationDTO educationDTO)
     {
         try
         {
@@ -75,7 +75,7 @@ public class Resume : ControllerBase
 
             
             var education = _mapper.Map<Education>(educationDTO);
-            var createdEducation = await _repository.AddEducation(education, resumeId);
+            var createdEducation = await _repository.AddEducation(education, id);
 
             return Ok(new Payload<PostEducationDTO>
             {
@@ -90,7 +90,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/certification")]
-    public async Task<IActionResult> AddCertification(int resumeId, [FromBody] PostCertificationDTO certificationDTO)
+    public async Task<IActionResult> AddCertification(int id, [FromBody] PostCertificationDTO certificationDTO)
     {
         try
         {
@@ -100,7 +100,7 @@ public class Resume : ControllerBase
             }
             
             var certification = _mapper.Map<Certification>(certificationDTO);
-            var createdCertification = await _repository.AddCertification(certification, resumeId);
+            var createdCertification = await _repository.AddCertification(certification, id);
 
             return Ok(new Payload<PostCertificationDTO>
             {
@@ -115,7 +115,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/experience")]
-    public async Task<IActionResult> AddExperience(int resumeId, [FromBody] PostExperienceDTO experienceDTO)
+    public async Task<IActionResult> AddExperience(int id, [FromBody] PostExperienceDTO experienceDTO)
     {
         try
         {
@@ -125,7 +125,7 @@ public class Resume : ControllerBase
             }
             
             var experience = _mapper.Map<Experience>(experienceDTO);
-            var createdExperience = await _repository.AddExperience(experience, resumeId);
+            var createdExperience = await _repository.AddExperience(experience, id);
 
             return Ok(new Payload<PostExperienceDTO>
             {
@@ -140,7 +140,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/project")]
-    public async Task<IActionResult> AddProject(int resumeId, [FromBody] PostProjectDTO projectDTO)
+    public async Task<IActionResult> AddProject(int id, [FromBody] PostProjectDTO projectDTO)
     {
         try
         {
@@ -150,7 +150,7 @@ public class Resume : ControllerBase
             }
             
             var project = _mapper.Map<Project>(projectDTO);
-            var createdProject = await _repository.AddProject(project, resumeId);
+            var createdProject = await _repository.AddProject(project, id);
 
             return Ok(new Payload<PostProjectDTO>
             {
@@ -165,7 +165,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/skill")]
-    public async Task<IActionResult> AddSkill(int resumeId, [FromBody] PostSkillDTO skillDTO)
+    public async Task<IActionResult> AddSkill(int id, [FromBody] PostSkillDTO skillDTO)
     {
         try
         {
@@ -175,22 +175,22 @@ public class Resume : ControllerBase
             }
             
             var educationId = await _context.Education
-                .Where(e => e.ResumeId == resumeId)
+                .Where(e => e.ResumeId == id)
                 .Select(e => e.Id)
                 .FirstOrDefaultAsync();
 
             var experienceId = await _context.Experience
-                .Where(e => e.ResumeId == resumeId)
+                .Where(e => e.ResumeId == id)
                 .Select(e => e.Id)
                 .FirstOrDefaultAsync();
 
             var projectId = await _context.Project
-                .Where(p => p.ResumeId == resumeId)
+                .Where(p => p.ResumeId == id)
                 .Select(p => p.Id)
                 .FirstOrDefaultAsync();
 
             var skill = _mapper.Map<Skill>(skillDTO);
-            var createdSkill = await _repository.AddSkill(skill, resumeId, educationId, experienceId, projectId);
+            var createdSkill = await _repository.AddSkill(skill, id, educationId, experienceId, projectId);
 
             return Ok(new Payload<PostSkillDTO>
             {
@@ -205,7 +205,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/reference")]
-    public async Task<IActionResult> AddReference(int resumeId, [FromBody] PostReferenceDTO referenceDTO)
+    public async Task<IActionResult> AddReference(int id, [FromBody] PostReferenceDTO referenceDTO)
     {
         try
         {
@@ -215,7 +215,7 @@ public class Resume : ControllerBase
             }
             
             var reference = _mapper.Map<Reference>(referenceDTO);
-            var createdReference = await _repository.AddReference(reference, resumeId);
+            var createdReference = await _repository.AddReference(reference, id);
 
             return Ok(new Payload<PostReferenceDTO>
             {
