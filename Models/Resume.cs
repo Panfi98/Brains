@@ -32,7 +32,8 @@ namespace BrainsToDo.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime createdAt { get; set; } = DateTime.UtcNow;
         [Column("updatedAt")] 
-        public DateTime updatedAt { get; set; } = DateTime.UtcNow;        [Column("deletedAt")] 
+        public DateTime updatedAt { get; set; } = DateTime.UtcNow;        
+        [Column("deletedAt")] 
         public DateTime? deletedAt { get; set; } = null;
         [Column("SoftDeleted")]
         public bool SoftDeleted { get; set; } = false;
@@ -47,10 +48,6 @@ namespace BrainsToDo.Models
         public int? ResumeTemplateId { get; set; }
         public ResumeTemplate? ResumeTemplate { get; set; }
         
-        [ForeignKey("Education")]
-        [Column("EducationId")]
-        public int? EducationId { get; set; }
-        public Education? Education { get; set; }
         
         
         

@@ -2,7 +2,7 @@
 
 namespace BrainsToDo.DTOModels;
 
-public class PostResumeForResumeMaker
+public class PostResumeDTO
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -16,7 +16,7 @@ public class PostResumeForResumeMaker
     
 }
 
-public class PostEducationForResumeMaker
+public class PostEducationDTO
 {
     public string Name { get; set; }
     public string Type { get; set; }
@@ -29,7 +29,7 @@ public class PostEducationForResumeMaker
     public Status Status { get; set; }
 }
 
-public class PostCertificationForResumeMaker
+public class PostCertificationDTO
 {
     public string Name { get; set; }
     public string Description { get; set; }
@@ -40,7 +40,7 @@ public class PostCertificationForResumeMaker
     public Status Status { get; set; }
 }
 
-public class PostProjectForResumeMaker
+public class PostProjectDTO
 {
     public string Name { get; set; }
     public string Description { get; set; }
@@ -50,7 +50,7 @@ public class PostProjectForResumeMaker
     public Status Status { get; set; }
 }
 
-public class PostExperienceForResumeMaker
+public class PostExperienceDTO
 {
     public string Name { get; set; }
     public string Organisation { get; set; }
@@ -63,7 +63,7 @@ public class PostExperienceForResumeMaker
     public Status Status { get; set; } 
 }
 
-public class PostSkillForResumeMaker
+public class PostSkillDTO
 {
     public string Name { get; set; }
     public string Description { get; set; }
@@ -72,7 +72,7 @@ public class PostSkillForResumeMaker
     public Status Status { get; set; }
 }
 
-public class PostReferenceForResumeMaker
+public class PostReferenceDTO
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

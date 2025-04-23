@@ -36,12 +36,8 @@ public class Resume : ControllerBase
         return userId;
     }
     
-<<<<<<< HEAD
     [HttpPost("/")]
-=======
-    [HttpPost("")]
->>>>>>> 94cb693ed754fa58b6c30299f55408ac7b2a1e11
-    public async Task<IActionResult> AddResume([FromBody] PostResumeForResumeMaker resumeDTO)
+    public async Task<IActionResult> AddResume([FromBody] PostResumeDTO resumeDTO)
     {
         try
         {
@@ -54,9 +50,9 @@ public class Resume : ControllerBase
             var resume = _mapper.Map<Models.Resume>(resumeDTO);
             var createdResume = await _repository.AddResume(resume, userId);
 
-            return Ok(new Payload<PostResumeForResumeMaker>
+            return Ok(new Payload<PostResumeDTO>
             {
-                Data = _mapper.Map<PostResumeForResumeMaker>(createdResume),
+                Data = _mapper.Map<PostResumeDTO>(createdResume),
                 Message = "Resume created successfully"
             });
         }
@@ -65,14 +61,10 @@ public class Resume : ControllerBase
             return HandleException(ex);
         }
     }
-
-<<<<<<< HEAD
-    [HttpPost("{id} iducation")]
-    public async Task<IActionResult> AddEducation(int resumeId, [FromBody] PostEducationForResumeMaker educationDTO)
-=======
+    
+    
     [HttpPost("{id}/education")]
-    public async Task<IActionResult> AddEducation([FromBody] PostEducationForResumeMaker educationDTO)
->>>>>>> 94cb693ed754fa58b6c30299f55408ac7b2a1e11
+    public async Task<IActionResult> AddEducation(int resumeId, [FromBody] PostEducationDTO educationDTO)
     {
         try
         {
@@ -83,11 +75,11 @@ public class Resume : ControllerBase
 
             
             var education = _mapper.Map<Education>(educationDTO);
-            var createdEducation = await _repository.AddEducation(education, personId);
+            var createdEducation = await _repository.AddEducation(education, resumeId);
 
-            return Ok(new Payload<PostEducationForResumeMaker>
+            return Ok(new Payload<PostEducationDTO>
             {
-                Data = _mapper.Map<PostEducationForResumeMaker>(createdEducation),
+                Data = _mapper.Map<PostEducationDTO>(createdEducation),
                 Message = "Education added successfully"
             });
         }
@@ -98,7 +90,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/certification")]
-    public async Task<IActionResult> AddCertification([FromBody] PostCertificationForResumeMaker certificationDTO)
+    public async Task<IActionResult> AddCertification(int resumeId, [FromBody] PostCertificationDTO certificationDTO)
     {
         try
         {
@@ -106,14 +98,13 @@ public class Resume : ControllerBase
             {
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
-
-            var resumeId = await GetCurrentResumeId();
+            
             var certification = _mapper.Map<Certification>(certificationDTO);
             var createdCertification = await _repository.AddCertification(certification, resumeId);
 
-            return Ok(new Payload<PostCertificationForResumeMaker>
+            return Ok(new Payload<PostCertificationDTO>
             {
-                Data = _mapper.Map<PostCertificationForResumeMaker>(createdCertification),
+                Data = _mapper.Map<PostCertificationDTO>(createdCertification),
                 Message = "Certification added successfully"
             });
         }
@@ -124,7 +115,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/experience")]
-    public async Task<IActionResult> AddExperience([FromBody] PostExperienceForResumeMaker experienceDTO)
+    public async Task<IActionResult> AddExperience(int resumeId, [FromBody] PostExperienceDTO experienceDTO)
     {
         try
         {
@@ -132,14 +123,13 @@ public class Resume : ControllerBase
             {
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
-
-            var resumeId = await GetCurrentResumeId();
+            
             var experience = _mapper.Map<Experience>(experienceDTO);
             var createdExperience = await _repository.AddExperience(experience, resumeId);
 
-            return Ok(new Payload<PostExperienceForResumeMaker>
+            return Ok(new Payload<PostExperienceDTO>
             {
-                Data = _mapper.Map<PostExperienceForResumeMaker>(createdExperience),
+                Data = _mapper.Map<PostExperienceDTO>(createdExperience),
                 Message = "Experience added successfully"
             });
         }
@@ -150,7 +140,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/project")]
-    public async Task<IActionResult> AddProject([FromBody] PostProjectForResumeMaker projectDTO)
+    public async Task<IActionResult> AddProject(int resumeId, [FromBody] PostProjectDTO projectDTO)
     {
         try
         {
@@ -158,14 +148,13 @@ public class Resume : ControllerBase
             {
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
-
-            var resumeId = await GetCurrentResumeId();
+            
             var project = _mapper.Map<Project>(projectDTO);
             var createdProject = await _repository.AddProject(project, resumeId);
 
-            return Ok(new Payload<PostProjectForResumeMaker>
+            return Ok(new Payload<PostProjectDTO>
             {
-                Data = _mapper.Map<PostProjectForResumeMaker>(createdProject),
+                Data = _mapper.Map<PostProjectDTO>(createdProject),
                 Message = "Project added successfully"
             });
         }
@@ -176,7 +165,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/skill")]
-    public async Task<IActionResult> AddSkill([FromBody] PostSkillForResumeMaker skillDTO)
+    public async Task<IActionResult> AddSkill(int resumeId, [FromBody] PostSkillDTO skillDTO)
     {
         try
         {
@@ -184,12 +173,9 @@ public class Resume : ControllerBase
             {
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
-
-            var resumeId = await GetCurrentResumeId();
-            var personId = await GetCurrentPersonId();
-
+            
             var educationId = await _context.Education
-                .Where(e => e.PersonId == personId)
+                .Where(e => e.ResumeId == resumeId)
                 .Select(e => e.Id)
                 .FirstOrDefaultAsync();
 
@@ -206,9 +192,9 @@ public class Resume : ControllerBase
             var skill = _mapper.Map<Skill>(skillDTO);
             var createdSkill = await _repository.AddSkill(skill, resumeId, educationId, experienceId, projectId);
 
-            return Ok(new Payload<PostSkillForResumeMaker>
+            return Ok(new Payload<PostSkillDTO>
             {
-                Data = _mapper.Map<PostSkillForResumeMaker>(createdSkill),
+                Data = _mapper.Map<PostSkillDTO>(createdSkill),
                 Message = "Skill added successfully"
             });
         }
@@ -219,7 +205,7 @@ public class Resume : ControllerBase
     }
 
     [HttpPost("{id}/reference")]
-    public async Task<IActionResult> AddReference([FromBody] PostReferenceForResumeMaker referenceDTO)
+    public async Task<IActionResult> AddReference(int resumeId, [FromBody] PostReferenceDTO referenceDTO)
     {
         try
         {
@@ -227,14 +213,13 @@ public class Resume : ControllerBase
             {
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
-
-            var resumeId = await GetCurrentResumeId();
+            
             var reference = _mapper.Map<Reference>(referenceDTO);
             var createdReference = await _repository.AddReference(reference, resumeId);
 
-            return Ok(new Payload<PostReferenceForResumeMaker>
+            return Ok(new Payload<PostReferenceDTO>
             {
-                Data = _mapper.Map<PostReferenceForResumeMaker>(createdReference),
+                Data = _mapper.Map<PostReferenceDTO>(createdReference),
                 Message = "Reference added successfully"
             });
         }

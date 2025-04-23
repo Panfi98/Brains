@@ -26,7 +26,7 @@ namespace BrainsToDo.Repositories
                 throw new ArgumentException("Invalid person", nameof(userId));
             }
 
-            var personExists = await _context.Person.AnyAsync(p => p.Id == userId);
+            var personExists = await _context.User.AnyAsync(u => u.Id == userId);
             
             if (!personExists)
             {
@@ -74,11 +74,11 @@ namespace BrainsToDo.Repositories
             return education;
         }
         
-        public async Task<Certification> AddCertification(Certification dto, int resumeId)
+        public async Task<Certification> AddCertification(Certification certification, int resumeId)
         {
-            if (dto == null)
+            if (certification == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(certification));
             }
 
             if (resumeId <= 0)
@@ -93,19 +93,19 @@ namespace BrainsToDo.Repositories
                 throw new KeyNotFoundException("Resume not found");
             }
 
-            dto.ResumeId = resumeId;
+            certification.ResumeId = resumeId;
             
-            await _context.Certification.AddAsync(dto);
+            await _context.Certification.AddAsync(certification);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return certification;
         }
         
-        public async Task<Experience> AddExperience(Experience dto, int resumeId)
+        public async Task<Experience> AddExperience(Experience experience, int resumeId)
         {
-            if (dto == null)
+            if (experience == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(experience));
             }
 
             if (resumeId <= 0)
@@ -120,19 +120,19 @@ namespace BrainsToDo.Repositories
                 throw new KeyNotFoundException("Resume not found");
             }
 
-            dto.ResumeId = resumeId;
+            experience.ResumeId = resumeId;
             
-            await _context.Experience.AddAsync(dto);
+            await _context.Experience.AddAsync(experience);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return experience;
         }
         
-        public async Task<Project> AddProject(Project dto, int resumeId)
+        public async Task<Project> AddProject(Project project, int resumeId)
         {
-            if (dto == null)
+            if (project == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(project));
             }
 
             if (resumeId <= 0)
@@ -147,20 +147,20 @@ namespace BrainsToDo.Repositories
                 throw new KeyNotFoundException("Resume not found");
             }
 
-            dto.ResumeId = resumeId;
+            project.ResumeId = resumeId;
             
-            await _context.Project.AddAsync(dto);
+            await _context.Project.AddAsync(project);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return project;
         }
 
    
-        public async Task<Skill> AddSkill(Skill dto, int resumeId, int educationId, int experienceId, int projectId)
+        public async Task<Skill> AddSkill(Skill skill, int resumeId, int educationId, int experienceId, int projectId)
         {
-            if (dto == null)
+            if (skill == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(skill));
             }
 
             if (resumeId <= 0 || educationId <= 0 || experienceId <= 0 || projectId <= 0)
@@ -178,22 +178,22 @@ namespace BrainsToDo.Repositories
                 throw new KeyNotFoundException("One or more related entities not found");
             }
 
-            dto.ResumeId = resumeId;
-            dto.EducationId = educationId;
-            dto.ExperienceId = experienceId;
-            dto.ProjectId = projectId;
+            skill.ResumeId = resumeId;
+            skill.EducationId = educationId;
+            skill.ExperienceId = experienceId;
+            skill.ProjectId = projectId;
             
-            await _context.Skill.AddAsync(dto);
+            await _context.Skill.AddAsync(skill);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return skill;
         }
         
-        public async Task<Reference> AddReference(Reference dto, int resumeId)
+        public async Task<Reference> AddReference(Reference reference, int resumeId)
         {
-            if (dto == null)
+            if (reference == null)
             {
-                throw new ArgumentNullException(nameof(dto));
+                throw new ArgumentNullException(nameof(reference));
             }
 
             if (resumeId <= 0)
@@ -208,12 +208,12 @@ namespace BrainsToDo.Repositories
                 throw new KeyNotFoundException("Resume not found");
             }
 
-            dto.ResumeId = resumeId;
+            reference.ResumeId = resumeId;
             
-            await _context.Reference.AddAsync(dto);
+            await _context.Reference.AddAsync(reference);
             await _context.SaveChangesAsync();
             
-            return dto;
+            return reference;
         }
     }
 }

@@ -61,9 +61,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
