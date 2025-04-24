@@ -36,7 +36,7 @@ public class Resume : ControllerBase
         return userId;
     }
     
-    [HttpPost("/")]
+    [HttpPost("")]
     public async Task<IActionResult> AddResume([FromBody] PostResumeDTO resumeDTO)
     {
         try
