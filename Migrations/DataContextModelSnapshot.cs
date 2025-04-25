@@ -274,14 +274,14 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Name");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer")
-                        .HasColumnName("PersonId");
-
                     b.Property<string>("Place")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Place");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ResumeId");
 
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean")
@@ -315,7 +315,7 @@ namespace BrainsToDo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("ResumeId");
 
                     b.ToTable("Education");
                 });
@@ -547,77 +547,6 @@ namespace BrainsToDo.Migrations
                     b.ToTable("JobUser");
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.Person", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Address");
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("BirthDate");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("FirstName");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("LastName");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("PhoneNumber");
-
-                    b.Property<string>("PictureURL")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("PictureURL");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("SoftDeleted");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("UserId");
-
-                    b.Property<DateTime>("createdAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createdAt");
-
-                    b.Property<DateTime?>("deletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deletedAt");
-
-                    b.Property<DateTime>("updatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Person");
-                });
-
             modelBuilder.Entity("BrainsToDo.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -780,10 +709,6 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("text")
                         .HasColumnName("LastName");
 
-                    b.Property<int?>("PersonId")
-                        .HasColumnType("integer")
-                        .HasColumnName("PersonId");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text")
@@ -811,6 +736,10 @@ namespace BrainsToDo.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Summary");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("UserId");
+
                     b.Property<DateTime>("createdAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -826,9 +755,9 @@ namespace BrainsToDo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PersonId");
-
                     b.HasIndex("ResumeTemplateId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Resume");
                 });
@@ -959,53 +888,6 @@ namespace BrainsToDo.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.Task", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("Id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("descriptions");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Name");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("SoftDeleted");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("userId");
-
-                    b.Property<DateTime>("createdAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createdAt");
-
-                    b.Property<DateTime?>("deletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deletedAt");
-
-                    b.Property<DateTime>("updatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updatedAt");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tasks");
-                });
-
             modelBuilder.Entity("BrainsToDo.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -1103,13 +985,13 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.Education", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.Person", "Person")
+                    b.HasOne("BrainsToDo.Models.Resume", "Resume")
                         .WithMany()
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("ResumeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Person");
+                    b.Navigation("Resume");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Experience", b =>
@@ -1181,17 +1063,6 @@ namespace BrainsToDo.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BrainsToDo.Models.Person", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BrainsToDo.Models.Project", b =>
                 {
                     b.HasOne("BrainsToDo.Models.Resume", "Resume")
@@ -1216,17 +1087,19 @@ namespace BrainsToDo.Migrations
 
             modelBuilder.Entity("BrainsToDo.Models.Resume", b =>
                 {
-                    b.HasOne("BrainsToDo.Models.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId");
-
                     b.HasOne("BrainsToDo.Models.ResumeTemplate", "ResumeTemplate")
                         .WithMany()
                         .HasForeignKey("ResumeTemplateId");
 
-                    b.Navigation("Person");
+                    b.HasOne("BrainsToDo.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ResumeTemplate");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Skill", b =>
@@ -1254,17 +1127,6 @@ namespace BrainsToDo.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("Resume");
-                });
-
-            modelBuilder.Entity("BrainsToDo.Models.Task", b =>
-                {
-                    b.HasOne("BrainsToDo.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.UserSkill", b =>

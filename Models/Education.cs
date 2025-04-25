@@ -38,9 +38,9 @@ namespace BrainsToDo.Models
         [Column("Status")]
         public Status Status { get; set; }
         
-        [ForeignKey("Person")]
-        [Column("PersonId")]
-        public int PersonId { get; set; }
-        public Person Person { get; set; }
+        [ForeignKey("Resume")]
+        [Column("ResumeId")]
+        public int ResumeId { get; set; }
+        public Resume Resume { get; set; }
     }
 }
