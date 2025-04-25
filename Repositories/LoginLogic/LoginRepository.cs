@@ -8,6 +8,7 @@ namespace BrainsToDo.Repositories.LoginLogic;
 public class LoginRepository(DataContext context)
 {
     private readonly DataContext _context = context;
+    
     public async Task<User?> GetUserByUsernameAndPassword(string username, string password)
     {
         var users = await _context.User.ToListAsync();

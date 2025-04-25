@@ -61,17 +61,10 @@ builder.Services.AddControllers()
 
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<CompanyRepository>();
-builder.Services.AddScoped<JobRepository>();
-builder.Services.AddScoped<ContactRepository>();
-builder.Services.AddScoped<PersonRepository>();
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<PersonRepository>();
-builder.Services.AddScoped<EducationRepository>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
-builder.Services.AddScoped<CertificationRepository>();
-builder.Services.AddScoped<ResumeMakerRepository>();
+builder.Services.AddScoped<ResumeRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddAuthentication("Bearer")

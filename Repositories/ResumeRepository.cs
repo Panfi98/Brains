@@ -1,107 +1,220 @@
-﻿using BrainsToDo.Data;
-using BrainsToDo.DTOModels;
+﻿using System.Security.Claims;
+using BrainsToDo.Data;
 using BrainsToDo.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace BrainsToDo.Repositories
 {
-    public class ResumeRepository(DataContext context) : ICrudRepository<Resume>
+    public class ResumeRepository(DataContext context)
     {
+       
         private readonly DataContext _context = context;
-
-        public async Task<IEnumerable<Resume>> GetAllEntities()
+        
+        
+        
+        public async Task<Resume> AddResume(Resume resume, int userId)
         {
-            return await _context.Resume
-                .Include(r => r.Person)
-                .Include(r => r.ResumeTemplate )
-                .ToListAsync();
-        }
-
-        public async Task<Resume?> GetEntityById(int id)
-        {
-            return await _context.Resume.Include(r => r.Person)
-                .Include(r => r.ResumeTemplate)
-                .FirstOrDefaultAsync(r => r.Id == id);
-        }
-
-        public async Task<Resume> AddEntity(Resume entity)
-        {   
-            if (entity.PersonId == 0)
+            if (resume == null)
             {
-                entity.PersonId = null;
-            }
-            
-            if (entity.ResumeTemplateId == 0)
-            {
-                entity.ResumeTemplateId = null;
-            }
-            entity.createdAt = DateTime.UtcNow;
-            entity.updatedAt = DateTime.UtcNow;
-            
-            _context.Resume.Add(entity);
-            await _context.SaveChangesAsync();
-            
-            return  await _context.Resume.Include(r => r.Person)
-                .Include(r => r.ResumeTemplate)
-                .FirstOrDefaultAsync(r => r.Id == entity.Id);
-        }
-
-        public async Task<Resume?> UpdateEntity(int id, Resume entity)
-        {
-            var oldEntity = await _context.Resume.FindAsync(id);
-            if (oldEntity == null)
-            {
-                throw new KeyNotFoundException("Resume not found");
+                throw new ArgumentNullException(nameof(resume));
             }
 
-            oldEntity.FirstName = entity.FirstName;
-            oldEntity.LastName = entity.LastName;
-            oldEntity.Email = entity.Email;
-            oldEntity.PhoneNumber = entity.PhoneNumber;
-            oldEntity.Address = entity.Address;
-            oldEntity.PictureURL = entity.PictureURL;
-            oldEntity.updatedAt = DateTime.UtcNow;
+            if (userId <= 0)
+            {
+                throw new ArgumentException("Invalid person", nameof(userId));
+            }
 
-            if (entity.PersonId != 0)
-            {
-                oldEntity.PersonId = entity.PersonId;
-            }
-            else
-            {
-                oldEntity.PersonId = null;
-            }
+            var personExists = await _context.User.AnyAsync(u => u.Id == userId);
             
-            if (entity.ResumeTemplateId != 0)
+            if (!personExists)
             {
-                oldEntity.ResumeTemplateId = entity.ResumeTemplateId;
+                throw new KeyNotFoundException("User not found");
             }
-            else
-            {
-                oldEntity.ResumeTemplateId = null;
-            }
-            
-            
-            _context.Resume.Update(oldEntity);
-            await _context.SaveChangesAsync();
-            return oldEntity;
-        }
 
-        public async Task<Resume> DeleteEntity(int id)
-        {
-            var entity = await _context.Resume.FindAsync(id);
+            resume.UserId = userId;
+            
+            var ResumeTemplate = await _context.ResumeTemplate.FirstOrDefaultAsync();
            
-            if (entity == null)
+            if (ResumeTemplate == null)
+            {
+                throw new KeyNotFoundException("Resume template not found");
+            }
+            resume.ResumeTemplateId = ResumeTemplate.Id;
+            
+            await _context.Resume.AddAsync(resume);
+            await _context.SaveChangesAsync();
+            
+            return resume;
+        }
+        
+        public async Task<Education> AddEducation(Education education, int resumeId)
+        {
+            if (education == null)
+            {
+                throw new ArgumentNullException(nameof(education));
+            }
+            
+            if (resumeId <= 0)
+            {
+                throw new ArgumentException("Invalid resume", nameof(resumeId));
+            }
+
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+            education.ResumeId = resumeId;
+            
+            if (!resumeExists)
             {
                 throw new KeyNotFoundException("Resume not found");
-            };
+            }
             
-            entity.deletedAt = DateTime.UtcNow;
-            entity.updatedAt = DateTime.UtcNow;
-            entity.SoftDeleted = true;
-            
-            _context.Resume.Remove(entity);
+            await _context.Education.AddAsync(education);
             await _context.SaveChangesAsync();
-            return entity;
+            
+            return education;
+        }
+        
+        public async Task<Certification> AddCertification(Certification certification, int resumeId)
+        {
+            if (certification == null)
+            {
+                throw new ArgumentNullException(nameof(certification));
+            }
+
+            if (resumeId <= 0)
+            {
+                throw new ArgumentException("Invalid resume", nameof(resumeId));
+            }
+
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found");
+            }
+
+            certification.ResumeId = resumeId;
+            
+            await _context.Certification.AddAsync(certification);
+            await _context.SaveChangesAsync();
+            
+            return certification;
+        }
+        
+        public async Task<Experience> AddExperience(Experience experience, int resumeId)
+        {
+            if (experience == null)
+            {
+                throw new ArgumentNullException(nameof(experience));
+            }
+
+            if (resumeId <= 0)
+            {
+                throw new ArgumentException("Invalid resume", nameof(resumeId));
+            }
+
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found");
+            }
+
+            experience.ResumeId = resumeId;
+            
+            await _context.Experience.AddAsync(experience);
+            await _context.SaveChangesAsync();
+            
+            return experience;
+        }
+        
+        public async Task<Project> AddProject(Project project, int resumeId)
+        {
+            if (project == null)
+            {
+                throw new ArgumentNullException(nameof(project));
+            }
+
+            if (resumeId <= 0)
+            {
+                throw new ArgumentException("Invalid resume", nameof(resumeId));
+            }
+
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found");
+            }
+
+            project.ResumeId = resumeId;
+            
+            await _context.Project.AddAsync(project);
+            await _context.SaveChangesAsync();
+            
+            return project;
+        }
+
+   
+        public async Task<Skill> AddSkill(Skill skill, int resumeId, int educationId, int experienceId, int projectId)
+        {
+            if (skill == null)
+            {
+                throw new ArgumentNullException(nameof(skill));
+            }
+
+            if (resumeId <= 0 || educationId <= 0 || experienceId <= 0 || projectId <= 0)
+            {
+                throw new ArgumentException("Invalid entity");
+            }
+
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+            var educationExists = await _context.Education.AnyAsync(e => e.Id == educationId);
+            var experienceExists = await _context.Experience.AnyAsync(e => e.Id == experienceId);
+            var projectExists = await _context.Project.AnyAsync(p => p.Id == projectId);
+
+            if (!resumeExists || !educationExists || !experienceExists || !projectExists)
+            {
+                throw new KeyNotFoundException("One or more related entities not found");
+            }
+
+            skill.ResumeId = resumeId;
+            skill.EducationId = educationId;
+            skill.ExperienceId = experienceId;
+            skill.ProjectId = projectId;
+            
+            await _context.Skill.AddAsync(skill);
+            await _context.SaveChangesAsync();
+            
+            return skill;
+        }
+        
+        public async Task<Reference> AddReference(Reference reference, int resumeId)
+        {
+            if (reference == null)
+            {
+                throw new ArgumentNullException(nameof(reference));
+            }
+
+            if (resumeId <= 0)
+            {
+                throw new ArgumentException("Invalid resume", nameof(resumeId));
+            }
+
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found");
+            }
+
+            reference.ResumeId = resumeId;
+            
+            await _context.Reference.AddAsync(reference);
+            await _context.SaveChangesAsync();
+            
+            return reference;
         }
     }
 }
