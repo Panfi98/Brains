@@ -50,11 +50,13 @@ public class ResumeController : ControllerBase
             var resume = _mapper.Map<Models.Resume>(resumeDTO);
             var createdResume = await _repository.AddResume(resume, userId);
 
-            return Ok(new Payload<PostResumeDTO>
+            var response = new Payload<PostResumeDTO>
             {
                 Data = _mapper.Map<PostResumeDTO>(createdResume),
                 Message = "Resume created successfully"
-            });
+            };
+
+            return Created("", response);
         }
         catch (Exception ex)
         {
@@ -77,7 +79,7 @@ public class ResumeController : ControllerBase
             var education = _mapper.Map<Education>(educationDTO);
             var createdEducation = await _repository.AddEducation(education, id);
 
-            return Ok(new Payload<PostEducationDTO>
+            return Created("", new Payload<PostEducationDTO>
             {
                 Data = _mapper.Map<PostEducationDTO>(createdEducation),
                 Message = "Education added successfully"
@@ -102,7 +104,7 @@ public class ResumeController : ControllerBase
             var certification = _mapper.Map<Certification>(certificationDTO);
             var createdCertification = await _repository.AddCertification(certification, id);
 
-            return Ok(new Payload<PostCertificationDTO>
+            return Created("", new Payload<PostCertificationDTO>
             {
                 Data = _mapper.Map<PostCertificationDTO>(createdCertification),
                 Message = "Certification added successfully"
@@ -127,7 +129,7 @@ public class ResumeController : ControllerBase
             var experience = _mapper.Map<Experience>(experienceDTO);
             var createdExperience = await _repository.AddExperience(experience, id);
 
-            return Ok(new Payload<PostExperienceDTO>
+            return Created("", new Payload<PostExperienceDTO>
             {
                 Data = _mapper.Map<PostExperienceDTO>(createdExperience),
                 Message = "Experience added successfully"
@@ -152,7 +154,7 @@ public class ResumeController : ControllerBase
             var project = _mapper.Map<Project>(projectDTO);
             var createdProject = await _repository.AddProject(project, id);
 
-            return Ok(new Payload<PostProjectDTO>
+            return Created("", new Payload<PostProjectDTO>
             {
                 Data = _mapper.Map<PostProjectDTO>(createdProject),
                 Message = "Project added successfully"
@@ -192,7 +194,7 @@ public class ResumeController : ControllerBase
             var skill = _mapper.Map<Skill>(skillDTO);
             var createdSkill = await _repository.AddSkill(skill, id, educationId, experienceId, projectId);
 
-            return Ok(new Payload<PostSkillDTO>
+            return Created("", new Payload<PostSkillDTO>
             {
                 Data = _mapper.Map<PostSkillDTO>(createdSkill),
                 Message = "Skill added successfully"
@@ -217,7 +219,7 @@ public class ResumeController : ControllerBase
             var reference = _mapper.Map<Reference>(referenceDTO);
             var createdReference = await _repository.AddReference(reference, id);
 
-            return Ok(new Payload<PostReferenceDTO>
+            return Created("", new Payload<PostReferenceDTO>
             {
                 Data = _mapper.Map<PostReferenceDTO>(createdReference),
                 Message = "Reference added successfully"
