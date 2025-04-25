@@ -21,11 +21,11 @@ namespace BrainsToDo.Models;
     {
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] UserLogin login)
+        public async Task<IActionResult> Login([FromBody] UserLoginDTO loginDto)
         {
             try
             {
-                var user = await loginRepository.GetUserByUsernameAndPassword(login.Username, login.Password);
+                var user = await loginRepository.GetUserByUsernameAndPassword(loginDto.Username, loginDto.Password);
             
                 if (user == null)
                 {

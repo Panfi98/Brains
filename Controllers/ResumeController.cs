@@ -14,13 +14,13 @@ namespace BrainsToDo.Controllers;
 [ApiController]
 [Route("resume")]
 [Authorize]
-public class Resume : ControllerBase
+public class ResumeController : ControllerBase
 {
     private readonly ResumeRepository _repository;
     private readonly DataContext _context;
     private readonly IMapper _mapper;
 
-    public Resume(ResumeRepository repository, DataContext context, IMapper mapper)
+    public ResumeController(ResumeRepository repository, DataContext context, IMapper mapper)
     {
         _repository = repository;
         _context = context;

@@ -62,7 +62,8 @@ namespace BrainsToDo.Repositories
             }
 
             var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
-
+            education.ResumeId = resumeId;
+            
             if (!resumeExists)
             {
                 throw new KeyNotFoundException("Resume not found");
