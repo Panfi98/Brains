@@ -157,34 +157,29 @@ namespace BrainsToDo.Repositories
         }
 
    
-        public async Task<Skill> AddSkill(Skill skill, int resumeId, int educationId, int experienceId, int projectId)
+        public async Task<InfoSkill> AddSkill(InfoSkill skill, int resumeId)
         {
             if (skill == null)
             {
                 throw new ArgumentNullException(nameof(skill));
             }
 
-            if (resumeId <= 0 || educationId <= 0 || experienceId <= 0 || projectId <= 0)
+            if (resumeId <= 0 )
             {
-                throw new ArgumentException("Invalid entity");
+                throw new ArgumentException("Resume not found ");
             }
 
             var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
-            var educationExists = await _context.Education.AnyAsync(e => e.Id == educationId);
-            var experienceExists = await _context.Experience.AnyAsync(e => e.Id == experienceId);
-            var projectExists = await _context.Project.AnyAsync(p => p.Id == projectId);
+            
 
-            if (!resumeExists || !educationExists || !experienceExists || !projectExists)
+            if (!resumeExists)
             {
-                throw new KeyNotFoundException("One or more related entities not found");
+                throw new KeyNotFoundException("Resume not found");
             }
 
             skill.ResumeId = resumeId;
-            skill.EducationId = educationId;
-            skill.ExperienceId = experienceId;
-            skill.ProjectId = projectId;
             
-            await _context.Skill.AddAsync(skill);
+            await _context.InfoSkill.AddAsync(skill);
             await _context.SaveChangesAsync();
             
             return skill;

@@ -64,7 +64,7 @@ public class PostExperienceDTO
     public Status Status { get; set; } 
 }
 
-public class PostSkillDTO
+public class PostInfoSkillDTO
 {
     public string Name { get; set; }
     public string Description { get; set; }

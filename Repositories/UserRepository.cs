@@ -8,6 +8,11 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
         
+        public async Task<bool> UserExists(string username, string email)
+        {
+            return await _context.User.AnyAsync(u => u.Name == username || u.Email == email);
+        }
+        
         public async Task<IEnumerable<User>> GetAllEntities()
         {
             return await _context.User.ToListAsync();    
@@ -55,4 +60,6 @@ namespace BrainsToDo.Repositories
             return entity;
         }
     }
+    
+    
 }

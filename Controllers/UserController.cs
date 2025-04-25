@@ -116,6 +116,15 @@ namespace BrainsToDo.Models;
                 return NotFound("Invalid user data");
             };
             
+            string UserName = userDTO.Name;
+            string UserEmail = userDTO.Email;
+            string Password = userDTO.Password;
+            
+            if (await repository.UserExists(UserName, UserEmail))
+            { 
+                return Conflict(new { message = "User with this username or email already exists." });
+            }
+            
             User user = mapper.Map<User>(userDTO);
             var createdUser = await repository.AddEntity(user);
             
