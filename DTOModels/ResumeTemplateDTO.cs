@@ -3,8 +3,8 @@
 public class GetResumeTemplateDTO
 {
     public string Name { get; set; }
-    public string Order { get; set; }
-    public string CategoriesIncluded { get; set; }
+    public int Order { get; set; }
+    public int CategoriesIncluded { get; set; }
     
     public DateTime createdAt { get; set; }
     public DateTime updatedAt { get; set; }
@@ -15,6 +15,6 @@ public class GetResumeTemplateDTO
 public class PostResumeTemplateDTO
 {
     public string Name { get; set; }
-    public string Order { get; set; }
-    public string CategoriesIncluded { get; set; }
+    public int Order { get; set; }
+    public int CategoriesIncluded { get; set; }
 }

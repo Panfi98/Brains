@@ -47,12 +47,12 @@ namespace BrainsToDo.Data
     public DbSet<Experience> Experience { get; set; }
     public DbSet<Job> Job { get; set; }
     public DbSet<JobApplication> JobApplication { get; set; }
-  
     public DbSet<Project> Project { get; set; }
     public DbSet<Reference> Reference { get; set; }
     public DbSet<Resume> Resume { get; set; }
     public DbSet<ResumeTemplate> ResumeTemplate { get; set; }
     public DbSet<Skill> Skill { get; set; }
+    public DbSet<InfoSkill> InfoSkill { get; set; }
     public DbSet<Certification> Certification { get; set; }
     public  DbSet<ResumeTemplate> PersonInfo { get; set; }
   }  

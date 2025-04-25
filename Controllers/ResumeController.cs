@@ -167,7 +167,7 @@ public class ResumeController : ControllerBase
     }
 
     [HttpPost("{id}/skill")]
-    public async Task<IActionResult> AddSkill(int id, [FromBody] PostSkillDTO skillDTO)
+    public async Task<IActionResult> AddSkill(int id, [FromBody] PostInfoSkillDTO skillDTO)
     {
         try
         {
@@ -176,27 +176,13 @@ public class ResumeController : ControllerBase
                 return BadRequest(new { Message = "Request body cannot be empty" });
             }
             
-            var educationId = await _context.Education
-                .Where(e => e.ResumeId == id)
-                .Select(e => e.Id)
-                .FirstOrDefaultAsync();
 
-            var experienceId = await _context.Experience
-                .Where(e => e.ResumeId == id)
-                .Select(e => e.Id)
-                .FirstOrDefaultAsync();
+            var skill = _mapper.Map<InfoSkill>(skillDTO);
+            var createdSkill = await _repository.AddSkill(skill, id);
 
-            var projectId = await _context.Project
-                .Where(p => p.ResumeId == id)
-                .Select(p => p.Id)
-                .FirstOrDefaultAsync();
-
-            var skill = _mapper.Map<Skill>(skillDTO);
-            var createdSkill = await _repository.AddSkill(skill, id, educationId, experienceId, projectId);
-
-            return Created("", new Payload<PostSkillDTO>
+            return Created("", new Payload<PostInfoSkillDTO>
             {
-                Data = _mapper.Map<PostSkillDTO>(createdSkill),
+                Data = _mapper.Map<PostInfoSkillDTO>(createdSkill),
                 Message = "Skill added successfully"
             });
         }

@@ -18,8 +18,6 @@ namespace BrainsToDo.Models
         public string Type { get; set; }
         [Column("Level")]
         public int Level { get; set; }
-        [Column("Status")]
-        public Status Status { get; set; }
         [Column("createdAt")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime createdAt { get; set; }= DateTime.UtcNow;
