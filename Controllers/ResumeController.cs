@@ -218,62 +218,83 @@ public class ResumeController : ControllerBase
         
     }
 
-    [HttpGet("{resumeId}")]
+    [HttpGet("resumes/{userId}")]
+    public async Task<IActionResult> GetAllResumes(int userId)
+    {
+        
+        var user = await _context.User.FindAsync(userId);
+       
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+        
+        var resumes = await _repository.GetAllResumesByUserID(userId);
+
+        if (resumes == null)
+        {
+            return NotFound("Resumes not found.");
+        }
+
+        return Ok(_mapper.Map<List<GetResumeDTO>>(resumes));
+    }
+    
+    [HttpGet("resume/{resumeId}")]
     public async Task<IActionResult> GetFullResume(int resumeId)
     {
-        var result = await _repository.GetFullResume(resumeId);
+        var resume = await _repository.GetFullResume(resumeId);
 
-        if (result == null)
+        if (resume == null)
         {
             return NotFound("Resume not found.");
         }
 
-        return Ok(result);
+        return Ok(resume);
     }
     
-    [HttpGet ("/educations/by/{resumeId}")]
+    [HttpGet ("/educations/{resumeId}")]
     public async Task<ActionResult<PostEducationDTO>> GetEducationsByResumeIdController(int resumeId)
     {
         var educations = await _repository.GetEducationsByResumeId(resumeId);
         return Ok(_mapper.Map<List<PostEducationDTO>>(educations));
     }
     
-    [HttpGet ("/certifications/by/{resumeId}")]
+    [HttpGet ("/certifications/{resumeId}")]
     public async Task<ActionResult<PostCertificationDTO>> GetCertificationsByResumeIdController(int resumeId)
     {
         var certification = await _repository.GetCertificationsByResumeId(resumeId);
         return Ok(_mapper.Map<List<PostCertificationDTO>>(certification));
     }
     
-    [HttpGet ("/projects/by/{resumeId}")]
+    [HttpGet ("/projects/{resumeId}")]
     public async Task<ActionResult<PostProjectDTO>> GetProjectsByResumeIdController(int resumeId)
     {
         var project = await _repository.GetProjectsByResumeId(resumeId);
         return Ok(_mapper.Map<List<PostProjectDTO>>(project));
     }
     
-    [HttpGet ("/experiences/by/{resumeId}")]
+    [HttpGet ("/experiences/{resumeId}")]
     public async Task<ActionResult<PostExperienceDTO>> GetExperiencesByResumeIdController(int resumeId)
     {
         var experience = await _repository.GetExperiencesByResumeId(resumeId);
         return Ok(_mapper.Map<List<PostExperienceDTO>>(experience));
     }
     
-    [HttpGet ("/skills/by/{resumeId}")]
+    [HttpGet ("/skills/{resumeId}")]
     public async Task<ActionResult<PostInfoSkillDTO>> GetInfoSkillsByResumeIdController(int resumeId)
     {
         var skill = await _repository.GetInfoSkillsByResumeId(resumeId);
         return Ok(_mapper.Map<List<PostInfoSkillDTO>>(skill));
     }
     
-    [HttpGet ("/references/by/{resumeId}")]
+    [HttpGet ("/references/{resumeId}")]
     public async Task<ActionResult<PostReferenceDTO>> GetReferencesByResumeIdController(int resumeId)
     {
         var reference = await _repository.GetReferencesByResumeId(resumeId);
         return Ok(_mapper.Map<List<PostReferenceDTO>>(reference));
     }
     
-    [HttpDelete("resume/by{id}")]
+    [HttpDelete("resume/{id}")]
     public async Task<IActionResult> DeleteResume(int id)
     {
         try

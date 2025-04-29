@@ -211,6 +211,13 @@ namespace BrainsToDo.Repositories
             
             return reference;
         }
+
+        public async Task<List<Resume>> GetAllResumesByUserID(int userId)
+        {
+            return  await _context.Resume
+                .AsNoTracking()
+                .Where(r => r.UserId == userId).ToListAsync();
+        }
         
         public async Task<GetFullResumesDTO> GetFullResume(int resumeId)
         {
