@@ -312,6 +312,156 @@ namespace BrainsToDo.Repositories
                 .ToListAsync();
         }
         
+        public async Task<Resume?> UpdateResumeById(int id, Resume resume)
+        {
+            var oldResume = await _context.Resume.FindAsync(id);
+            if(oldResume == null)
+            {
+                throw new KeyNotFoundException("Resume not found");
+            };
+            
+            oldResume.FirstName = resume.FirstName;
+            oldResume.LastName = resume.LastName;
+            oldResume.Email = resume.Email;
+            oldResume.PhoneNumber = resume.PhoneNumber;
+            oldResume.Address = resume.Address;
+            oldResume.BirthDate = resume.BirthDate;
+            oldResume.PictureURL = resume.PictureURL;
+            oldResume.Summary = resume.Summary;
+            oldResume.updatedAt = DateTime.UtcNow;
+            
+            _context.Resume.Update(oldResume);
+            await _context.SaveChangesAsync();
+            return oldResume;
+        }
+        
+        public async Task<Education?> UpdateEducationByResumeId(int resumeId, Education education)
+        {
+            var oldEducation = await _context.Education.FindAsync(resumeId);
+            if(oldEducation == null)
+            {
+                throw new KeyNotFoundException("Education not found");
+            };
+            
+            oldEducation.Name = education.Name;
+            oldEducation.Type = education.Type;
+            oldEducation.StartDate = education.StartDate;
+            oldEducation.EndDate = education.EndDate;
+            oldEducation.Description = education.Description;
+            oldEducation.Description =  education.Description;
+            oldEducation.Degree = education.Degree;
+            oldEducation.Place = education.Place;
+            oldEducation.Active = education.Active;
+            oldEducation.updatedAt = DateTime.UtcNow;
+            
+            _context.Education.Update(oldEducation);
+            await _context.SaveChangesAsync();
+            return oldEducation;
+        }
+        
+        public async Task<Certification?> UpdateCertificationsByResumeId(int resumeId, Certification certification)
+        {
+            var oldCertification = await _context.Certification.FindAsync(resumeId);
+            if(oldCertification == null)
+            {
+                throw new KeyNotFoundException("Certification not found");
+            };
+            
+            oldCertification.Name = certification.Name;
+            oldCertification.Description =  certification.Description;
+            oldCertification.Date = certification.Date;
+            oldCertification.Type = certification.Type;
+            oldCertification.Url = certification.Url;
+            oldCertification.ValidTo = certification.ValidTo;
+            oldCertification.updatedAt = DateTime.UtcNow;
+            
+            _context.Certification.Update(oldCertification);
+            await _context.SaveChangesAsync();
+            return oldCertification;
+        }
+        
+        public async Task<Project?> UpdateProjectsByResumeId(int resumeId, Project project)
+        {
+            var oldProject = await _context.Project.FindAsync(resumeId);
+            if(oldProject == null)
+            {
+                throw new KeyNotFoundException("Project not found");
+            };
+            
+            oldProject.Name = project.Name;
+            oldProject.Description = project.Description;
+            oldProject.StartDate = project.StartDate;
+            oldProject.EndDate = project.EndDate;
+            oldProject.Completed = project.Completed;
+            oldProject.updatedAt = DateTime.UtcNow;
+            
+            _context.Project.Update(oldProject);
+            await _context.SaveChangesAsync();
+            return oldProject;
+        }
+        
+        public async Task<Experience?> UpdateExperiencesByResumeId(int resumeId, Experience experience)
+        {
+            var oldExperience = await _context.Experience.FindAsync(resumeId);
+            if(oldExperience == null)
+            {
+                throw new KeyNotFoundException("Experience not found");
+            };
+            
+            oldExperience.Name = experience.Name;
+            oldExperience.Organisation = experience.Organisation;
+            oldExperience.Type = experience.Type;
+            oldExperience.Position = experience.Position;
+            oldExperience.Description = experience.Description;
+            oldExperience.StartedAt = experience.StartedAt;
+            oldExperience.EndedAt = experience.EndedAt;
+            oldExperience.Active = experience.Active;
+            oldExperience.updatedAt = DateTime.UtcNow;
+            
+            _context.Experience.Update(oldExperience);
+            await _context.SaveChangesAsync();
+            return oldExperience;
+        }
+        
+        public async Task<InfoSkill?> UpdateInfoSkillsByResumeId(int resumeId, InfoSkill infoSkill)
+        {
+            var oldInfoSkill = await _context.InfoSkill.FindAsync(resumeId);
+            if(oldInfoSkill == null)
+            {
+                throw new KeyNotFoundException("InfoSkill not found");
+            };
+            
+            oldInfoSkill.Name = infoSkill.Name;
+            oldInfoSkill.Description =  infoSkill.Description;
+            oldInfoSkill.Type = infoSkill.Type;
+            oldInfoSkill.Level = infoSkill.Level;
+            oldInfoSkill.updatedAt = DateTime.UtcNow;
+            
+            _context.InfoSkill.Update(oldInfoSkill);
+            await _context.SaveChangesAsync();
+            return oldInfoSkill;
+        }
+        
+        public async Task<Reference?> UpdateReferencesByResumeId(int resumeId, Reference reference)
+        {
+            var oldReference = await _context.Reference.FindAsync(resumeId);
+            if(oldReference == null)
+            {
+                throw new KeyNotFoundException("InfoSkill not found");
+            };
+            
+            oldReference.FirstName = reference.FirstName;
+            oldReference.LastName = reference.LastName;
+            oldReference.Position = reference.Position;
+            oldReference.Email = reference.Email;
+            oldReference.PhoneNumber = reference.PhoneNumber;
+            oldReference.updatedAt = DateTime.UtcNow;
+            
+            _context.Reference.Update(oldReference);
+            await _context.SaveChangesAsync();
+            return oldReference;
+        }
+        
         public async Task DeleteResumeWithRelatedData(int resumeId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -337,8 +487,6 @@ namespace BrainsToDo.Repositories
                 await _context.Certification
                     .Where(c => c.ResumeId == resumeId)
                     .ExecuteDeleteAsync();
-               
-               
                 
                 await _context.Resume
                     .Where(r => r.Id == resumeId)

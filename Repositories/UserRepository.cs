@@ -40,7 +40,7 @@ namespace BrainsToDo.Repositories
             
             oldEntity.Name = entity.Name;
             oldEntity.Password = entity.Password;
-            //oldEntity.updatedAt = DateTime.Now;
+            oldEntity.updatedAt = DateTime.UtcNow;
             
             _context.User.Update(oldEntity);
             await _context.SaveChangesAsync();

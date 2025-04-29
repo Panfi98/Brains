@@ -7,3 +7,11 @@ public class Payload <T>
     public string Message { get; set; }
     
 }
+
+public class PayloadList <T>
+{
+    public string Status {get; set;} = "Success";
+    public T Data {get; set;}
+    public string Message { get; set; }
+    
+}
