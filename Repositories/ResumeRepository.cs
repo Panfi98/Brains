@@ -220,8 +220,7 @@ namespace BrainsToDo.Repositories
 
             if (resume == null)
                 return null;
-
-           
+            
             var educations = await _context.Education
                 .Where(e => e.ResumeId == resumeId)
                 .AsNoTracking()
@@ -257,49 +256,95 @@ namespace BrainsToDo.Repositories
                 Certifications = _mapper.Map<List<PostCertificationDTO>>(certifications)
             };
         }
+        
+        public async Task<List<Education>> GetEducationsByResumeId(int resumeId)
+        {
+            return await _context.Education
+                .Where(e => e.ResumeId == resumeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        
+        public async Task<List<Certification>> GetCertificationsByResumeId(int resumeId)
+        {
+            return await _context.Certification
+                .Where(e => e.ResumeId == resumeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        
+        public async Task<List<Project>> GetProjectsByResumeId(int resumeId)
+        {
+            return await _context.Project
+                .Where(e => e.ResumeId == resumeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        
+        public async Task<List<Experience>> GetExperiencesByResumeId(int resumeId)
+        {
+            return await _context.Experience
+                .Where(e => e.ResumeId == resumeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        
+        public async Task<List<InfoSkill>> GetInfoSkillsByResumeId(int resumeId)
+        {
+            return await _context.InfoSkill
+                .Where(e => e.ResumeId == resumeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        
+        public async Task<List<Reference>> GetReferencesByResumeId(int resumeId)
+        {
+            return await _context.Reference
+                .Where(e => e.ResumeId == resumeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        
+        public async Task DeleteResumeWithRelatedData(int resumeId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
     
-        
-        public async Task<Education?> GetEducation(int id)
-        {
-            return await _context.Education.FindAsync(id);
-        }
-        
-        public async Task<Certification?> GetCertification(int id)
-        {
-            return await _context.Certification.FindAsync(id);
-        }
-        
-        public async Task<Project?> GetProject(int id)
-        {
-            return await _context.Project.FindAsync(id);
-        }
-        
-        public async Task<Experience?> GetExperience(int id)
-        {
-            return await _context.Experience.FindAsync(id);
-        }
-        
-        public async Task<InfoSkill?> GetInfoSkill(int id)
-        {
-            return await _context.InfoSkill.FindAsync(id);
-        }
-        
-        public async Task<Reference?> GetReference(int id)
-        {
-            return await _context.Reference.FindAsync(id);
-        }
-        
-        public async Task<Resume?> DeleteFullResume(int id)
-        {
-            var entity = await _context.Resume.FindAsync(id);
-            if (entity == null)
+            try
             {
-                throw new KeyNotFoundException("Entity not found");
+                await _context.Education
+                    .Where(e => e.ResumeId == resumeId)
+                    .ExecuteDeleteAsync();
+
+                await _context.Experience
+                    .Where(e => e.ResumeId == resumeId)
+                    .ExecuteDeleteAsync();
+
+                await _context.InfoSkill
+                    .Where(s => s.ResumeId == resumeId)
+                    .ExecuteDeleteAsync();
+
+                await _context.Project
+                    .Where(p => p.ResumeId == resumeId)
+                    .ExecuteDeleteAsync();
+
+                await _context.Certification
+                    .Where(c => c.ResumeId == resumeId)
+                    .ExecuteDeleteAsync();
+               
+               
+                
+                await _context.Resume
+                    .Where(r => r.Id == resumeId)
+                    .ExecuteDeleteAsync();
+                
+
+                await transaction.CommitAsync();
             }
-            
-            _context.Resume.Remove(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

@@ -231,15 +231,80 @@ public class ResumeController : ControllerBase
         return Ok(result);
     }
     
-    private IActionResult HandleException(Exception ex)
+    [HttpGet ("/educations/by/{resumeId}")]
+    public async Task<ActionResult<PostEducationDTO>> GetEducationsByResumeIdController(int resumeId)
+    {
+        var educations = await _repository.GetEducationsByResumeId(resumeId);
+        return Ok(_mapper.Map<List<PostEducationDTO>>(educations));
+    }
+    
+    [HttpGet ("/certifications/by/{resumeId}")]
+    public async Task<ActionResult<PostCertificationDTO>> GetCertificationsByResumeIdController(int resumeId)
+    {
+        var certification = await _repository.GetCertificationsByResumeId(resumeId);
+        return Ok(_mapper.Map<List<PostCertificationDTO>>(certification));
+    }
+    
+    [HttpGet ("/projects/by/{resumeId}")]
+    public async Task<ActionResult<PostProjectDTO>> GetProjectsByResumeIdController(int resumeId)
+    {
+        var project = await _repository.GetProjectsByResumeId(resumeId);
+        return Ok(_mapper.Map<List<PostProjectDTO>>(project));
+    }
+    
+    [HttpGet ("/experiences/by/{resumeId}")]
+    public async Task<ActionResult<PostExperienceDTO>> GetExperiencesByResumeIdController(int resumeId)
+    {
+        var experience = await _repository.GetExperiencesByResumeId(resumeId);
+        return Ok(_mapper.Map<List<PostExperienceDTO>>(experience));
+    }
+    
+    [HttpGet ("/skills/by/{resumeId}")]
+    public async Task<ActionResult<PostInfoSkillDTO>> GetInfoSkillsByResumeIdController(int resumeId)
+    {
+        var skill = await _repository.GetInfoSkillsByResumeId(resumeId);
+        return Ok(_mapper.Map<List<PostInfoSkillDTO>>(skill));
+    }
+    
+    [HttpGet ("/references/by/{resumeId}")]
+    public async Task<ActionResult<PostReferenceDTO>> GetReferencesByResumeIdController(int resumeId)
+    {
+        var reference = await _repository.GetReferencesByResumeId(resumeId);
+        return Ok(_mapper.Map<List<PostReferenceDTO>>(reference));
+    }
+    
+    [HttpDelete("resume/by{id}")]
+    public async Task<IActionResult> DeleteResume(int id)
+    {
+        try
+        {
+            await _repository.DeleteResumeWithRelatedData(id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);;
+        }
+    }
+    
+    private  IActionResult HandleException(Exception ex)
     {
         return ex switch
         {
-            UnauthorizedAccessException => Unauthorized(new { ex.Message }),
-            KeyNotFoundException => NotFound(new { ex.Message }),
-            ArgumentException => BadRequest(new { ex.Message }),
-            DbUpdateException => StatusCode(500, new { Message = "Database error occurred" }),
-            _ => StatusCode(500, new { Message = "An unexpected error occurred" })
+            UnauthorizedAccessException => 
+                Unauthorized(new { Message = ex.Message }),
+                
+            KeyNotFoundException => 
+                NotFound(new { Message = ex.Message }),
+                
+            ArgumentException or ArgumentNullException => 
+                BadRequest(new { Message = ex.Message }),
+                
+            DbUpdateException => 
+                StatusCode(500, new { Message = "Database error occurred" }),
+                
+             _=> 
+                StatusCode(500, new { Message = "An unexpected error occurred" })
         };
     }
 }
