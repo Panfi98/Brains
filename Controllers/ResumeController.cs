@@ -215,8 +215,22 @@ public class ResumeController : ControllerBase
         {
             return HandleException(ex);
         }
+        
     }
 
+    [HttpGet("{resumeId}")]
+    public async Task<IActionResult> GetFullResume(int resumeId)
+    {
+        var result = await _repository.GetFullResume(resumeId);
+
+        if (result == null)
+        {
+            return NotFound("Resume not found.");
+        }
+
+        return Ok(result);
+    }
+    
     private IActionResult HandleException(Exception ex)
     {
         return ex switch

@@ -16,8 +16,7 @@ public class ResumeMapper: Profile
         CreateMap<Project, PostProjectDTO>().ReverseMap();
         CreateMap<InfoSkill, PostInfoSkillDTO>().ReverseMap();
         CreateMap<Reference, PostReferenceDTO>().ReverseMap();
-        
-        
+        CreateMap<Resume, GetResumeDTO>().ReverseMap();
         
     }
    
