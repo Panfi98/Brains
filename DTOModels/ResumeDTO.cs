@@ -1,10 +1,25 @@
 ﻿using BrainsToDo.Enums;
+using BrainsToDo.Models;
 
 namespace BrainsToDo.DTOModels;
 
 public class PostResumeDTO
 {
     public int Id {get; set;}
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Address { get; set; }
+    public DateTime Birthday { get; set; }
+    public string PictureURL { get; set; }
+    public string Summary { get; set; }
+    public Status Status { get; set; }
+    
+}
+
+public class GetResumeDTO
+{
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
@@ -81,6 +96,16 @@ public class PostReferenceDTO
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
     public Status Status { get; set; }
+}
+
+public class GetFullResumesDTO
+{
+    public GetResumeDTO Resume { get; set; }
+    public List<PostEducationDTO> Educations { get; set; }
+    public List<PostExperienceDTO> Experiences { get; set; }
+    public List<PostInfoSkillDTO> InfoSkills { get; set; }
+    public List<PostProjectDTO> Projects { get; set; }
+    public List<PostCertificationDTO> Certifications { get; set; }
 }
 
 
