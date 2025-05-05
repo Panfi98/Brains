@@ -57,13 +57,11 @@ public class ResumeController : ControllerBase
             var resume = _mapper.Map<Resume>(resumeDTO);
             var createdResume = await _repository.AddResume(resume, userId);
 
-            var response = new Payload<PostResumeDTO>
-            {
-                Data = _mapper.Map<PostResumeDTO>(createdResume),
-                Message = "Resume created successfully"
-            };
-
-            return Created("", response);
+            return Created("", new Payload<PostResumeDTO>
+                {
+                    Data = _mapper.Map<PostResumeDTO>(createdResume),
+                    Message = "Resume added successfully"
+                });
         }
         catch (Exception ex)
         {
@@ -371,7 +369,7 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpGet("educations/{resumeId}", Name = "GetEducationsByResumeId")]
+    [HttpGet("educations/{resumeId}")]
     public async Task<IActionResult> GetEducationsByResumeId(int resumeId)
     {
         try
