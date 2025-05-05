@@ -299,7 +299,7 @@ public class ResumeController : ControllerBase
         }
     }
 
-    [HttpGet("{userId}")]
+    [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetAllResumes(int userId)
     {
         try
