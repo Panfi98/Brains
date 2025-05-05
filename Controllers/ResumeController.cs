@@ -97,11 +97,11 @@ public class ResumeController : ControllerBase
             var education = _mapper.Map<Education>(educationDTO);
             var createdEducation = await _repository.AddEducation(education, id);
 
-            return Created("", new Payload<PostEducationDTO>
-            {
-                Data = _mapper.Map<PostEducationDTO>(createdEducation),
-                Message = "Education added successfully"
-            });
+            return Created(" ", new Payload<PostEducationDTO>
+                {
+                    Data = _mapper.Map<PostEducationDTO>(createdEducation),
+                    Message = "Education added successfully"
+                });
         }
         catch (Exception ex)
         {
@@ -371,7 +371,7 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpGet("educations/{resumeId}")]
+    [HttpGet("educations/{resumeId}", Name = "GetEducationsByResumeId")]
     public async Task<IActionResult> GetEducationsByResumeId(int resumeId)
     {
         try

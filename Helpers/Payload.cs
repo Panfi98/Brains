@@ -2,7 +2,7 @@ namespace BrainsToDo.Helpers;
 
 public class Payload <T>
 {
-    public string Status {get; set;} = "Success";
+    public string RequestStatus {get; set;} = "Success";
     public T Data {get; set;}
     public string Message { get; set; }
     
@@ -10,7 +10,7 @@ public class Payload <T>
 
 public class PayloadList <T>
 {
-    public string Status {get; set;} = "Success";
+    public string RequestStatus {get; set;} = "Success";
     public T Data {get; set;}
     public string Message { get; set; }
     
