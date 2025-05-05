@@ -299,7 +299,7 @@ public class ResumeController : ControllerBase
         }
     }
 
-    [HttpGet("resumes/{userId}")]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetAllResumes(int userId)
     {
         try
@@ -337,7 +337,7 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpGet("resume/{resumeId}")]
+    [HttpGet("{resumeId}")]
     public async Task<IActionResult> GetFullResume(int resumeId)
     {
         try
