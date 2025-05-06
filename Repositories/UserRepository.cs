@@ -28,6 +28,7 @@ namespace BrainsToDo.Repositories
             _context.User.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
+            
         }
 
         public async Task<User?> UpdateEntity(int id, User entity)

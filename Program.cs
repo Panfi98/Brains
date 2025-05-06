@@ -4,14 +4,22 @@ using BrainsToDo.Data;
 using BrainsToDo.Mapper;
 using BrainsToDo.Repositories;
 using BrainsToDo.Repositories.LoginLogic;
+using BrainsToDo.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using BrainsToDo.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(options =>
 {
@@ -52,6 +60,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });;
+
+
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
