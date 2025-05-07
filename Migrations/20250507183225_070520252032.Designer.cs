@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250507164827_07052025")]
-    partial class _07052025
+    [Migration("20250507183225_070520252032")]
+    partial class _070520252032
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -610,6 +610,61 @@ namespace BrainsToDo.Migrations
                     b.ToTable("JobUser");
                 });
 
+            modelBuilder.Entity("BrainsToDo.Models.Mail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("Attempts");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Email");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ExpirationTime");
+
+                    b.Property<bool>("SoftDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("SoftDeleted");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("UserId");
+
+                    b.Property<DateTime>("createdAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdAt");
+
+                    b.Property<DateTime?>("deletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletedAt");
+
+                    b.Property<DateTime>("updatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Mail");
+                });
+
             modelBuilder.Entity("BrainsToDo.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -1129,6 +1184,17 @@ namespace BrainsToDo.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BrainsToDo.Models.Mail", b =>
+                {
+                    b.HasOne("BrainsToDo.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BrainsToDo.Models.Project", b =>

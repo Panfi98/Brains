@@ -55,6 +55,7 @@ namespace BrainsToDo.Data
     public DbSet<InfoSkill> InfoSkill { get; set; }
     public DbSet<Certification> Certification { get; set; }
     public  DbSet<ResumeTemplate> PersonInfo { get; set; }
+    public DbSet<Mail> Mail { get; set; }
   }  
 }
 

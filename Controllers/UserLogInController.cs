@@ -22,13 +22,7 @@ public class UserLogInController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly ILogger<UserLogInController> _logger;
 
-    public UserLogInController(
-        UserLogInRepository loginRepository, 
-        IMapper mapper, 
-        IConfiguration configuration, 
-       // IEmailVerificationService emailVerificationService, 
-        DataContext context,
-        ILogger<UserLogInController> logger)
+    public UserLogInController( UserLogInRepository loginRepository, IMapper mapper, IConfiguration configuration, DataContext context, ILogger<UserLogInController> logger /* IEmailVerificationService emailVerificationService,*/)
     {
         _context = context;
        // _emailVerificationService = emailVerificationService;
@@ -40,7 +34,7 @@ public class UserLogInController : ControllerBase
     
     [HttpPost]
     [Route("")]
-    public async Task<IActionResult> Login([FromBody] UserLoginDTO loginDto)
+    public async Task<IActionResult> Login([FromBody] UserLogInDTO logInDto)
     {
         if (!ModelState.IsValid)
         {
@@ -49,11 +43,11 @@ public class UserLogInController : ControllerBase
 
         try
         {
-            var user = await _loginRepository.GetUserByUsernameAndPassword(loginDto.Username, loginDto.Password);
+            var user = await _loginRepository.GetUserByUsernameAndPassword(logInDto.Username, logInDto.Password);
         
             if (user == null)
             {
-                _logger.LogWarning($"Failed login attempt for username: {loginDto.Username}");
+                _logger.LogWarning($"Failed login attempt for username: {logInDto.Username}");
                 return Unauthorized(new { message = "Invalid username or password" });
             }
             
