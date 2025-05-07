@@ -1,14 +1,8 @@
 ﻿using BrainsToDo.Data;
 using BrainsToDo.Models;
+using BrainsToDo.Interfaces;
 
 namespace BrainsToDo.Services;
-
-
-public interface IEmailVerificationService
-{
-    Task<string> GenerateAndSendVerificationCodeAsync(User user);
-    Task<bool> VerifyCodeAsync(User user, string code);
-}
 
 public class EmailVerificationService : IEmailVerificationService
 {
@@ -16,9 +10,8 @@ public class EmailVerificationService : IEmailVerificationService
     private readonly ILogger<EmailVerificationService> _logger;
     private readonly DataContext _context;
 
-    public EmailVerificationService(
-        IEmailSender emailSender, 
-        ILogger<EmailVerificationService> logger,
+
+    public EmailVerificationService(IEmailSender emailSender, ILogger<EmailVerificationService> logger,
         DataContext context)
     {
         _emailSender = emailSender;
@@ -28,26 +21,25 @@ public class EmailVerificationService : IEmailVerificationService
 
     public async Task<string> GenerateAndSendVerificationCodeAsync(User user)
     {
-        // Генерация 6-значного кода
+
         var code = new Random().Next(100000, 999999).ToString();
         var expirationTime = DateTime.UtcNow.AddMinutes(15);
 
-        // Обновляем данные пользователя
-        user.Code = code;
+
+        /*user.Code = code;
         user.ExpirationTime = expirationTime;
-        user.Attempts = 3; // Сбрасываем количество попыток
+        user.Attempts = 3;
         user.updatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 
-        // Отправка email
-        try
+
         {
             await _emailSender.SendEmailAsync(
                 user.Email,
-                "Код подтверждения регистрации",
-                $"Ваш код подтверждения: {code}");
-            
+                "Varification code",
+                $"Your code: {code}");
+
             _logger.LogInformation($"Verification code sent to {user.Email}");
             return code;
         }
@@ -55,36 +47,38 @@ public class EmailVerificationService : IEmailVerificationService
         {
             _logger.LogError(ex, $"Failed to send verification code to {user.Email}");
             throw;
-        }
+        }*/
+        return code;
     }
 
     public async Task<bool> VerifyCodeAsync(User user, string code)
     {
-        if (user.ExpirationTime < DateTime.UtcNow)
+        /*if (user.ExpirationTime < DateTime.UtcNow)
         {
-            return false; // Код устарел
+            return false;
         }
 
         if (user.Attempts <= 0)
         {
-            return false; // Превышено количество попыток
+            return false;
         }
 
         if (user.Code != code)
         {
-            // Уменьшаем количество попыток
+
             user.Attempts--;
             user.updatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return false;
         }
 
-        // Код верный - очищаем данные верификации
+
         user.Code = null;
         user.ExpirationTime = DateTime.MinValue;
         user.updatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();*/
 
         return true;
+
     }
 }

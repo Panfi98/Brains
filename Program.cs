@@ -7,7 +7,7 @@ using BrainsToDo.Repositories.LoginLogic;
 using BrainsToDo.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using BrainsToDo.Helpers;
+using BrainsToDo.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
-builder.Services.Configure<EmailSettings>(
-    builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(options =>
@@ -92,6 +88,9 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes("ThisIsYourSecretKeyMakeItAtLeast32CharactersLong"))
         };
     });
+
+builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

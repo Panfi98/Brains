@@ -10,7 +10,7 @@ namespace BrainsToDo.Repositories
         
         public async Task<bool> UserExists(string username, string email)
         {
-            return await _context.User.AnyAsync(u => u.Name == username || u.Email == email);
+            return await _context.User.AnyAsync(u => u.Name == username);
         }
         
         public async Task<IEnumerable<User>> GetAllEntities()

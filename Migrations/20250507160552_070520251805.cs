@@ -5,7 +5,7 @@
 namespace BrainsToDo.Migrations
 {
     /// <inheritdoc />
-    public partial class _250420251803 : Migration
+    public partial class _070520251805 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -953,25 +953,9 @@ namespace BrainsToDo.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Attempts")
-                        .HasColumnType("integer")
-                        .HasColumnName("Attempts");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("text")
-                        .HasColumnName("Code");
-
                     b.Property<bool>("Confirming")
                         .HasColumnType("boolean")
                         .HasColumnName("EmailConfirmed");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text")
-                        .HasColumnName("Email");
-
-                    b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("ExpirationTime");
 
                     b.Property<string>("Name")
                         .IsRequired()

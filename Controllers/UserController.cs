@@ -4,14 +4,16 @@ using AutoMapper;
 using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
 using BrainsToDo.Helpers;
-using BrainsToDo.Services; 
 using BrainsToDo.Repositories;
 using BrainsToDo.Repositories.LoginLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using BrainsToDo.Interfaces;
+
 namespace BrainsToDo.Models;
+
 
 
     [ApiController]
@@ -134,9 +136,9 @@ namespace BrainsToDo.Models;
 
             // Устанавливаем начальные значения для верификации
             user.Confirming = false; // Email не подтвержден
-            user.Code = null;
-            user.ExpirationTime = DateTime.MinValue;
-            user.Attempts = 3;
+            //user.Code = null;
+            //user.ExpirationTime = DateTime.MinValue;
+           // user.Attempts = 3;
 
             // Создаем пользователя в БД
             var createdUser = await repository.AddEntity(user);
@@ -176,7 +178,7 @@ namespace BrainsToDo.Models;
                 return BadRequest("Необходимо указать email и код подтверждения");
             }
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
+            /*var user = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
             {
                 return NotFound("Пользователь с указанным email не найден");
@@ -193,17 +195,17 @@ namespace BrainsToDo.Models;
                         : "Превышено количество попыток. Запросите новый код.",
                     AttemptsLeft = user.Attempts
                 });
-            }
+            }*/
 
             // Подтверждаем email
-            user.Confirming = true;
+           // user.Confirming = true;
             await _context.SaveChangesAsync();
 
             return Ok(new
             {
                 Success = true,
                 Message = "Email успешно подтвержден!",
-                UserId = user.Id
+                //UserId = user.Id
             });
         }
 
