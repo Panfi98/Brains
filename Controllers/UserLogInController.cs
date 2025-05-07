@@ -91,8 +91,6 @@ public class UserLogInController : ControllerBase
             
             return Ok(new { 
                 token = jwtToken,
-                expiresIn = expirationHours * 3600,
-                username = user.Name
             });
         }
         catch (ArgumentException ex)

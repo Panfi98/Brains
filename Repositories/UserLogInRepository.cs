@@ -8,20 +8,20 @@ namespace BrainsToDo.Repositories;
 public class UserLogInRepository(DataContext context)
 {
     private readonly DataContext _context = context;
-    
+
     public async Task<User?> GetUserByUsernameAndPassword(string username, string password)
     {
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
             throw new ArgumentException("Username and password cannot be empty");
         }
-        
+
         if (!Regex.IsMatch(username, @"^[a-zA-Z0-9]+$"))
         {
             throw new ArgumentException("Username contains invalid characters");
         }
-        
-        if (password.Length <= 8)
+
+        if (password.Length < 8)
         {
             throw new ArgumentException("Password must be at least 8 characters long");
         }
