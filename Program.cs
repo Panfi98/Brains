@@ -1,9 +1,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using BrainsToDo.Data;
-using BrainsToDo.Mapper;
 using BrainsToDo.Repositories;
-using BrainsToDo.Repositories.LoginLogic;
 using BrainsToDo.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -67,13 +65,10 @@ builder.Services.AddControllers()
 
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
 builder.Services.AddScoped<UserLogInRepository>();
 builder.Services.AddScoped<UserSignUpRepository>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
