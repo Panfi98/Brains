@@ -8,13 +8,10 @@ using BrainsToDo.Repositories;
 using BrainsToDo.Repositories.LoginLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BrainsToDo.Interfaces;
 
 namespace BrainsToDo.Models;
-
-
 
     [ApiController]
     [Route("user")]
@@ -123,19 +120,19 @@ namespace BrainsToDo.Models;
             }
 
             string userName = userDTO.Name;
-            string userEmail = userDTO.Email;
+            //string userEmail = userDTO.Email;
             string password = userDTO.Password;
 
-            if (await repository.UserExists(userName, userEmail))
+           /* if (await repository.UserExists(userName, userEmail))
             {
                 return Conflict(new { message = "User with this username or email already exists." });
-            }
+            }*/
 
             // Маппим DTO в сущность User
             User user = mapper.Map<User>(userDTO);
 
             // Устанавливаем начальные значения для верификации
-            user.Confirming = false; // Email не подтвержден
+            user.EmailConfirmed = false; // Email не подтвержден
             //user.Code = null;
             //user.ExpirationTime = DateTime.MinValue;
            // user.Attempts = 3;

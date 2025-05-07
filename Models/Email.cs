@@ -11,8 +11,6 @@ public class Mail
     public int Id { get; set; }
     [Column("Email")] 
     public string Email { get; set; }
-    [Column("EmailConfirmed")] 
-    public bool Emailonfirmed { get; set; }= false;
     [Column("Code")]
     public string Code { get; set; } 
     [Column("ExpirationTime")]

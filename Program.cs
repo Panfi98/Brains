@@ -71,6 +71,8 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
+builder.Services.AddScoped<UserLogInRepository>();
+builder.Services.AddScoped<UserSignUpRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddAuthentication("Bearer")

@@ -14,7 +14,7 @@ namespace BrainsToDo.Models;
         [Column("Password")]
         public string Password { get; set; }
         [Column("EmailConfirmed")] 
-        public bool Confirming { get; set; }= false;
+        public bool EmailConfirmed { get; set; } = false;
         [Column("createdAt")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime createdAt { get; set; }= DateTime.UtcNow;
