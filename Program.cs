@@ -67,8 +67,7 @@ builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
-builder.Services.AddScoped<UserLogInRepository>();
-builder.Services.AddScoped<UserSignUpRepository>();
+builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

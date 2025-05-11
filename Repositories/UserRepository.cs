@@ -1,14 +1,86 @@
-﻿using BrainsToDo.Data;
+﻿using System.Security.Claims;
+using System.Text;
+using BrainsToDo.Data;
 using BrainsToDo.Models;
+using BrainsToDo.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BrainsToDo.Repositories;
 
-public class UserSignUpRepository(DataContext context)
+public class UserRepository(DataContext context)
 {
     private readonly DataContext _context = context;
 
+    //Creating tokem
+    public class TokenGeneretion : ITokenGeneration
+    {
+        private readonly IConfiguration _configuration;
+
+        public TokenGeneretion(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public string GenerateToken(User user)
+        {
+            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ??
+                                             throw new InvalidOperationException("JWT Key is not configured"));
+
+            int expirationHours = int.TryParse(_configuration["Jwt:ExpireHours"], out var parsed) ? parsed : 3;
+            string issuer = _configuration["Jwt:Issuer"] ?? "defaultIssuer";
+            string audience = _configuration["Jwt:Audience"] ?? "defaultAudience";
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name),
+                }),
+                Expires = DateTime.UtcNow.AddHours(expirationHours),
+                Issuer = issuer,
+                Audience = audience,
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+    }
+    
+    //LogIn
+    public async Task<User?> GetUserByUsernameAndPassword(string username, string password)
+    {
+        try
+        {
+            var userExists = await _context.User
+                .AsNoTracking()
+                .AnyAsync(u => u.Name == username);
+                
+            if (!userExists)
+            {
+                return null; 
+            }
+            
+            var user = await _context.User
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
+
+            return user; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving user: {ex.Message}");
+            throw; 
+        }
+    }
+    
+    //SignUp
     public enum PasswordStrength
     {
         Weak,
