@@ -15,11 +15,6 @@ public class UserSignUpDTO
 
 public class VerifyEmailDTO
 {
-    public int UserId { get; set; }
     public string Code { get; set; }
 }
 
-public class ResendVerificationDTO
-{
-    public int UserId { get; set; }
-}

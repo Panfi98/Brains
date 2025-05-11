@@ -19,7 +19,7 @@ public class UserRepository(DataContext context)
             var userExists = await _context.User
                 .AsNoTracking()
                 .AnyAsync(u => u.Name == username);
-                
+            
             if (!userExists)
             {
                 return null; 
@@ -29,6 +29,11 @@ public class UserRepository(DataContext context)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
 
+            if (!user.EmailConfirmed)
+            {
+                throw new InvalidOperationException("Please verify your email first");
+            }
+            
             return user; 
         }
         catch (Exception ex)
@@ -276,7 +281,6 @@ public class UserRepository(DataContext context)
         {
             Success = true,
             Message = message,
-            Data = data
         };
     }
     

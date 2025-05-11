@@ -52,13 +52,19 @@ public class UserController : ControllerBase
             var jwtToken = _tokenGeneration.GenerateToken(user);
 
             _logger.LogInformation($"User {user.Name} logged in successfully");
-            
+
             var userDto = _mapper.Map<UserLogInDTO>(user);
 
             return Ok(new
             {
                 token = jwtToken,
-                user = userDto 
+            });
+        }
+        catch (InvalidOperationException ex) when (ex.Message == "Please verify your email first")
+        {
+            return Unauthorized(new
+            {
+                message = ex.Message,
             });
         }
         catch (ArgumentException ex)
@@ -85,15 +91,14 @@ public class UserController : ControllerBase
             // send the verification code 
             await _emailService.SendVerificationEmailAsync(mail.Email, mail.Code);
 
-            var resultDto = new
+            var result = new
             {
                 Success = true,
-                UserId = user.Id,
                 PasswordStrength = passwordStrength.ToString(),
                 Message = "A verification code has been sent to your email"
             };
 
-            return Ok(resultDto);
+            return Ok(result);
         }
         catch (ArgumentException ex)
         {
@@ -111,11 +116,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("VerifyEmail/{userId}")]
-    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDTO dto)
+    public async Task<IActionResult> VerifyEmail(int userId, [FromBody] VerifyEmailDTO dto)
     {
         try
         {
-            var result = await _userRepository.VerifyEmailCodeAsync(dto.UserId, dto.Code);
+            var result = await _userRepository.VerifyEmailCodeAsync(userId, dto.Code);
 
             if (result.IsSuccess && result.User != null)
             {
@@ -133,19 +138,19 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("ResendVerification/{userId}")]
-    public async Task<IActionResult> ResendVerificationCode([FromBody] ResendVerificationDTO dto)
+    public async Task<IActionResult> ResendVerificationCode(int userId)
     {
         try
         {
-            var (user, mail) = await _userRepository.GetUserWithLatestMailAsync(dto.UserId);
-        
+            var (user, mail) = await _userRepository.GetUserWithLatestMailAsync(userId);
+    
             if (user == null || mail == null)
             {
                 return NotFound(_userRepository.CreateErrorResponse("User or mail record not found"));
             }
 
-            var result = await _userRepository.ResendVerificationCode(dto.UserId, mail.Email);
-    
+            var result = await _userRepository.ResendVerificationCode(userId, mail.Email);
+
             if (result.success)
             {
                 await _emailService.SendVerificationEmailAsync(mail.Email, result.message);
