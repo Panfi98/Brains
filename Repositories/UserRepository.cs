@@ -1,57 +1,15 @@
-﻿using System.Security.Claims;
-using System.Text;
-using BrainsToDo.Data;
+﻿using BrainsToDo.Data;
 using BrainsToDo.Models;
-using BrainsToDo.Interfaces;
+using BrainsToDo.Enums;
+using BrainsToDo.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BrainsToDo.Repositories;
 
 public class UserRepository(DataContext context)
 {
     private readonly DataContext _context = context;
-
-    //Creating tokem
-    public class TokenGeneretion : ITokenGeneration
-    {
-        private readonly IConfiguration _configuration;
-
-        public TokenGeneretion(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public string GenerateToken(User user)
-        {
-            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ??
-                                             throw new InvalidOperationException("JWT Key is not configured"));
-
-            int expirationHours = int.TryParse(_configuration["Jwt:ExpireHours"], out var parsed) ? parsed : 3;
-            string issuer = _configuration["Jwt:Issuer"] ?? "defaultIssuer";
-            string audience = _configuration["Jwt:Audience"] ?? "defaultAudience";
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Name),
-                }),
-                Expires = DateTime.UtcNow.AddHours(expirationHours),
-                Issuer = issuer,
-                Audience = audience,
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-    }
     
     //LogIn
     public async Task<User?> GetUserByUsernameAndPassword(string username, string password)
@@ -81,18 +39,12 @@ public class UserRepository(DataContext context)
     }
     
     //SignUp
-    public enum PasswordStrength
-    {
-        Weak,
-        Medium,
-        Strong
-    }
-
-    public async Task<(User user, Mail verificationMail, PasswordStrength strength)> CreateUserWithVerification(
+    
+    public async Task<(User user, Mail verificationMail, EnumPasswordStrength strength)> 
+        CreateUserWithVerification(
         string username,
         string password,
-        string email,
-        string verificationCode)
+        string email)
     {
         
         // Validate inputs
@@ -107,7 +59,7 @@ public class UserRepository(DataContext context)
             throw new ArgumentException("Username contains invalid characters");
         }
         
-        // Check if username l already exists
+        // Check if username  already exists
         if (await _context.User.AnyAsync(u => u.Name == username))
         {
             throw new InvalidOperationException("Username already exists");
@@ -115,7 +67,7 @@ public class UserRepository(DataContext context)
         
         // Check password strength
         var passwordStrength = EvaluatePasswordStrength(password);
-        if (passwordStrength == PasswordStrength.Weak)
+        if (passwordStrength == EnumPasswordStrength.Weak)
         {
             throw new ArgumentException(
                 "Password is too weak. It should contain at least 8 characters with a mix of uppercase, lowercase, numbers and special characters");
@@ -126,7 +78,7 @@ public class UserRepository(DataContext context)
             throw new ArgumentException("Invalid email format");
         }
         
-        // Check if email l already exists
+        // Check if email  already exists
         if (await _context.Mail.AnyAsync(m => m.Email == email))
         {
             throw new InvalidOperationException("Email already in use");
@@ -148,14 +100,16 @@ public class UserRepository(DataContext context)
             await _context.User.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            // Create verification email
+            var verificationCode = new Random().Next(100000, 999999).ToString();
+            
             var mail = new Mail
             {
                 Email = email,
                 Code = verificationCode,
-                ExpirationTime = DateTime.UtcNow.AddHours(24),
+                ExpirationTime = DateTime.UtcNow.AddMinutes(15),
                 UserId = user.Id,
                 Attempts = 3,
+                IsActive = true,
                 createdAt = DateTime.UtcNow,
                 updatedAt = DateTime.UtcNow
             };
@@ -174,10 +128,10 @@ public class UserRepository(DataContext context)
         }
     }
 
-    private PasswordStrength EvaluatePasswordStrength(string password)
+    private EnumPasswordStrength EvaluatePasswordStrength(string password)
     {
         if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
-            return PasswordStrength.Weak;
+            return EnumPasswordStrength.Weak;
 
         int score = 0;
 
@@ -193,9 +147,9 @@ public class UserRepository(DataContext context)
 
         return score switch
         {
-            <= 2 => PasswordStrength.Weak, // Basic or no complexity
-            <= 4 => PasswordStrength.Medium, // Moderate complexity
-            _ => PasswordStrength.Strong // High complexity
+            <= 2 => EnumPasswordStrength.Weak, // Basic or no complexity
+            <= 4 => EnumPasswordStrength.Medium, // Moderate complexity
+            _ => EnumPasswordStrength.Strong // High complexity
         };
     }
     
@@ -210,5 +164,146 @@ public class UserRepository(DataContext context)
         {
             return false;
         }
+    }
+    
+    public async Task<VerificationResult> VerifyEmailCodeAsync(int userId, string code)
+    {
+        var result = new VerificationResult();
+    
+        var mailRecord = await _context.Mail
+            .FirstOrDefaultAsync(m => m.UserId == userId && m.IsActive);
+
+        if (mailRecord == null) 
+        {
+            result.ErrorMessage = "Verification record not found or inactive";
+            return result;
+        }
+
+        if (DateTime.UtcNow > mailRecord.ExpirationTime)
+        {
+            mailRecord.IsActive = false;
+            await _context.SaveChangesAsync();
+            result.ErrorMessage = "Verification time expired. Please request a new code.";
+            return result;
+        }
+
+        if (mailRecord.Code != code)
+        {
+            mailRecord.Attempts--;
+        
+            if (mailRecord.Attempts <= 0)
+            {
+                mailRecord.IsActive = false;
+                await _context.SaveChangesAsync();
+                result.ErrorMessage = "No attempts remaining. Please request a new code.";
+                return result;
+            }
+
+            await _context.SaveChangesAsync();
+            result.ErrorMessage = $"Invalid code. Attempts left: {mailRecord.Attempts}";
+            return result;
+        }
+
+        var user = await _context.User.FindAsync(userId);
+        if (user != null)
+        {
+            user.EmailConfirmed = true;
+            mailRecord.IsActive = false;
+            await _context.SaveChangesAsync();
+            result.IsSuccess = true;
+            result.User = user;
+        }
+
+        return result;
+    }
+    public async Task<(bool success, string message)> ResendVerificationCode(int userId, string email)
+    {
+        // Deactivate the old codes for user 
+        var oldRecords = await _context.Mail
+            .Where(m => m.UserId == userId && m.IsActive)
+            .ToListAsync();
+
+        foreach (var record in oldRecords)
+        {
+            record.IsActive = false;
+        }
+
+        // create new record 
+        var newCode = new Random().Next(100000, 999999).ToString();
+        var mail = new Mail
+        {
+            Email = email,
+            Code = newCode,
+            ExpirationTime = DateTime.UtcNow.AddMinutes(15),
+            UserId = userId,
+            Attempts = 3,
+            IsActive = true,
+            createdAt = DateTime.UtcNow,
+            updatedAt = DateTime.UtcNow
+        };
+
+        await _context.Mail.AddAsync(mail);
+        await _context.SaveChangesAsync();
+
+        return (true, "New verification code sent");
+    }
+    
+    public async Task<(User? user, Mail? mail)> GetUserWithLatestMailAsync(int userId)
+    {
+        var user = await _context.User.FindAsync(userId);
+        if (user == null)
+        {
+            return (null, null);
+        }
+
+        var mail = await _context.Mail
+            .Where(m => m.UserId == userId)
+            .OrderByDescending(m => m.createdAt)
+            .FirstOrDefaultAsync();
+
+        return (user, mail);
+    }
+    public class VerificationResult
+    {
+        public bool IsSuccess { get; set; }
+        public User? User { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
+    
+    public object CreateSuccessResponse(string message, object? data = null)
+    {
+        return new 
+        {
+            Success = true,
+            Message = message,
+            Data = data
+        };
+    }
+    
+    public object CreateErrorResponse(string message)
+    {
+        return new 
+        {
+            Success = false,
+            Message = message
+        };
+    }
+    
+    public Payload<object> CreateErrorPayload(string message, string status = "Error")
+    {
+        return new Payload<object>
+        {
+            RequestStatus = status,
+            Message = message
+        };
+    }
+
+    public PayloadList<T> CreateSuccessPayloadList<T>(T data, string message = "Success")
+    {
+        return new PayloadList<T>
+        {
+            Data = data,
+            Message = message
+        };
     }
 }

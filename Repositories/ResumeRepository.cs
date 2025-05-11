@@ -10,7 +10,7 @@ namespace BrainsToDo.Repositories
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
-        
+
         public async Task<Resume> AddResume(Resume resume, int userId)
         {
             try
@@ -22,22 +22,22 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentException("Invalid user ID", nameof(userId));
 
                 var personExists = await _context.User.AnyAsync(u => u.Id == userId);
-                
+
                 if (!personExists)
                     throw new KeyNotFoundException($"User with ID {userId} not found");
 
                 resume.UserId = userId;
-                
+
                 var resumeTemplate = await _context.ResumeTemplate.FirstOrDefaultAsync();
-               
+
                 if (resumeTemplate == null)
                     throw new KeyNotFoundException("No resume templates found in database");
 
                 resume.ResumeTemplateId = resumeTemplate.Id;
-                
+
                 await _context.Resume.AddAsync(resume);
                 await _context.SaveChangesAsync();
-                
+
                 return resume;
             }
             catch (DbUpdateException ex)
@@ -49,7 +49,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while adding resume", ex);
             }
         }
-        
+
         public async Task<Education> AddEducation(Education education, int resumeId)
         {
             try
@@ -72,10 +72,10 @@ namespace BrainsToDo.Repositories
                 }
 
                 education.ResumeId = resumeId;
-                
+
                 await _context.Education.AddAsync(education);
                 await _context.SaveChangesAsync();
-                
+
                 return education;
             }
             catch (DbUpdateException ex)
@@ -87,7 +87,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while adding education", ex);
             }
         }
-        
+
         public async Task<Certification> AddCertification(Certification certification, int resumeId)
         {
             try
@@ -110,10 +110,10 @@ namespace BrainsToDo.Repositories
                 }
 
                 certification.ResumeId = resumeId;
-                
+
                 await _context.Certification.AddAsync(certification);
                 await _context.SaveChangesAsync();
-                
+
                 return certification;
             }
             catch (DbUpdateException ex)
@@ -125,7 +125,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while adding certification", ex);
             }
         }
-        
+
         public async Task<Experience> AddExperience(Experience experience, int resumeId)
         {
             try
@@ -148,10 +148,10 @@ namespace BrainsToDo.Repositories
                 }
 
                 experience.ResumeId = resumeId;
-                
+
                 await _context.Experience.AddAsync(experience);
                 await _context.SaveChangesAsync();
-                
+
                 return experience;
             }
             catch (DbUpdateException ex)
@@ -163,7 +163,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while adding experience", ex);
             }
         }
-        
+
         public async Task<Project> AddProject(Project project, int resumeId)
         {
             try
@@ -180,10 +180,10 @@ namespace BrainsToDo.Repositories
                     throw new KeyNotFoundException($"Resume with ID {resumeId} not found");
 
                 project.ResumeId = resumeId;
-                
+
                 await _context.Project.AddAsync(project);
                 await _context.SaveChangesAsync();
-                
+
                 return project;
             }
             catch (DbUpdateException ex)
@@ -218,10 +218,10 @@ namespace BrainsToDo.Repositories
                 }
 
                 skill.ResumeId = resumeId;
-                
+
                 await _context.InfoSkill.AddAsync(skill);
                 await _context.SaveChangesAsync();
-                
+
                 return skill;
             }
             catch (DbUpdateException ex)
@@ -233,7 +233,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while adding skill", ex);
             }
         }
-        
+
         public async Task<Reference> AddReference(Reference reference, int resumeId)
         {
             try
@@ -256,10 +256,10 @@ namespace BrainsToDo.Repositories
                 }
 
                 reference.ResumeId = resumeId;
-                
+
                 await _context.Reference.AddAsync(reference);
                 await _context.SaveChangesAsync();
-                
+
                 return reference;
             }
             catch (DbUpdateException ex)
@@ -291,7 +291,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving resumes", ex);
             }
         }
-        
+
         public async Task<GetFullResumesDTO> GetFullResume(int resumeId)
         {
             try
@@ -309,7 +309,7 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Resume with ID {resumeId} not found");
                 }
-                
+
                 var educations = await _context.Education
                     .Where(e => e.ResumeId == resumeId)
                     .AsNoTracking()
@@ -334,7 +334,7 @@ namespace BrainsToDo.Repositories
                     .Where(c => c.ResumeId == resumeId)
                     .AsNoTracking()
                     .ToListAsync();
-                
+
                 return new GetFullResumesDTO
                 {
                     Resume = _mapper.Map<GetResumeDTO>(resume),
@@ -354,7 +354,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while getting full resume", ex);
             }
         }
-        
+
         public async Task<List<Education>> GetEducationsByResumeId(int resumeId)
         {
             try
@@ -374,7 +374,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving educations", ex);
             }
         }
-        
+
         public async Task<List<Certification>> GetCertificationsByResumeId(int resumeId)
         {
             try
@@ -394,7 +394,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving certifications", ex);
             }
         }
-        
+
         public async Task<List<Project>> GetProjectsByResumeId(int resumeId)
         {
             try
@@ -414,7 +414,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving projects", ex);
             }
         }
-        
+
         public async Task<List<Experience>> GetExperiencesByResumeId(int resumeId)
         {
             try
@@ -434,7 +434,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving experiences", ex);
             }
         }
-        
+
         public async Task<List<InfoSkill>> GetInfoSkillsByResumeId(int resumeId)
         {
             try
@@ -454,7 +454,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving skills", ex);
             }
         }
-        
+
         public async Task<List<Reference>> GetReferencesByResumeId(int resumeId)
         {
             try
@@ -474,7 +474,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while retrieving references", ex);
             }
         }
-        
+
         public async Task<Resume?> UpdateResumeById(int id, Resume resume)
         {
             try
@@ -495,7 +495,7 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Resume with ID {id} not found");
                 }
-                
+
                 oldResume.FirstName = resume.FirstName;
                 oldResume.LastName = resume.LastName;
                 oldResume.Email = resume.Email;
@@ -505,7 +505,7 @@ namespace BrainsToDo.Repositories
                 oldResume.PictureURL = resume.PictureURL;
                 oldResume.Summary = resume.Summary;
                 oldResume.updatedAt = DateTime.UtcNow;
-                
+
                 _context.Resume.Update(oldResume);
                 await _context.SaveChangesAsync();
                 return oldResume;
@@ -519,7 +519,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating resume", ex);
             }
         }
-        
+
         public async Task<Education?> UpdateEducationByResumeId(int resumeId, Education education)
         {
             try
@@ -540,7 +540,7 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Education for resume ID {resumeId} not found");
                 }
-                
+
                 oldEducation.Name = education.Name;
                 oldEducation.Type = education.Type;
                 oldEducation.StartDate = education.StartDate;
@@ -550,7 +550,7 @@ namespace BrainsToDo.Repositories
                 oldEducation.Place = education.Place;
                 oldEducation.Active = education.Active;
                 oldEducation.updatedAt = DateTime.UtcNow;
-                
+
                 _context.Education.Update(oldEducation);
                 await _context.SaveChangesAsync();
                 return oldEducation;
@@ -564,7 +564,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating education", ex);
             }
         }
-        
+
         public async Task<Certification?> UpdateCertificationsByResumeId(int resumeId, Certification certification)
         {
             try
@@ -585,7 +585,7 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Certification for resume ID {resumeId} not found");
                 }
-                
+
                 oldCertification.Name = certification.Name;
                 oldCertification.Description = certification.Description;
                 oldCertification.Date = certification.Date;
@@ -593,7 +593,7 @@ namespace BrainsToDo.Repositories
                 oldCertification.Url = certification.Url;
                 oldCertification.ValidTo = certification.ValidTo;
                 oldCertification.updatedAt = DateTime.UtcNow;
-                
+
                 _context.Certification.Update(oldCertification);
                 await _context.SaveChangesAsync();
                 return oldCertification;
@@ -607,7 +607,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating certification", ex);
             }
         }
-        
+
         public async Task<Project?> UpdateProjectsByResumeId(int resumeId, Project project)
         {
             try
@@ -628,14 +628,14 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Project for resume ID {resumeId} not found");
                 }
-                
+
                 oldProject.Name = project.Name;
                 oldProject.Description = project.Description;
                 oldProject.StartDate = project.StartDate;
                 oldProject.EndDate = project.EndDate;
                 oldProject.Completed = project.Completed;
                 oldProject.updatedAt = DateTime.UtcNow;
-                
+
                 _context.Project.Update(oldProject);
                 await _context.SaveChangesAsync();
                 return oldProject;
@@ -649,7 +649,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating project", ex);
             }
         }
-        
+
         public async Task<Experience?> UpdateExperiencesByResumeId(int resumeId, Experience experience)
         {
             try
@@ -670,7 +670,7 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Experience for resume ID {resumeId} not found");
                 }
-                
+
                 oldExperience.Name = experience.Name;
                 oldExperience.Organisation = experience.Organisation;
                 oldExperience.Type = experience.Type;
@@ -680,7 +680,7 @@ namespace BrainsToDo.Repositories
                 oldExperience.EndedAt = experience.EndedAt;
                 oldExperience.Active = experience.Active;
                 oldExperience.updatedAt = DateTime.UtcNow;
-                
+
                 _context.Experience.Update(oldExperience);
                 await _context.SaveChangesAsync();
                 return oldExperience;
@@ -694,7 +694,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating experience", ex);
             }
         }
-        
+
         public async Task<InfoSkill?> UpdateInfoSkillsByResumeId(int resumeId, InfoSkill infoSkill)
         {
             try
@@ -715,13 +715,13 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"InfoSkill for resume ID {resumeId} not found");
                 }
-                
+
                 oldInfoSkill.Name = infoSkill.Name;
                 oldInfoSkill.Description = infoSkill.Description;
                 oldInfoSkill.Type = infoSkill.Type;
                 oldInfoSkill.Level = infoSkill.Level;
                 oldInfoSkill.updatedAt = DateTime.UtcNow;
-                
+
                 _context.InfoSkill.Update(oldInfoSkill);
                 await _context.SaveChangesAsync();
                 return oldInfoSkill;
@@ -735,7 +735,7 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating skill", ex);
             }
         }
-        
+
         public async Task<Reference?> UpdateReferencesByResumeId(int resumeId, Reference reference)
         {
             try
@@ -756,14 +756,14 @@ namespace BrainsToDo.Repositories
                 {
                     throw new KeyNotFoundException($"Reference for resume ID {resumeId} not found");
                 }
-                
+
                 oldReference.FirstName = reference.FirstName;
                 oldReference.LastName = reference.LastName;
                 oldReference.Position = reference.Position;
                 oldReference.Email = reference.Email;
                 oldReference.PhoneNumber = reference.PhoneNumber;
                 oldReference.updatedAt = DateTime.UtcNow;
-                
+
                 _context.Reference.Update(oldReference);
                 await _context.SaveChangesAsync();
                 return oldReference;
@@ -777,11 +777,11 @@ namespace BrainsToDo.Repositories
                 throw new Exception("An error occurred while updating reference", ex);
             }
         }
-        
+
         public async Task DeleteResumeWithRelatedData(int resumeId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-    
+
             try
             {
                 if (resumeId <= 0)
@@ -790,7 +790,7 @@ namespace BrainsToDo.Repositories
                 }
 
                 var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId);
-                
+
                 if (!resumeExists)
                 {
                     throw new KeyNotFoundException($"Resume with ID {resumeId} not found");
@@ -815,11 +815,11 @@ namespace BrainsToDo.Repositories
                 await _context.Certification
                     .Where(c => c.ResumeId == resumeId)
                     .ExecuteDeleteAsync();
-                
+
                 await _context.Resume
                     .Where(r => r.Id == resumeId)
                     .ExecuteDeleteAsync();
-                
+
                 await transaction.CommitAsync();
             }
             catch (DbUpdateException ex)

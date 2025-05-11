@@ -12,3 +12,14 @@ public class UserSignUpDTO
     public string Password { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }
+
+public class VerifyEmailDTO
+{
+    public int UserId { get; set; }
+    public string Code { get; set; }
+}
+
+public class ResendVerificationDTO
+{
+    public int UserId { get; set; }
+}

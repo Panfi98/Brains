@@ -2,10 +2,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using BrainsToDo.Data;
 using BrainsToDo.Repositories;
-using BrainsToDo.Services;
+using BrainsToDo.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using BrainsToDo.Interfaces;
+using BrainsToDo.Mapper;
+using BrainsToDo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,9 +55,7 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-});;
-
-
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -85,8 +85,14 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<ITokenGeneration, TokenGeneration>();
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddAutoMapper(typeof(UserMapper));
+builder.Services.AddAutoMapper(typeof(ResumeTemplateRepository)); 
+builder.Services.AddAutoMapper(typeof(ResumeRepository));
 
 var app = builder.Build();
 

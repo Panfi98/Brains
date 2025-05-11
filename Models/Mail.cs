@@ -17,6 +17,9 @@ public class Mail
     public DateTime ExpirationTime { get; set; }
     [Column("Attempts")] 
     public int Attempts { get; set; } = 3;
+
+    [Column("isActive")]
+    public bool IsActive { get; set; } = true;
     [Column("createdAt")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTime createdAt { get; set; }= DateTime.UtcNow;
