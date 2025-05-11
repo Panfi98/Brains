@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using BrainsToDo.Interfaces;
 using BrainsToDo.Mapper;
 using BrainsToDo.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,8 +70,6 @@ builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
 builder.Services.AddScoped<UserRepository>();
 
-builder.Services.AddScoped<IPasswordService, PasswordService>();
-
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -95,6 +94,9 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddAutoMapper(typeof(UserMapper));
 builder.Services.AddAutoMapper(typeof(ResumeTemplateRepository)); 
 builder.Services.AddAutoMapper(typeof(ResumeRepository));
+
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
 

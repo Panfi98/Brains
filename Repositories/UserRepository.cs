@@ -5,21 +5,23 @@ using BrainsToDo.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
+using BrainsToDo.Interfaces;
 
 namespace BrainsToDo.Repositories;
 
-public class UserRepository(DataContext context, PasswordService passwordService)
+public class UserRepository(DataContext context, IPasswordService passwordService)
 {
     private readonly DataContext _context = context;
-    private readonly PasswordService _passwordService = passwordService;
+    private readonly IPasswordService _passwordService = passwordService;
     //LogIn
     public async Task<User?> GetUserByUsernameAndPassword(string username, string password)
     {
         try
         {
+            
             var user = await _context.User
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
+                .FirstOrDefaultAsync(u => u.Name == username);
             
             if (user == null)
             {
