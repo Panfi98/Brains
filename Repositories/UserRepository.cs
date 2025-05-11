@@ -4,36 +4,38 @@ using BrainsToDo.Enums;
 using BrainsToDo.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace BrainsToDo.Repositories;
 
-public class UserRepository(DataContext context)
+public class UserRepository(DataContext context, PasswordService passwordService)
 {
     private readonly DataContext _context = context;
-    
+    private readonly PasswordService _passwordService = passwordService;
     //LogIn
     public async Task<User?> GetUserByUsernameAndPassword(string username, string password)
     {
         try
         {
-            var userExists = await _context.User
+            var user = await _context.User
                 .AsNoTracking()
-                .AnyAsync(u => u.Name == username);
+                .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
             
-            if (!userExists)
+            if (user == null)
             {
                 return null; 
             }
             
-            var user = await _context.User
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Name == username && u.Password == password);
-
+            var result =_passwordService.VerifyPassword(user, user.Password, password);
+            if (result != PasswordVerificationResult.Success)
+            {
+                return null;
+            }
+            
             if (!user.EmailConfirmed)
             {
                 throw new InvalidOperationException("Please verify your email first");
             }
-            
             return user; 
         }
         catch (Exception ex)
@@ -45,11 +47,7 @@ public class UserRepository(DataContext context)
     
     //SignUp
     
-    public async Task<(User user, Mail verificationMail, EnumPasswordStrength strength)> 
-        CreateUserWithVerification(
-        string username,
-        string password,
-        string email)
+    public async Task<(User user, Mail verificationMail, EnumPasswordStrength strength)> CreateUserWithVerification(string username, string password, string email)
     {
         
         // Validate inputs
@@ -96,7 +94,7 @@ public class UserRepository(DataContext context)
             var user = new User
             {
                 Name = username,
-                Password = password,
+                Password = _passwordService.HashPassword(null, password),
                 EmailConfirmed = false,
                 createdAt = DateTime.UtcNow,
                 updatedAt = DateTime.UtcNow

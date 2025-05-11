@@ -69,6 +69,8 @@ builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
 builder.Services.AddScoped<UserRepository>();
 
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -85,7 +87,7 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-builder.Services.AddScoped<ITokenGeneration, TokenGeneration>();
+builder.Services.AddScoped<ITokenGeneration, TokenGenerationService>();
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));

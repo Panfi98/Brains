@@ -6,11 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BrainsToDo.Services;
 
-public class TokenGeneration : ITokenGeneration
+public class TokenGenerationService : ITokenGeneration
 {
     private readonly IConfiguration _configuration;
 
-    public TokenGeneration(IConfiguration configuration)
+    public TokenGenerationService(IConfiguration configuration)
     {
         _configuration = configuration;
     }
