@@ -891,13 +891,13 @@ public class ResumeController : ControllerBase
         return ex switch
         {
             UnauthorizedAccessException => 
-                Unauthorized(new { Message = ex.Message }),
+                Unauthorized(new { message = ex.Message }),
                 
             KeyNotFoundException => 
-                NotFound(new { Message = ex.Message }),
+                NotFound(new { message = ex.Message }),
                 
             ArgumentException or ArgumentNullException => 
-                BadRequest(new { Message = ex.Message }),
+                BadRequest(new { message = ex.Message }),
                 
             DbUpdateException => 
                 StatusCode(500, new { Message = "Database error occurred", Details = ex.InnerException?.Message }),

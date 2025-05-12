@@ -18,7 +18,6 @@ public class UserRepository(DataContext context, IPasswordService passwordServic
     {
         try
         {
-            
             var user = await _context.User
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Name == username);
@@ -36,7 +35,7 @@ public class UserRepository(DataContext context, IPasswordService passwordServic
             
             if (!user.EmailConfirmed)
             {
-                throw new InvalidOperationException("Please verify your email first");
+                throw new EmailNotVerifiedException("Please verify your email first", user.Id);
             }
             return user; 
         }
@@ -47,6 +46,15 @@ public class UserRepository(DataContext context, IPasswordService passwordServic
         }
     }
     
+    public class EmailNotVerifiedException : Exception
+    {
+        public int UserId { get; }
+
+        public EmailNotVerifiedException(string message, int userId) : base(message)
+        {
+            UserId = userId;
+        }
+    }
     //SignUp
     
     public async Task<(User user, Mail verificationMail, EnumPasswordStrength strength)> CreateUserWithVerification(string username, string password, string email)

@@ -1,70 +1,62 @@
-﻿using AutoMapper;
-using BrainsToDo.Data;
-using BrainsToDo.DTOModels;
+﻿using BrainsToDo.DTOModels;
 using BrainsToDo.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using BrainsToDo.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
-namespace BrainsToDo.Models;
+namespace BrainsToDo.Controllers;
 
 [ApiController]
 [Route("User")]
 public class UserController : ControllerBase 
 {
-    private readonly DataContext _context;
     private readonly IEmailService _emailService;
     private readonly UserRepository _userRepository;
-    private readonly IMapper _mapper;
-    private readonly IConfiguration _configuration;
+   
     private readonly ILogger<UserController> _logger;
     private readonly ITokenGeneration _tokenGeneration;
 
-    public UserController( UserRepository loginRepository, IMapper mapper, IConfiguration configuration, DataContext context, ILogger<UserController> logger, ITokenGeneration tokenGeneration, IEmailService emailService)
+    public UserController( UserRepository loginRepository, ILogger<UserController> logger, ITokenGeneration tokenGeneration, IEmailService emailService)
     {
-        _context = context; 
         _emailService = emailService;
        _userRepository = loginRepository;
-        _mapper = mapper;
-        _configuration = configuration;
         _logger = logger;
         _tokenGeneration = tokenGeneration;
     }
 
       [HttpPost("LogIn")]
-    public async Task<IActionResult> Login([FromBody] UserLogInDTO dto)
+    public async Task<IActionResult> Login([FromBody] UserLogInDTO userLoginDTO)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
+        
         try
         {
-            var user = await _userRepository.GetUserByUsernameAndPassword(dto.Username, dto.Password);
+            var user = await _userRepository.GetUserByUsernameAndPassword(userLoginDTO.Username, userLoginDTO.Password);
 
             if (user == null)
             {
-                _logger.LogWarning($"Failed login attempt for username: {dto.Username}");
+                _logger.LogWarning($"Failed login attempt for username: {userLoginDTO.Username}");
                 return Unauthorized(new { message = "Invalid username or password" });
             }
 
             var jwtToken = _tokenGeneration.GenerateToken(user);
 
             _logger.LogInformation($"User {user.Name} logged in successfully");
-
-            var userDto = _mapper.Map<UserLogInDTO>(user);
-
+            
             return Ok(new
             {
                 token = jwtToken,
             });
+            
         }
-        catch (InvalidOperationException ex) when (ex.Message == "Please verify your email first")
+        catch (UserRepository.EmailNotVerifiedException ex)
         {
             return Unauthorized(new
             {
                 message = ex.Message,
+                userId = ex.UserId
             });
         }
         catch (ArgumentException ex)
@@ -95,7 +87,9 @@ public class UserController : ControllerBase
             {
                 Success = true,
                 PasswordStrength = passwordStrength.ToString(),
-                Message = "A verification code has been sent to your email"
+                Message = "A verification code has been sent to your email",
+                id = user.Id,
+                
             };
 
             return Ok(result);

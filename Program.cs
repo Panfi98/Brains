@@ -91,7 +91,6 @@ builder.Services.AddScoped<ITokenGeneration, TokenGenerationService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
-builder.Services.AddAutoMapper(typeof(UserMapper));
 builder.Services.AddAutoMapper(typeof(ResumeTemplateRepository)); 
 builder.Services.AddAutoMapper(typeof(ResumeRepository));
 
