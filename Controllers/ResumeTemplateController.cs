@@ -1,17 +1,10 @@
-﻿using System.Security.Claims;
-using System.Text;
-using AutoMapper;
-using BrainsToDo.Data;
+﻿using AutoMapper;
 using BrainsToDo.DTOModels;
-using BrainsToDo.Models;
 using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
-using BrainsToDo.Repositories.LoginLogic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 
 namespace BrainsToDo.Models;
 

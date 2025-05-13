@@ -1,22 +1,26 @@
+using System.Text.Json.Serialization;
+
 namespace BrainsToDo.DTOModels;
 
-    public class GetUserDTO
-    {
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public DateTime createdAt { get; set; }
-        public DateTime updatedAt { get; set; }
-        public DateTime? deletedAt { get; set; }
-        public bool SoftDeleted { get; set; }
-    }
+public class UserLogInDTO
+{
+    [JsonIgnore]
+    int Id {get; set;}
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}
 
-    public class PostUserDTO
-    {
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-    }
+public class UserSignUpDTO
+{
+    [JsonIgnore]
+    public int Id {get; set;}
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}
 
+public class VerifyEmailDTO
+{
+    public string Code { get; set; }
+}
 
-    

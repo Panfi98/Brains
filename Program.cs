@@ -1,17 +1,22 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using BrainsToDo.Data;
-using BrainsToDo.Mapper;
 using BrainsToDo.Repositories;
-using BrainsToDo.Repositories.LoginLogic;
+using BrainsToDo.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using BrainsToDo.Interfaces;
+using BrainsToDo.Mapper;
+using BrainsToDo.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(options =>
 {
@@ -51,7 +56,7 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-});;
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -61,11 +66,9 @@ builder.Services.AddControllers()
 
 builder.Services.AddMvc();
 builder.Services.AddDbContext<DataContext>();
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<LoginRepository>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -82,6 +85,17 @@ builder.Services.AddAuthentication("Bearer")
                 Encoding.UTF8.GetBytes("ThisIsYourSecretKeyMakeItAtLeast32CharactersLong"))
         };
     });
+
+builder.Services.AddScoped<ITokenGeneration, TokenGenerationService>();
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddAutoMapper(typeof(ResumeTemplateRepository)); 
+builder.Services.AddAutoMapper(typeof(ResumeRepository));
+
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
 

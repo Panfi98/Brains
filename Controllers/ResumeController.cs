@@ -2,8 +2,8 @@
 using AutoMapper;
 using BrainsToDo.Data;
 using BrainsToDo.DTOModels;
-using BrainsToDo.Helpers;
 using BrainsToDo.Models;
+using BrainsToDo.Helpers;
 using BrainsToDo.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,31 +33,35 @@ public class ResumeController : ControllerBase
         {
             throw new UnauthorizedAccessException("Invalid user ID in token");
         }
+        
+        var userExists = await _context.User.AnyAsync(u => u.Id == userId);
+        if (!userExists)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+        
         return userId;
     }
     
     [HttpPost("")]
-    [Authorize]
     public async Task<IActionResult> AddResume([FromBody] PostResumeDTO resumeDTO)
     {
         try
         {
             if (resumeDTO == null)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentNullException(nameof(resumeDTO), "Resume data cannot be null");
             }
 
             var userId = await GetCurrentUserId();
-            var resume = _mapper.Map<Models.Resume>(resumeDTO);
+            var resume = _mapper.Map<Resume>(resumeDTO);
             var createdResume = await _repository.AddResume(resume, userId);
 
-            var response = new Payload<PostResumeDTO>
-            {
-                Data = _mapper.Map<PostResumeDTO>(createdResume),
-                Message = "Resume created successfully"
-            };
-
-            return Created("", response);
+            return Created("", new Payload<PostResumeDTO>
+                {
+                    Data = _mapper.Map<PostResumeDTO>(createdResume),
+                    Message = "Resume added successfully"
+                });
         }
         catch (Exception ex)
         {
@@ -65,27 +69,37 @@ public class ResumeController : ControllerBase
         }
     }
     
-    
     [HttpPost("{id}/education")]
-    [Authorize]
     public async Task<IActionResult> AddEducation(int id, [FromBody] PostEducationDTO educationDTO)
     {
         try
         {
-            if (educationDTO == null)
+            if (id <= 0)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentException("Invalid resume ID", nameof(id));
             }
 
-            
+            if (educationDTO == null)
+            {
+                throw new ArgumentNullException(nameof(educationDTO), "Education data cannot be null");
+            }
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             var education = _mapper.Map<Education>(educationDTO);
             var createdEducation = await _repository.AddEducation(education, id);
 
-            return Created("", new Payload<PostEducationDTO>
-            {
-                Data = _mapper.Map<PostEducationDTO>(createdEducation),
-                Message = "Education added successfully"
-            });
+            return Created(" ", new Payload<PostEducationDTO>
+                {
+                    Data = _mapper.Map<PostEducationDTO>(createdEducation),
+                    Message = "Education added successfully"
+                });
         }
         catch (Exception ex)
         {
@@ -94,16 +108,28 @@ public class ResumeController : ControllerBase
     }
 
     [HttpPost("{id}/certification")]
-    [Authorize]
     public async Task<IActionResult> AddCertification(int id, [FromBody] PostCertificationDTO certificationDTO)
     {
         try
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
             if (certificationDTO == null)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentNullException(nameof(certificationDTO), "Certification data cannot be null");
             }
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
             
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             var certification = _mapper.Map<Certification>(certificationDTO);
             var createdCertification = await _repository.AddCertification(certification, id);
 
@@ -120,16 +146,28 @@ public class ResumeController : ControllerBase
     }
 
     [HttpPost("{id}/experience")]
-    [Authorize]
     public async Task<IActionResult> AddExperience(int id, [FromBody] PostExperienceDTO experienceDTO)
     {
         try
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
             if (experienceDTO == null)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentNullException(nameof(experienceDTO), "Experience data cannot be null");
             }
-            
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             var experience = _mapper.Map<Experience>(experienceDTO);
             var createdExperience = await _repository.AddExperience(experience, id);
 
@@ -146,16 +184,28 @@ public class ResumeController : ControllerBase
     }
 
     [HttpPost("{id}/project")]
-    [Authorize]
     public async Task<IActionResult> AddProject(int id, [FromBody] PostProjectDTO projectDTO)
     {
         try
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
             if (projectDTO == null)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentNullException(nameof(projectDTO), "Project data cannot be null");
             }
-            
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             var project = _mapper.Map<Project>(projectDTO);
             var createdProject = await _repository.AddProject(project, id);
 
@@ -172,16 +222,28 @@ public class ResumeController : ControllerBase
     }
 
     [HttpPost("{id}/skill")]
-    [Authorize]
     public async Task<IActionResult> AddSkill(int id, [FromBody] PostInfoSkillDTO skillDTO)
     {
         try
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
             if (skillDTO == null)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentNullException(nameof(skillDTO), "Skill data cannot be null");
             }
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
             
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             var skill = _mapper.Map<InfoSkill>(skillDTO);
             var createdSkill = await _repository.AddSkill(skill, id);
 
@@ -198,16 +260,28 @@ public class ResumeController : ControllerBase
     }
 
     [HttpPost("{id}/reference")]
-    [Authorize]
     public async Task<IActionResult> AddReference(int id, [FromBody] PostReferenceDTO referenceDTO)
     {
         try
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
             if (referenceDTO == null)
             {
-                return BadRequest(new { Message = "Request body cannot be empty" });
+                throw new ArgumentNullException(nameof(referenceDTO), "Reference data cannot be null");
             }
-            
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             var reference = _mapper.Map<Reference>(referenceDTO);
             var createdReference = await _repository.AddReference(reference, id);
 
@@ -223,392 +297,587 @@ public class ResumeController : ControllerBase
         }
     }
 
-    [HttpGet("resumes/{userId}")]
-    [Authorize]
+    [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetAllResumes(int userId)
     {
-        
-        var user = await _context.User.FindAsync(userId);
-       
-        if (user == null)
+        try
         {
-            return NotFound("User not found");
-        }
-        
-        var ckeckResumes = await _repository.GetAllResumesByUserID(userId);
+            if (userId <= 0)
+            {
+                throw new ArgumentException("Invalid user ID", nameof(userId));
+            }
 
-        if (ckeckResumes == null)
-        {
-            return NotFound("Resumes not found.");
+            var currentUserId = await GetCurrentUserId();
+            
+            if (userId != currentUserId)
+            {
+                throw new UnauthorizedAccessException("You can only view your own resumes");
+            }
+
+            var resumes = await _repository.GetAllResumesByUserID(userId);
+
+            if (resumes == null || !resumes.Any())
+            {
+                throw new KeyNotFoundException("No resumes found for this user");
+            }
+
+            var response = new PayloadList<List<GetResumeDTO>>
+            {
+                Data = _mapper.Map<List<GetResumeDTO>>(resumes),
+                Message = "Resumes retrieved successfully"
+            };
+            
+            return Ok(response);
         }
-        
-        var resumes = _mapper.Map<List<GetResumeDTO>>(ckeckResumes);
-        var payload = new PayloadList<List<GetResumeDTO>>
+        catch (Exception ex)
         {
-            Data = resumes
-        };
-        
-        return Ok(payload);
+            return HandleException(ex);
+        }
     }
     
-    [HttpGet("resume/{resumeId}")]
-    [Authorize]
+    [HttpGet("{resumeId}")]
     public async Task<IActionResult> GetFullResume(int resumeId)
     {
-        var resume = await _repository.GetFullResume(resumeId);
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
 
-        if (resume == null)
-        {
-            return NotFound("Resume not found.");
-        }
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
 
-        var payload = new PayloadList<GetFullResumesDTO>
-        {
-            Data = resume
-        };
-        return Ok(payload);
-    }
-    
-    [HttpGet ("/educations/{resumeId}")]
-    [Authorize]
-    public async Task<ActionResult<PostEducationDTO>> GetEducationsByResumeIdController(int resumeId)
-    {
-        var CheckedeEducations = await _repository.GetEducationsByResumeId(resumeId);
-        var educations= _mapper.Map<List<PostEducationDTO>>(CheckedeEducations);
+            var resume = await _repository.GetFullResume(resumeId);
 
-        var payload = new PayloadList<List<PostEducationDTO>>
-        {
-            Data = educations
-        };
-        
-        return Ok(payload);
-    }
-    
-    [HttpGet ("/certifications/{resumeId}")]
-    public async Task<ActionResult<PostCertificationDTO>> GetCertificationsByResumeIdController(int resumeId)
-    {
-        var CheckedCertification = await _repository.GetCertificationsByResumeId(resumeId);
-        var certifictions = _mapper.Map<List<PostCertificationDTO>>(CheckedCertification);
+            if (resume == null)
+            {
+                throw new KeyNotFoundException("Resume data could not be loaded");
+            }
 
-        var payload = new PayloadList<List<PostCertificationDTO>>
-        {
-            Data = certifictions
-        };
-        
-        return Ok(payload);
-
-    }
-    
-    [HttpGet ("/projects/{resumeId}")]
-    [Authorize]
-    public async Task<ActionResult<PostProjectDTO>> GetProjectsByResumeIdController(int resumeId)
-    {
-        var CheckedProjects = await _repository.GetProjectsByResumeId(resumeId);
-        var projects = _mapper.Map<List<PostProjectDTO>>(CheckedProjects);
-
-        var payload = new PayloadList<List<PostProjectDTO>>
-        {
-            Data = projects
-        };
-         
-         return Ok(payload);
-    }
-    
-    [HttpGet ("/experiences/{resumeId}")]
-    public async Task<ActionResult<PostExperienceDTO>> GetExperiencesByResumeIdController(int resumeId)
-    {
-        var CheckedExperiences = await _repository.GetExperiencesByResumeId(resumeId);
-        var experiences = _mapper.Map<List<PostExperienceDTO>>(CheckedExperiences);
-        
-        var payload = new PayloadList<List<PostExperienceDTO>>
-         {
-             Data = experiences
-         };
-         
-         return Ok(payload);
-    }
-    
-    [HttpGet ("/skills/{resumeId}")]
-    [Authorize]
-    public async Task<ActionResult<PostInfoSkillDTO>> GetInfoSkillsByResumeIdController(int resumeId)
-    {
-        var CheckedSkills = await _repository.GetInfoSkillsByResumeId(resumeId);
-        var skills =_mapper.Map<List<PostInfoSkillDTO>>(CheckedSkills);
-        
-        var payload = new PayloadList<List<PostInfoSkillDTO>>
-        {
-            Data = skills
-        };
-         
-        return Ok(payload);
-    }
-    
-    [HttpGet ("/references/{resumeId}")]
-    public async Task<ActionResult<PostReferenceDTO>> GetReferencesByResumeIdController(int resumeId)
-    {
-        var CheckedReferences = await _repository.GetReferencesByResumeId(resumeId);
-        var references = _mapper.Map<List<PostReferenceDTO>>(CheckedReferences);
-        
-        var payload = new PayloadList<List<PostReferenceDTO>>
-        {
-            Data = references
-        };
-         
-        return Ok(payload);
-    }
-    
-    [HttpPut("resume/{Id}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateResumeByResumeIdController(int Id, GetResumeDTO  resumeDTO, IMapper mapper)
-    {
-        Resume resume = mapper.Map<Resume>(resumeDTO);
-        Resume updatedResume = await _repository.UpdateResumeById(Id, resume);
+            var response = new PayloadList<GetFullResumesDTO>
+            {
+                Data = resume,
+                Message = "Resume retrieved successfully"
+            };
             
-        if(Id <= 0)
-        {
-            return NotFound("Invalid user ID");
+            return Ok(response);
         }
-        if(resume == null)
+        catch (Exception ex)
         {
-            return NotFound("Invalid data");
+            return HandleException(ex);
         }
-        if(updatedResume.Equals(resume))
+    }
+    
+    [HttpGet("educations/{resumeId}")]
+    public async Task<IActionResult> GetEducationsByResumeId(int resumeId)
+    {
+        try
         {
-            return Ok("No changes detected");
-        }
-        if(updatedResume == null)
-        {
-            return NotFound("Resume not found");
-        }
-            
-        var getResumeDTO = mapper.Map<GetResumeDTO>(updatedResume);
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
 
-        var payload = new Payload<GetResumeDTO>
-        {
-            Message = "Resume updated successfully.",
-            Data = getResumeDTO
-        };
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var educations = await _repository.GetEducationsByResumeId(resumeId);
+
+            if (educations == null || !educations.Any())
+            {
+                throw new KeyNotFoundException("No educations found for this resume");
+            }
+
+            var response = new PayloadList<List<PostEducationDTO>>
+            {
+                Data = _mapper.Map<List<PostEducationDTO>>(educations),
+                Message = "Educations retrieved successfully"
+            };
             
-        return Ok(payload);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpGet("certifications/{resumeId}")]
+    public async Task<IActionResult> GetCertificationsByResumeId(int resumeId)
+    {
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var certifications = await _repository.GetCertificationsByResumeId(resumeId);
+
+            if (certifications == null || !certifications.Any())
+            {
+                throw new KeyNotFoundException("No certifications found for this resume");
+            }
+
+            var response = new PayloadList<List<PostCertificationDTO>>
+            {
+                Data = _mapper.Map<List<PostCertificationDTO>>(certifications),
+                Message = "Certifications retrieved successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpGet("projects/{resumeId}")]
+    public async Task<IActionResult> GetProjectsByResumeId(int resumeId)
+    {
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var projects = await _repository.GetProjectsByResumeId(resumeId);
+
+            if (projects == null || !projects.Any())
+            {
+                throw new KeyNotFoundException("No projects found for this resume");
+            }
+
+            var response = new PayloadList<List<PostProjectDTO>>
+            {
+                Data = _mapper.Map<List<PostProjectDTO>>(projects),
+                Message = "Projects retrieved successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpGet("experiences/{resumeId}")]
+    public async Task<IActionResult> GetExperiencesByResumeId(int resumeId)
+    {
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var experiences = await _repository.GetExperiencesByResumeId(resumeId);
+
+            if (experiences == null || !experiences.Any())
+            {
+                throw new KeyNotFoundException("No experiences found for this resume");
+            }
+
+            var response = new PayloadList<List<PostExperienceDTO>>
+            {
+                Data = _mapper.Map<List<PostExperienceDTO>>(experiences),
+                Message = "Experiences retrieved successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpGet("skills/{resumeId}")]
+    public async Task<IActionResult> GetInfoSkillsByResumeId(int resumeId)
+    {
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var skills = await _repository.GetInfoSkillsByResumeId(resumeId);
+
+            if (skills == null || !skills.Any())
+            {
+                throw new KeyNotFoundException("No skills found for this resume");
+            }
+
+            var response = new PayloadList<List<PostInfoSkillDTO>>
+            {
+                Data = _mapper.Map<List<PostInfoSkillDTO>>(skills),
+                Message = "Skills retrieved successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpGet("references/{resumeId}")]
+    public async Task<IActionResult> GetReferencesByResumeId(int resumeId)
+    {
+        try
+        {
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var references = await _repository.GetReferencesByResumeId(resumeId);
+
+            if (references == null || !references.Any())
+            {
+                throw new KeyNotFoundException("No references found for this resume");
+            }
+
+            var response = new PayloadList<List<PostReferenceDTO>>
+            {
+                Data = _mapper.Map<List<PostReferenceDTO>>(references),
+                Message = "References retrieved successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpPut("resume/{id}")]
+    public async Task<IActionResult> UpdateResume(int id, [FromBody] GetResumeDTO resumeDTO)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
+            if (resumeDTO == null)
+            {
+                throw new ArgumentNullException(nameof(resumeDTO), "Resume data cannot be null");
+            }
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var resume = _mapper.Map<Resume>(resumeDTO);
+            var updatedResume = await _repository.UpdateResumeById(id, resume);
+
+            if (updatedResume == null)
+            {
+                throw new Exception("Failed to update resume");
+            }
+
+            var response = new Payload<GetResumeDTO>
+            {
+                Data = _mapper.Map<GetResumeDTO>(updatedResume),
+                Message = "Resume updated successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpPut("education/{resumeId}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateEducationByResumeIdController(int resumeId, PostEducationDTO  educationDTO, IMapper mapper)
+    public async Task<IActionResult> UpdateEducation(int resumeId, [FromBody] PostEducationDTO educationDTO)
     {
-        Education education = mapper.Map<Education>(educationDTO);
-        Education updatedEducation = await _repository.UpdateEducationByResumeId(resumeId, education);
-            
-        if(resumeId <= 0)
+        try
         {
-            return NotFound("Invalid user ID");
-        }
-        if(education == null)
-        {
-            return NotFound("Invalid data");
-        }
-        if(updatedEducation.Equals(education))
-        {
-            return Ok("No changes detected");
-        }
-        if(updatedEducation == null)
-        {
-            return NotFound("Education not found");
-        }
-            
-        var getEducationDTO = mapper.Map<PostEducationDTO>(updatedEducation);
+            if (educationDTO == null)
+            {
+                throw new ArgumentNullException(nameof(educationDTO), "Education data cannot be null");
+            }
 
-        var payload = new Payload<PostEducationDTO>
-        {
-            Message = "Education updated successfully.",
-            Data = getEducationDTO
-        };
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var education = _mapper.Map<Education>(educationDTO);
+            var updatedEducation = await _repository.UpdateEducationByResumeId(resumeId, education);
+
+            if (updatedEducation == null)
+            {
+                throw new Exception("Failed to update education");
+            }
+
+            var response = new Payload<PostEducationDTO>
+            {
+                Data = _mapper.Map<PostEducationDTO>(updatedEducation),
+                Message = "Education updated successfully"
+            };
             
-        return Ok(payload);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpPut("certification/{resumeId}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateCertificationByResumeIdController(int resumeId, PostCertificationDTO  educationDTO, IMapper mapper)
+    public async Task<IActionResult> UpdateCertification(int resumeId, [FromBody] PostCertificationDTO certificationDTO)
     {
-        Certification  certification = mapper.Map<Certification>(educationDTO);
-        Certification updatedCertification = await _repository.UpdateCertificationsByResumeId(resumeId, certification);
-            
-        if(resumeId <= 0)
+        try
         {
-            return NotFound("Invalid ID");
-        }
-        if(certification == null)
-        {
-            return NotFound("Invalid data");
-        }
-        if(updatedCertification.Equals(certification))
-        {
-            return Ok("No changes detected");
-        }
-        if(updatedCertification == null)
-        {
-            return NotFound("Certification not found");
-        }
-            
-        var getCertificationDTO = mapper.Map<PostCertificationDTO>(updatedCertification);
+            if (certificationDTO == null)
+            {
+                throw new ArgumentNullException(nameof(certificationDTO), "Certification data cannot be null");
+            }
 
-        var payload = new Payload<PostCertificationDTO>
-        {
-            Message = "Certification updated successfully.",
-            Data = getCertificationDTO
-        };
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var certification = _mapper.Map<Certification>(certificationDTO);
+            var updatedCertification = await _repository.UpdateCertificationsByResumeId(resumeId, certification);
+
+            if (updatedCertification == null)
+            {
+                throw new Exception("Failed to update certification");
+            }
+
+            var response = new Payload<PostCertificationDTO>
+            {
+                Data = _mapper.Map<PostCertificationDTO>(updatedCertification),
+                Message = "Certification updated successfully"
+            };
             
-        return Ok(payload);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpPut("project/{resumeId}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateProjectByResumeIdController(int resumeId, PostProjectDTO  projectDTO, IMapper mapper)
+    public async Task<IActionResult> UpdateProject(int resumeId, [FromBody] PostProjectDTO projectDTO)
     {
-        Project  project = mapper.Map<Project>(projectDTO);
-        Project updatedProject = await _repository.UpdateProjectsByResumeId(resumeId, project);
-            
-        if(resumeId <= 0)
+        try
         {
-            return NotFound("Invalid ID");
-        }
-        if(project == null)
-        {
-            return NotFound("Invalid data");
-        }
-        if(updatedProject.Equals(project))
-        {
-            return Ok("No changes detected");
-        }
-        if(updatedProject == null)
-        {
-            return NotFound("Project not found");
-        }
-            
-        var getProjectDTO = mapper.Map<PostProjectDTO>(updatedProject);
+            if (projectDTO == null)
+            {
+                throw new ArgumentNullException(nameof(projectDTO), "Project data cannot be null");
+            }
 
-        var payload = new Payload<PostProjectDTO>
-        {
-            Message = "Project updated successfully.",
-            Data = getProjectDTO
-        };
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var project = _mapper.Map<Project>(projectDTO);
+            var updatedProject = await _repository.UpdateProjectsByResumeId(resumeId, project);
+
+            if (updatedProject == null)
+            {
+                throw new Exception("Failed to update project");
+            }
+
+            var response = new Payload<PostProjectDTO>
+            {
+                Data = _mapper.Map<PostProjectDTO>(updatedProject),
+                Message = "Project updated successfully"
+            };
             
-        return Ok(payload);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpPut("experience/{resumeId}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateExperienceByResumeIdController(int resumeId, PostExperienceDTO  experienceDTO, IMapper mapper)
+    public async Task<IActionResult> UpdateExperience(int resumeId, [FromBody] PostExperienceDTO experienceDTO)
     {
-        Experience  experience = mapper.Map<Experience>(experienceDTO);
-        Experience updatedExperience = await _repository.UpdateExperiencesByResumeId(resumeId, experience);
-            
-        if(resumeId <= 0)
+        try
         {
-            return NotFound("Invalid ID");
-        }
-        if(experience == null)
-        {
-            return NotFound("Invalid data");
-        }
-        if(updatedExperience.Equals(experience))
-        {
-            return Ok("No changes detected");
-        }
-        if(updatedExperience == null)
-        {
-            return NotFound("Experience not found");
-        }
-            
-        var getExperienceDTO = mapper.Map<PostExperienceDTO>(updatedExperience);
+            if (experienceDTO == null)
+            {
+                throw new ArgumentNullException(nameof(experienceDTO), "Experience data cannot be null");
+            }
 
-        var payload = new Payload<PostExperienceDTO>
-        {
-            Message = "Experience updated successfully.",
-            Data = getExperienceDTO
-        };
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var experience = _mapper.Map<Experience>(experienceDTO);
+            var updatedExperience = await _repository.UpdateExperiencesByResumeId(resumeId, experience);
+
+            if (updatedExperience == null)
+            {
+                throw new Exception("Failed to update experience");
+            }
+
+            var response = new Payload<PostExperienceDTO>
+            {
+                Data = _mapper.Map<PostExperienceDTO>(updatedExperience),
+                Message = "Experience updated successfully"
+            };
             
-        return Ok(payload);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpPut("skill/{resumeId}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateInfoSkillByResumeIdController(int resumeId, PostInfoSkillDTO  skillDTO, IMapper mapper)
+    public async Task<IActionResult> UpdateSkill(int resumeId, [FromBody] PostInfoSkillDTO skillDTO)
     {
-        InfoSkill  skill = mapper.Map<InfoSkill>(skillDTO);
-        InfoSkill updatedSkill = await _repository.UpdateInfoSkillsByResumeId(resumeId, skill);
-            
-        if(resumeId <= 0)
+        try
         {
-            return NotFound("Invalid ID");
-        }
-        if(skill == null)
-        {
-            return NotFound("Invalid data");
-        }
-        if(updatedSkill.Equals(skill))
-        {
-            return Ok("No changes detected");
-        }
-        if(updatedSkill == null)
-        {
-            return NotFound("Skill not found");
-        }
-            
-        var getSkillDTO = mapper.Map<PostInfoSkillDTO>(updatedSkill);
+            if (skillDTO == null)
+            {
+                throw new ArgumentNullException(nameof(skillDTO), "Skill data cannot be null");
+            }
 
-        var payload = new Payload<PostInfoSkillDTO>
-        {
-            Message = "Skill updated successfully.",
-            Data = getSkillDTO
-        };
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var skill = _mapper.Map<InfoSkill>(skillDTO);
+            var updatedSkill = await _repository.UpdateInfoSkillsByResumeId(resumeId, skill);
+
+            if (updatedSkill == null)
+            {
+                throw new Exception("Failed to update skill");
+            }
+
+            var response = new Payload<PostInfoSkillDTO>
+            {
+                Data = _mapper.Map<PostInfoSkillDTO>(updatedSkill),
+                Message = "Skill updated successfully"
+            };
             
-        return Ok(payload);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpPut("reference/{resumeId}")]
-    [Authorize]
-    public async Task<IActionResult> UpdateReferencelByResumeIdController(int resumeId, PostReferenceDTO  referenceDTO, IMapper mapper)
+    public async Task<IActionResult> UpdateReference(int resumeId, [FromBody] PostReferenceDTO referenceDTO)
     {
-        Reference  reference = mapper.Map<Reference>(referenceDTO);
-        Reference updatedReference = await _repository.UpdateReferencesByResumeId(resumeId, reference);
-            
-        if(resumeId <= 0)
+        try
         {
-            return NotFound("Invalid ID");
-        }
-        if(reference == null)
-        {
-            return NotFound("Invalid data");
-        }
-        if(updatedReference.Equals(reference))
-        {
-            return Ok("No changes detected");
-        }
-        if(updatedReference == null)
-        {
-            return NotFound("Reference not found");
-        }
-            
-        var getReferenceDTO = mapper.Map<PostReferenceDTO>(updatedReference);
+            if (referenceDTO == null)
+            {
+                throw new ArgumentNullException(nameof(referenceDTO), "Reference data cannot be null");
+            }
 
-        var payload = new Payload<PostReferenceDTO>
-        {
-            Message = "Reference updated successfully.",
-            Data = getReferenceDTO
-        };
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
             
-        return Ok(payload);
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
+            var reference = _mapper.Map<Reference>(referenceDTO);
+            var updatedReference = await _repository.UpdateReferencesByResumeId(resumeId, reference);
+
+            if (updatedReference == null)
+            {
+                throw new Exception("Failed to update reference");
+            }
+
+            var response = new Payload<PostReferenceDTO>
+            {
+                Data = _mapper.Map<PostReferenceDTO>(updatedReference),
+                Message = "Reference updated successfully"
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return HandleException(ex);
+        }
     }
     
     [HttpDelete("resume/{id}")]
-    [Authorize]
     public async Task<IActionResult> DeleteResume(int id)
     {
         try
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid resume ID", nameof(id));
+            }
+
+            var userId = await GetCurrentUserId();
+            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == id && r.UserId == userId);
+
+            if (!resumeExists)
+            {
+                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+            }
+
             await _repository.DeleteResumeWithRelatedData(id);
+            
             return NoContent();
         }
         catch (Exception ex)
@@ -617,24 +886,24 @@ public class ResumeController : ControllerBase
         }
     }
     
-    private  IActionResult HandleException(Exception ex)
+    private IActionResult HandleException(Exception ex)
     {
         return ex switch
         {
             UnauthorizedAccessException => 
-                Unauthorized(new { Message = ex.Message }),
+                Unauthorized(new { message = ex.Message }),
                 
             KeyNotFoundException => 
-                NotFound(new { Message = ex.Message }),
+                NotFound(new { message = ex.Message }),
                 
             ArgumentException or ArgumentNullException => 
-                BadRequest(new { Message = ex.Message }),
+                BadRequest(new { message = ex.Message }),
                 
             DbUpdateException => 
-                StatusCode(500, new { Message = "Database error occurred" }),
+                StatusCode(500, new { Message = "Database error occurred", Details = ex.InnerException?.Message }),
                 
-             _=> 
-                StatusCode(500, new { Message = "An unexpected error occurred" })
+            _ => 
+                StatusCode(500, new { Message = "An unexpected error occurred", Details = ex.Message })
         };
     }
 }

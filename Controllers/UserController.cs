@@ -1,199 +1,162 @@
-﻿using System.Security.Claims;
-using System.Text;
-using AutoMapper;
-using BrainsToDo.Data;
-using BrainsToDo.DTOModels;
-using BrainsToDo.Models;
-using BrainsToDo.Helpers;
+﻿using BrainsToDo.DTOModels;
 using BrainsToDo.Repositories;
-using BrainsToDo.Repositories.LoginLogic;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using BrainsToDo.Interfaces;
 
-namespace BrainsToDo.Models;
+namespace BrainsToDo.Controllers;
 
-    [ApiController]
-    [Route("user")]
-    public class UserController(UserRepository repository, IMapper mapper, LoginRepository loginRepository, IConfiguration configuration) : ControllerBase
+[ApiController]
+[Route("User")]
+public class UserController : ControllerBase 
+{
+    private readonly IEmailService _emailService;
+    private readonly UserRepository _userRepository;
+   
+    private readonly ILogger<UserController> _logger;
+    private readonly ITokenGeneration _tokenGeneration;
+
+    public UserController( UserRepository loginRepository, ILogger<UserController> logger, ITokenGeneration tokenGeneration, IEmailService emailService)
     {
-        [HttpPost]
-        [Route("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDTO loginDto)
-        {
-            try
-            {
-                var user = await loginRepository.GetUserByUsernameAndPassword(loginDto.Username, loginDto.Password);
-            
-                if (user == null)
-                {
-                    return NotFound("Invalid username or password");
-                }
-                
-                var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes("ThisIsYourSecretKeyMakeItAtLeast32CharactersLong");
-                
-                //Parse stuff from appsettings.json . If not it sets to default stuff
-               
-                int expirationHours = int.TryParse(configuration["Jwt:ExpireHours"], out var parsed) ? parsed : 3;
-                string issuer = configuration["Jwt:Issuer"] ?? "defaultIssuer";
-                string audience = configuration["Jwt:Audience"] ?? "defaultAudience";
-                
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.Name),
-                    }),
-                    Expires = DateTime.UtcNow.AddHours(expirationHours),
-                    Issuer = issuer,
-                    Audience = audience,
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
+        _emailService = emailService;
+       _userRepository = loginRepository;
+        _logger = logger;
+        _tokenGeneration = tokenGeneration;
+    }
 
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var jwtToken = tokenHandler.WriteToken(token);
-            
-                return Ok(new { token = jwtToken });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            
+      [HttpPost("LogIn")]
+    public async Task<IActionResult> Login([FromBody] UserLogInDTO userLoginDTO)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
         }
-        [HttpGet()]
-        [Authorize]
-        public async Task<IActionResult> GetAllUsers()
+        
+        try
         {
-            var users = await repository.GetAllEntities();
-            if(!users.Any())
-            {
-                return NotFound("No person found");
-            }
-            var userDTOs = mapper.Map<IEnumerable<GetUserDTO>>(users);
+            var user = await _userRepository.GetUserByUsernameAndPassword(userLoginDTO.Username, userLoginDTO.Password);
 
-            var payload = new Payload<IEnumerable<GetUserDTO>>
-            {
-                Data = userDTOs
-            };
-            return Ok(payload);
-        }
-
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult> GetUserById(int id)
-        {
-            var user = await repository.GetEntityById(id);
-            var userDTO = mapper.Map<GetUserDTO>(user);
-            
-            if(id <= 0)
-            {
-                return NotFound("Invalid user ID");
-            }
             if (user == null)
             {
-                return NotFound("User not found");
+                _logger.LogWarning($"Failed login attempt for username: {userLoginDTO.Username}");
+                return Unauthorized(new { message = "Invalid username or password" });
             }
 
-            var payload = new Payload<GetUserDTO>
-            {
-                Data = userDTO
-            };
+            var jwtToken = _tokenGeneration.GenerateToken(user);
+
+            _logger.LogInformation($"User {user.Name} logged in successfully");
             
-            return Ok(payload);
+            return Ok(new
+            {
+                token = jwtToken,
+            });
+            
         }
-        
-        [HttpPost]
-        public async Task<IActionResult> CreateUser( PostUserDTO userDTO) 
+        catch (UserRepository.EmailNotVerifiedException ex)
         {
-            if(userDTO == null)
+            return Unauthorized(new
             {
-                return NotFound("Invalid user data");
-            };
-            
-            string UserName = userDTO.Name;
-            string UserEmail = userDTO.Email;
-            string Password = userDTO.Password;
-            
-            if (await repository.UserExists(UserName, UserEmail))
-            { 
-                return Conflict(new { message = "User with this username or email already exists." });
-            }
-            
-            User user = mapper.Map<User>(userDTO);
-            var createdUser = await repository.AddEntity(user);
-            
-            var getUserDTO = mapper.Map<GetUserDTO>(createdUser);
-            var payload = new Payload<GetUserDTO>
-            {
-                Data = getUserDTO
-            };
-            
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, payload);
+                message = ex.Message,
+                userId = ex.UserId
+            });
         }
-        
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> UpdateUser(int id, PostUserDTO userDTO, IMapper mapper)
+        catch (ArgumentException ex)
         {
-            User user = mapper.Map<User>(userDTO);
-            User updatedUser = await repository.UpdateEntity(id, user);
-            
-            if(id <= 0)
-            {
-                return NotFound("Invalid user ID");
-            }
-            if(user == null)
-            {
-                return NotFound("Invalid user data");
-            }
-            if(updatedUser.Equals(user))
-            {
-                return Ok("No changes detected");
-            }
-            if(updatedUser == null)
-            {
-                return NotFound("User not found");
-            }
-            
-            var getUserDTO = mapper.Map<GetUserDTO>(updatedUser);
-
-            var payload = new Payload<GetUserDTO>
-            {
-                Data = getUserDTO
-            };
-            
-            return Ok(payload);
+            return BadRequest(new { message = ex.Message });
         }
-
-        [HttpDelete]
-        [Authorize]
-        public async Task<IActionResult> DeletedUser( int id)
+        catch (Exception ex)
         {
-            if(id <= 0)
-            {
-                return NotFound("Invalid user ID");
-            }
-            
-            var deletedUser = await repository.DeleteEntity(id);
-            
-            if (deletedUser == null)
-            {
-                return NotFound("User not found");
-            }
-            
-            var getUserDTO = mapper.Map<GetUserDTO>(deletedUser);
-
-            var payload = new Payload<GetUserDTO>
-            {
-                Data = getUserDTO
-            };
-            
-            return Ok(payload);
+            _logger.LogError(ex, "Error during login process");
+            return StatusCode(500, new { message = "An error occurred while processing your request" });
         }
     }
+    
+    [HttpPost("SignUp")]
+    public async Task<IActionResult> SignUp([FromBody] UserSignUpDTO signUpDTO)
+    {
+        try
+        {
+            var (user, mail, passwordStrength) = await _userRepository.CreateUserWithVerification(
+                signUpDTO.Username,
+                signUpDTO.Password,
+                signUpDTO.Email);
+
+            // send the verification code 
+            await _emailService.SendVerificationEmailAsync(mail.Email, mail.Code);
+
+            var result = new
+            {
+                Success = true,
+                PasswordStrength = passwordStrength.ToString(),
+                Message = "A verification code has been sent to your email",
+                id = user.Id,
+                
+            };
+
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { Error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during user creation");
+            return StatusCode(500, new { Error = "User creation failed" });
+        }
+    }
+
+    [HttpPost("VerifyEmail/{userId}")]
+    public async Task<IActionResult> VerifyEmail(int userId, [FromBody] VerifyEmailDTO dto)
+    {
+        try
+        {
+            var result = await _userRepository.VerifyEmailCodeAsync(userId, dto.Code);
+
+            if (result.IsSuccess && result.User != null)
+            {
+                return Ok(_userRepository.CreateSuccessResponse("Email successfully verified!", 
+                    new { result.User.Id, result.User.Name }));
+            }
+
+            return BadRequest(_userRepository.CreateErrorResponse(result.ErrorMessage ?? "Verification failed"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Email verification error");
+            return StatusCode(500, _userRepository.CreateErrorResponse("An error occurred"));
+        }
+    }
+    
+    [HttpPost("ResendVerification/{userId}")]
+    public async Task<IActionResult> ResendVerificationCode(int userId)
+    {
+        try
+        {
+            var (user, mail) = await _userRepository.GetUserWithLatestMailAsync(userId);
+    
+            if (user == null || mail == null)
+            {
+                return NotFound(_userRepository.CreateErrorResponse("User or mail record not found"));
+            }
+
+            var result = await _userRepository.ResendVerificationCode(userId, mail.Email);
+
+            if (result.success)
+            {
+                await _emailService.SendVerificationEmailAsync(mail.Email, result.message);
+                return Ok(_userRepository.CreateSuccessResponse("New verification code sent"));
+            }
+
+            return BadRequest(_userRepository.CreateErrorResponse(result.message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error resending verification code");
+            return StatusCode(500, _userRepository.CreateErrorResponse("Error resending code"));
+        }
+    }
+}
