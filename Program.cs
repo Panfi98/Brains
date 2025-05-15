@@ -6,7 +6,6 @@ using BrainsToDo.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using BrainsToDo.Interfaces;
-using BrainsToDo.Mapper;
 using BrainsToDo.Services;
 using Microsoft.AspNetCore.Identity;
 
@@ -69,6 +68,7 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddScoped<ResumeTemplateRepository>();
 builder.Services.AddScoped<ResumeRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<UserSeeder>(); // Register UserSeeder
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -98,6 +98,28 @@ builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
+
+if (args.Contains("--seedUsers"))
+{
+    Console.WriteLine("Detected --seedUsers argument. Attempting to seed users...");
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var userSeeder = services.GetRequiredService<UserSeeder>();
+            await userSeeder.SeedUsersAsync();
+            Console.WriteLine("User seeding process completed based on --seedUsers argument.");
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database with users due to --seedUsers argument.");
+        }
+    } 
+    Environment.Exit(0);
+}
+
 
 if (app.Environment.IsDevelopment())
 {
