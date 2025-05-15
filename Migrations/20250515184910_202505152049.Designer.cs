@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BrainsToDo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250511220547_202512050005")]
-    partial class _202512050005
+    [Migration("20250515184910_202505152049")]
+    partial class _202505152049
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
