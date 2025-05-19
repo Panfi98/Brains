@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using BrainsToDo.Interfaces;
 using BrainsToDo.Services;
+using BrainsToDo.Services.jobFetcher;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +92,9 @@ builder.Services.AddAutoMapper(typeof(ResumeRepository));
 
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+// Register a typed HttpClient for NavJobClient *before* building the app
+builder.Services.AddHttpClient<NavJobClient>();
 
 var app = builder.Build();
 

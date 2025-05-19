@@ -1,10 +1,10 @@
 namespace BrainsToDo.Services.jobFetcher;
 
-public class navJobClient
+public class NavJobClient
 {
     public HttpClient _HttpClient;
 
-    public navJobClient(HttpClient httpClient)
+    public NavJobClient(HttpClient httpClient)
     {
         _HttpClient = httpClient;
     }
