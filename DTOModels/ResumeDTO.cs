@@ -20,6 +20,7 @@ public class PostResumeDTO
 
 public class GetResumeDTO
 {
+    public int Id {get; set;}
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
@@ -48,6 +49,7 @@ public class PostEducationDTO
 
 public class PostCertificationDTO
 {
+    public int Id {get; set;}
     public string Name { get; set; }
     public string Description { get; set; }
     public DateTime Date { get; set; }
@@ -59,6 +61,7 @@ public class PostCertificationDTO
 
 public class PostProjectDTO
 {
+    public int Id {get; set;}
     public string Name { get; set; }
     public string Description { get; set; }
     public DateTime StartDate { get; set; }
@@ -69,6 +72,7 @@ public class PostProjectDTO
 
 public class PostExperienceDTO
 {
+    public int Id {get; set;}
     public string Name { get; set; }
     public string Organisation { get; set; }
     public string Type { get; set; }
@@ -82,6 +86,7 @@ public class PostExperienceDTO
 
 public class PostInfoSkillDTO
 {
+    public int Id {get; set;}
     public string Name { get; set; }
     public string Description { get; set; }
     public string Type { get; set; }
@@ -91,6 +96,7 @@ public class PostInfoSkillDTO
 
 public class PostReferenceDTO
 {
+    public int Id {get; set;}
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Position { get; set; }

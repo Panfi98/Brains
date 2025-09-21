@@ -599,18 +599,18 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Education
+            var educationExists = await _context.Education
                 .Include(e => e.Resume)
                 .AnyAsync(e => e.Id == educationId && e.Resume.UserId == userId);
 
-            if (!resumeExists)
+            if (!educationExists)
             {
                 throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
             }
 
             var education = _mapper.Map<Education>(educationDTO);
             var updatedEducation = await _repository.UpdateEducationByResumeId(educationId, education);
-
+            
             if (updatedEducation == null)
             {
                 throw new Exception("Failed to update education");
@@ -630,8 +630,8 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("certification/{resumeId}")]
-    public async Task<IActionResult> UpdateCertification(int resumeId, [FromBody] PostCertificationDTO certificationDTO)
+    [HttpPut("certification/{certificationId}")]
+    public async Task<IActionResult> UpdateCertification(int certificationId, [FromBody] PostCertificationDTO certificationDTO)
     {
         try
         {
@@ -641,15 +641,17 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+            var certificationExists = await _context.Education
+                .Include(e => e.Resume)
+                .AnyAsync(e => e.Id == certificationId && e.Resume.UserId == userId);
 
-            if (!resumeExists)
+            if (!certificationExists)
             {
-                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+                throw new KeyNotFoundException("Certification not found or doesn't belong to current user");
             }
 
             var certification = _mapper.Map<Certification>(certificationDTO);
-            var updatedCertification = await _repository.UpdateCertificationsByResumeId(resumeId, certification);
+            var updatedCertification = await _repository.UpdateCertificationsByResumeId(certificationId, certification);
 
             if (updatedCertification == null)
             {
@@ -670,8 +672,8 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("project/{resumeId}")]
-    public async Task<IActionResult> UpdateProject(int resumeId, [FromBody] PostProjectDTO projectDTO)
+    [HttpPut("project/{projectId}")]
+    public async Task<IActionResult> UpdateProject(int projectId, [FromBody] PostProjectDTO projectDTO)
     {
         try
         {
@@ -681,15 +683,17 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+            var projectExists = await _context.Education
+                .Include(e => e.Resume)
+                .AnyAsync(e => e.Id == projectId && e.Resume.UserId == userId);
 
-            if (!resumeExists)
+            if (!projectExists)
             {
-                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+                throw new KeyNotFoundException("Project not found or doesn't belong to current user");
             }
 
             var project = _mapper.Map<Project>(projectDTO);
-            var updatedProject = await _repository.UpdateProjectsByResumeId(resumeId, project);
+            var updatedProject = await _repository.UpdateProjectsByResumeId(projectId, project);
 
             if (updatedProject == null)
             {
@@ -710,8 +714,8 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("experience/{resumeId}")]
-    public async Task<IActionResult> UpdateExperience(int resumeId, [FromBody] PostExperienceDTO experienceDTO)
+    [HttpPut("experience/{experienceId}")]
+    public async Task<IActionResult> UpdateExperience(int experienceId, [FromBody] PostExperienceDTO experienceDTO)
     {
         try
         {
@@ -721,15 +725,17 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+            var experienceExists = await _context.Education
+                .Include(e => e.Resume)
+                .AnyAsync(e => e.Id == experienceId && e.Resume.UserId == userId);
 
-            if (!resumeExists)
+            if (!experienceExists)
             {
-                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+                throw new KeyNotFoundException("Experience not found or doesn't belong to current user");
             }
 
             var experience = _mapper.Map<Experience>(experienceDTO);
-            var updatedExperience = await _repository.UpdateExperiencesByResumeId(resumeId, experience);
+            var updatedExperience = await _repository.UpdateExperiencesByResumeId(experienceId, experience);
 
             if (updatedExperience == null)
             {
@@ -750,8 +756,8 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("skill/{resumeId}")]
-    public async Task<IActionResult> UpdateSkill(int resumeId, [FromBody] PostInfoSkillDTO skillDTO)
+    [HttpPut("skill/{skillId}")]
+    public async Task<IActionResult> UpdateSkill(int skillId, [FromBody] PostInfoSkillDTO skillDTO)
     {
         try
         {
@@ -761,15 +767,17 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+            var skillExists = await _context.Education
+                .Include(e => e.Resume)
+                .AnyAsync(e => e.Id == skillId && e.Resume.UserId == userId);
 
-            if (!resumeExists)
+            if (!skillExists)
             {
-                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+                throw new KeyNotFoundException("Skill not found or doesn't belong to current user");
             }
 
             var skill = _mapper.Map<InfoSkill>(skillDTO);
-            var updatedSkill = await _repository.UpdateInfoSkillsByResumeId(resumeId, skill);
+            var updatedSkill = await _repository.UpdateInfoSkillsByResumeId(skillId, skill);
 
             if (updatedSkill == null)
             {
@@ -790,8 +798,8 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("reference/{resumeId}")]
-    public async Task<IActionResult> UpdateReference(int resumeId, [FromBody] PostReferenceDTO referenceDTO)
+    [HttpPut("reference/{referenceId}")]
+    public async Task<IActionResult> UpdateReference(int referenceId, [FromBody] PostReferenceDTO referenceDTO)
     {
         try
         {
@@ -801,15 +809,17 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
-            
-            if (!resumeExists)
+            var referenceExists = await _context.Education
+                .Include(e => e.Resume)
+                .AnyAsync(e => e.Id == referenceId && e.Resume.UserId == userId);
+
+            if (!referenceExists)
             {
-                throw new KeyNotFoundException("Resume not found or doesn't belong to current user");
+                throw new KeyNotFoundException("Reference not found or doesn't belong to current user");
             }
 
             var reference = _mapper.Map<Reference>(referenceDTO);
-            var updatedReference = await _repository.UpdateReferencesByResumeId(resumeId, reference);
+            var updatedReference = await _repository.UpdateReferencesByResumeId(referenceId, reference);
 
             if (updatedReference == null)
             {
