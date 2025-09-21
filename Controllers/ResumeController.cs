@@ -895,6 +895,141 @@ public class ResumeController : ControllerBase
         }
     }
     
+    [HttpDelete("project/{projectId}")]
+    public async Task<IActionResult> DeleteProject(int projectId)
+    {
+        try
+        {
+            if (projectId <= 0)
+            {
+                throw new ArgumentException("Invalid projectId", nameof(projectId));
+            }
+
+            var project = await _context.Project.FirstOrDefaultAsync(e => e.Id == projectId);
+
+            if (project == null)
+            {
+                throw new KeyNotFoundException("Project not found");
+            }
+
+            await _repository.DeleteProject(projectId);
+
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpDelete("skill/{skillId}")]
+    public async Task<IActionResult> DeleteSkill(int skillId)
+    {
+        try
+        {
+            if (skillId <= 0)
+            {
+                throw new ArgumentException("Invalid skillId", nameof(skillId));
+            }
+
+            var skill = await _context.Skill.FirstOrDefaultAsync(e => e.Id == skillId);
+
+            if (skill == null)
+            {
+                throw new KeyNotFoundException("Skill not found");
+            }
+
+            await _repository.DeleteSkill(skillId);
+
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpDelete("experience/{experienceId}")]
+    public async Task<IActionResult> DeleteExperience(int experienceId)
+    {
+        try
+        {
+            if (experienceId <= 0)
+            {
+                throw new ArgumentException("Invalid experienceId", nameof(experienceId));
+            }
+
+            var experience = await _context.Experience.FirstOrDefaultAsync(e => e.Id == experienceId);
+
+            if (experience == null)
+            {
+                throw new KeyNotFoundException("Experience not found");
+            }
+
+            await _repository.DeleteExperience(experienceId);
+
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpDelete("certification/{certificationId}")]
+    public async Task<IActionResult> DeleteCertification(int certificationId)
+    {
+        try
+        {
+            if (certificationId <= 0)
+            {
+                throw new ArgumentException("Invalid certificationId", nameof(certificationId));
+            }
+
+            var certification = await _context.Certification.FirstOrDefaultAsync(e => e.Id == certificationId);
+
+            if (certification == null)
+            {
+                throw new KeyNotFoundException("Certification not found");
+            }
+
+            await _repository.DeleteCertification(certificationId);
+
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
+    [HttpDelete("reference/{referenceId}")]
+    public async Task<IActionResult> DeleteReference(int referenceId)
+    {
+        try
+        {
+            if (referenceId <= 0)
+            {
+                throw new ArgumentException("Invalid referenceId", nameof(referenceId));
+            }
+
+            var reference = await _context.Education.FirstOrDefaultAsync(e => e.Id == referenceId);
+
+            if (reference == null)
+            {
+                throw new KeyNotFoundException("Reference not found");
+            }
+
+            await _repository.DeleteReference(referenceId);
+
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
+    
     private IActionResult HandleException(Exception ex)
     {
         var errorDetails = new
