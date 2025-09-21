@@ -641,9 +641,9 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var certificationExists = await _context.Education
-                .Include(e => e.Resume)
-                .AnyAsync(e => e.Id == certificationId && e.Resume.UserId == userId);
+            var certificationExists = await _context.Certification
+                .Include(c => c.Resume)
+                .AnyAsync(c => c.Id == certificationId && c.Resume.UserId == userId);
 
             if (!certificationExists)
             {
@@ -683,9 +683,9 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var projectExists = await _context.Education
-                .Include(e => e.Resume)
-                .AnyAsync(e => e.Id == projectId && e.Resume.UserId == userId);
+            var projectExists = await _context.Project
+                .Include(p => p.Resume)
+                .AnyAsync(p => p.Id == projectId && p.Resume.UserId == userId);
 
             if (!projectExists)
             {
@@ -725,7 +725,7 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var experienceExists = await _context.Education
+            var experienceExists = await _context.Experience
                 .Include(e => e.Resume)
                 .AnyAsync(e => e.Id == experienceId && e.Resume.UserId == userId);
 
@@ -767,9 +767,9 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var skillExists = await _context.Education
-                .Include(e => e.Resume)
-                .AnyAsync(e => e.Id == skillId && e.Resume.UserId == userId);
+            var skillExists = await _context.InfoSkill
+                .Include(s => s.Resume)
+                .AnyAsync(s => s.Id == skillId && s.Resume.UserId == userId);
 
             if (!skillExists)
             {
@@ -809,9 +809,9 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var referenceExists = await _context.Education
-                .Include(e => e.Resume)
-                .AnyAsync(e => e.Id == referenceId && e.Resume.UserId == userId);
+            var referenceExists = await _context.Reference
+                .Include(r => r.Resume)
+                .AnyAsync(r => r.Id == referenceId && r.Resume.UserId == userId);
 
             if (!referenceExists)
             {
@@ -932,7 +932,7 @@ public class ResumeController : ControllerBase
                 throw new ArgumentException("Invalid skillId", nameof(skillId));
             }
 
-            var skill = await _context.Skill.FirstOrDefaultAsync(e => e.Id == skillId);
+            var skill = await _context.InfoSkill.FirstOrDefaultAsync(s => s.Id == skillId);
 
             if (skill == null)
             {

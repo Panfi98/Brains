@@ -923,15 +923,15 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentException("Invalid skill ID", nameof(skillId));
                 }
 
-                var skill = await _context.Skill.AnyAsync(e => e.Id == skillId);
+                var skill = await _context.InfoSkill.AnyAsync(s => s.Id == skillId);
 
                 if (!skill)
                 {
                     throw new KeyNotFoundException($"Skill with ID {skillId} not found");
                 }
 
-                await _context.Skill
-                    .Where(e => e.Id == skillId)
+                await _context.InfoSkill
+                    .Where(s => s.Id == skillId)
                     .ExecuteDeleteAsync();
 
                 await transaction.CommitAsync();
