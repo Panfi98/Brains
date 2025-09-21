@@ -1,4 +1,5 @@
-﻿using BrainsToDo.Data;
+﻿using System.Runtime.InteropServices.JavaScript;
+using BrainsToDo.Data;
 using BrainsToDo.Models;
 using BrainsToDo.Enums;
 using BrainsToDo.Helpers;
@@ -85,7 +86,7 @@ public class UserRepository(DataContext context, IPasswordService passwordServic
             throw new ArgumentException(
                 "Password is too weak. It should contain at least 8 characters with a mix of uppercase, lowercase, numbers and special characters");
         }
-        
+         
         if (!IsValidEmail(email))
         {
             throw new ArgumentException("Invalid email format");

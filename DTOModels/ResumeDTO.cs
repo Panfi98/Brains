@@ -34,6 +34,7 @@ public class GetResumeDTO
 
 public class PostEducationDTO
 {
+    public int Id {get; set;}
     public string Name { get; set; }
     public string Type { get; set; }
     public DateTime StartDate { get; set; }
@@ -106,6 +107,7 @@ public class GetFullResumesDTO
     public List<PostInfoSkillDTO> InfoSkills { get; set; }
     public List<PostProjectDTO> Projects { get; set; }
     public List<PostCertificationDTO> Certifications { get; set; }
+    public List<PostReferenceDTO> References { get; set; }
 }
 
 

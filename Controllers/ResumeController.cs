@@ -384,11 +384,6 @@ public class ResumeController : ControllerBase
 
             var educations = await _repository.GetEducationsByResumeId(resumeId);
 
-            if (educations == null || !educations.Any())
-            {
-                throw new KeyNotFoundException("No educations found for this resume");
-            }
-
             var response = new PayloadList<List<PostEducationDTO>>
             {
                 Data = _mapper.Map<List<PostEducationDTO>>(educations),
@@ -417,11 +412,6 @@ public class ResumeController : ControllerBase
             }
 
             var certifications = await _repository.GetCertificationsByResumeId(resumeId);
-
-            if (certifications == null || !certifications.Any())
-            {
-                throw new KeyNotFoundException("No certifications found for this resume");
-            }
 
             var response = new PayloadList<List<PostCertificationDTO>>
             {
@@ -452,11 +442,6 @@ public class ResumeController : ControllerBase
 
             var projects = await _repository.GetProjectsByResumeId(resumeId);
 
-            if (projects == null || !projects.Any())
-            {
-                throw new KeyNotFoundException("No projects found for this resume");
-            }
-
             var response = new PayloadList<List<PostProjectDTO>>
             {
                 Data = _mapper.Map<List<PostProjectDTO>>(projects),
@@ -485,11 +470,6 @@ public class ResumeController : ControllerBase
             }
 
             var experiences = await _repository.GetExperiencesByResumeId(resumeId);
-
-            if (experiences == null || !experiences.Any())
-            {
-                throw new KeyNotFoundException("No experiences found for this resume");
-            }
 
             var response = new PayloadList<List<PostExperienceDTO>>
             {
@@ -520,11 +500,6 @@ public class ResumeController : ControllerBase
 
             var skills = await _repository.GetInfoSkillsByResumeId(resumeId);
 
-            if (skills == null || !skills.Any())
-            {
-                throw new KeyNotFoundException("No skills found for this resume");
-            }
-
             var response = new PayloadList<List<PostInfoSkillDTO>>
             {
                 Data = _mapper.Map<List<PostInfoSkillDTO>>(skills),
@@ -554,11 +529,6 @@ public class ResumeController : ControllerBase
 
             var references = await _repository.GetReferencesByResumeId(resumeId);
 
-            if (references == null || !references.Any())
-            {
-                throw new KeyNotFoundException("No references found for this resume");
-            }
-
             var response = new PayloadList<List<PostReferenceDTO>>
             {
                 Data = _mapper.Map<List<PostReferenceDTO>>(references),
@@ -573,7 +543,7 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("resume/{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateResume(int id, [FromBody] GetResumeDTO resumeDTO)
     {
         try
@@ -618,8 +588,8 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpPut("education/{resumeId}")]
-    public async Task<IActionResult> UpdateEducation(int resumeId, [FromBody] PostEducationDTO educationDTO)
+    [HttpPut("education/{educationId}")]
+    public async Task<IActionResult> UpdateEducation( int educationId, [FromBody] PostEducationDTO educationDTO)
     {
         try
         {
@@ -629,7 +599,9 @@ public class ResumeController : ControllerBase
             }
 
             var userId = await GetCurrentUserId();
-            var resumeExists = await _context.Resume.AnyAsync(r => r.Id == resumeId && r.UserId == userId);
+            var resumeExists = await _context.Education
+                .Include(e => e.Resume)
+                .AnyAsync(e => e.Id == educationId && e.Resume.UserId == userId);
 
             if (!resumeExists)
             {
@@ -637,7 +609,7 @@ public class ResumeController : ControllerBase
             }
 
             var education = _mapper.Map<Education>(educationDTO);
-            var updatedEducation = await _repository.UpdateEducationByResumeId(resumeId, education);
+            var updatedEducation = await _repository.UpdateEducationByResumeId(educationId, education);
 
             if (updatedEducation == null)
             {
@@ -858,7 +830,7 @@ public class ResumeController : ControllerBase
         }
     }
     
-    [HttpDelete("resume/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteResume(int id)
     {
         try
@@ -885,25 +857,88 @@ public class ResumeController : ControllerBase
             return HandleException(ex);
         }
     }
+
+    [HttpDelete("education/{educationId}")]
+    public async Task<IActionResult> DeleteEducation(int educationId)
+    {
+        try
+        {
+            if (educationId <= 0)
+            {
+                throw new ArgumentException("Invalid educationId", nameof(educationId));
+            }
+
+            var education = await _context.Education.FirstOrDefaultAsync(e => e.Id == educationId);
+
+            if (education == null)
+            {
+                throw new KeyNotFoundException("Education not found");
+            }
+
+            await _repository.DeleteEducation(educationId);
+
+            return NoContent();
+        }
+        catch(Exception ex)
+        {
+            return HandleException(ex);
+        }
+    }
     
     private IActionResult HandleException(Exception ex)
     {
+        var errorDetails = new
+        {
+            Message = ex.Message,
+            Details = ex.InnerException?.Message,
+            ExceptionType = ex.GetType().Name
+        };
+
         return ex switch
         {
-            UnauthorizedAccessException => 
-                Unauthorized(new { message = ex.Message }),
-                
-            KeyNotFoundException => 
-                NotFound(new { message = ex.Message }),
-                
-            ArgumentException or ArgumentNullException => 
-                BadRequest(new { message = ex.Message }),
-                
-            DbUpdateException => 
-                StatusCode(500, new { Message = "Database error occurred", Details = ex.InnerException?.Message }),
-                
-            _ => 
-                StatusCode(500, new { Message = "An unexpected error occurred", Details = ex.Message })
+            UnauthorizedAccessException => Unauthorized(new
+            {
+                errorDetails.Message,
+                errorDetails.Details,
+                StatusCode = StatusCodes.Status401Unauthorized
+            }),
+
+            KeyNotFoundException => NotFound(new
+            {
+                errorDetails.Message,
+                errorDetails.Details,
+                StatusCode = StatusCodes.Status404NotFound
+            }),
+
+            ArgumentException or ArgumentNullException => BadRequest(new
+            {
+                errorDetails.Message,
+                errorDetails.Details,
+                StatusCode = StatusCodes.Status400BadRequest
+            }),
+
+            DbUpdateException dbEx when dbEx.InnerException?.Message?.Contains("UNIQUE") == true
+                => Conflict(new
+                {
+                    Message = "Duplicate entry",
+                    Details = dbEx.InnerException?.Message,
+                    StatusCode = StatusCodes.Status409Conflict
+                }),
+
+            DbUpdateException => StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                Message = "Database error occurred",
+                errorDetails.Details,
+                StatusCode = StatusCodes.Status500InternalServerError
+            }),
+
+            _ => StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                errorDetails.Message,
+                errorDetails.Details,
+                StatusCode = StatusCodes.Status500InternalServerError
+            })
         };
     }
+
 }
