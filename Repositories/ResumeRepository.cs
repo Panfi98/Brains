@@ -334,6 +334,11 @@ namespace BrainsToDo.Repositories
                     .Where(c => c.ResumeId == resumeId)
                     .AsNoTracking()
                     .ToListAsync();
+                
+                var references = await _context.Reference
+                    .Where(r => r.ResumeId == resumeId)
+                    .AsNoTracking()
+                    .ToListAsync();
 
                 return new GetFullResumesDTO
                 {
@@ -342,7 +347,8 @@ namespace BrainsToDo.Repositories
                     Experiences = _mapper.Map<List<PostExperienceDTO>>(experiences),
                     InfoSkills = _mapper.Map<List<PostInfoSkillDTO>>(skills),
                     Projects = _mapper.Map<List<PostProjectDTO>>(projects),
-                    Certifications = _mapper.Map<List<PostCertificationDTO>>(certifications)
+                    Certifications = _mapper.Map<List<PostCertificationDTO>>(certifications),
+                    References = _mapper.Map<List<PostReferenceDTO>>(references)
                 };
             }
             catch (AutoMapperMappingException ex)
@@ -520,7 +526,7 @@ namespace BrainsToDo.Repositories
             }
         }
 
-        public async Task<Education?> UpdateEducationByResumeId(int resumeId, Education education)
+        public async Task<Education?> UpdateEducationByResumeId(int educationId, Education education)
         {
             try
             {
@@ -529,16 +535,16 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentNullException(nameof(education), "Education cannot be null");
                 }
 
-                if (resumeId <= 0)
+                if (educationId <= 0)
                 {
-                    throw new ArgumentException("Invalid resume ID", nameof(resumeId));
+                    throw new ArgumentException("Invalid resume ID", nameof(educationId));
                 }
 
-                var oldEducation = await _context.Education.FindAsync(resumeId);
+                var oldEducation = await _context.Education.FindAsync(educationId);
 
                 if (oldEducation == null)
                 {
-                    throw new KeyNotFoundException($"Education for resume ID {resumeId} not found");
+                    throw new KeyNotFoundException($"Education for resume ID {educationId} not found");
                 }
 
                 oldEducation.Name = education.Name;
@@ -565,7 +571,7 @@ namespace BrainsToDo.Repositories
             }
         }
 
-        public async Task<Certification?> UpdateCertificationsByResumeId(int resumeId, Certification certification)
+        public async Task<Certification?> UpdateCertificationsByResumeId(int certificationId, Certification certification)
         {
             try
             {
@@ -574,16 +580,16 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentNullException(nameof(certification), "Certification cannot be null");
                 }
 
-                if (resumeId <= 0)
+                if (certificationId <= 0)
                 {
-                    throw new ArgumentException("Invalid resume ID", nameof(resumeId));
+                    throw new ArgumentException("Invalid resume ID", nameof(certificationId));
                 }
 
-                var oldCertification = await _context.Certification.FindAsync(resumeId);
+                var oldCertification = await _context.Certification.FindAsync(certificationId);
 
                 if (oldCertification == null)
                 {
-                    throw new KeyNotFoundException($"Certification for resume ID {resumeId} not found");
+                    throw new KeyNotFoundException($"Certification with ID {certificationId} not found");
                 }
 
                 oldCertification.Name = certification.Name;
@@ -608,7 +614,7 @@ namespace BrainsToDo.Repositories
             }
         }
 
-        public async Task<Project?> UpdateProjectsByResumeId(int resumeId, Project project)
+        public async Task<Project?> UpdateProjectsByResumeId(int projectId, Project project)
         {
             try
             {
@@ -617,16 +623,16 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentNullException(nameof(project), "Project cannot be null");
                 }
 
-                if (resumeId <= 0)
+                if (projectId <= 0)
                 {
-                    throw new ArgumentException("Invalid resume ID", nameof(resumeId));
+                    throw new ArgumentException("Invalid resume ID", nameof(projectId));
                 }
 
-                var oldProject = await _context.Project.FindAsync(resumeId);
+                var oldProject = await _context.Project.FindAsync(projectId);
 
                 if (oldProject == null)
                 {
-                    throw new KeyNotFoundException($"Project for resume ID {resumeId} not found");
+                    throw new KeyNotFoundException($"Project with ID {projectId} not found");
                 }
 
                 oldProject.Name = project.Name;
@@ -650,7 +656,7 @@ namespace BrainsToDo.Repositories
             }
         }
 
-        public async Task<Experience?> UpdateExperiencesByResumeId(int resumeId, Experience experience)
+        public async Task<Experience?> UpdateExperiencesByResumeId(int experienceId, Experience experience)
         {
             try
             {
@@ -659,16 +665,16 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentNullException(nameof(experience), "Experience cannot be null");
                 }
 
-                if (resumeId <= 0)
+                if (experienceId <= 0)
                 {
-                    throw new ArgumentException("Invalid resume ID", nameof(resumeId));
+                    throw new ArgumentException("Invalid resume ID", nameof(experienceId));
                 }
 
-                var oldExperience = await _context.Experience.FindAsync(resumeId);
+                var oldExperience = await _context.Experience.FindAsync(experienceId);
 
                 if (oldExperience == null)
                 {
-                    throw new KeyNotFoundException($"Experience for resume ID {resumeId} not found");
+                    throw new KeyNotFoundException($"Experience with ID {experienceId} not found");
                 }
 
                 oldExperience.Name = experience.Name;
@@ -695,7 +701,7 @@ namespace BrainsToDo.Repositories
             }
         }
 
-        public async Task<InfoSkill?> UpdateInfoSkillsByResumeId(int resumeId, InfoSkill infoSkill)
+        public async Task<InfoSkill?> UpdateInfoSkillsByResumeId(int skillId, InfoSkill infoSkill)
         {
             try
             {
@@ -704,16 +710,16 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentNullException(nameof(infoSkill), "InfoSkill cannot be null");
                 }
 
-                if (resumeId <= 0)
+                if (skillId <= 0)
                 {
-                    throw new ArgumentException("Invalid resume ID", nameof(resumeId));
+                    throw new ArgumentException("Invalid resume ID", nameof(skillId));
                 }
 
-                var oldInfoSkill = await _context.InfoSkill.FindAsync(resumeId);
+                var oldInfoSkill = await _context.InfoSkill.FindAsync(skillId);
 
                 if (oldInfoSkill == null)
                 {
-                    throw new KeyNotFoundException($"InfoSkill for resume ID {resumeId} not found");
+                    throw new KeyNotFoundException($"InfoSkill with ID {skillId} not found");
                 }
 
                 oldInfoSkill.Name = infoSkill.Name;
@@ -736,7 +742,7 @@ namespace BrainsToDo.Repositories
             }
         }
 
-        public async Task<Reference?> UpdateReferencesByResumeId(int resumeId, Reference reference)
+        public async Task<Reference?> UpdateReferencesByResumeId(int referenceId, Reference reference)
         {
             try
             {
@@ -745,16 +751,16 @@ namespace BrainsToDo.Repositories
                     throw new ArgumentNullException(nameof(reference), "Reference cannot be null");
                 }
 
-                if (resumeId <= 0)
+                if (referenceId <= 0)
                 {
-                    throw new ArgumentException("Invalid resume ID", nameof(resumeId));
+                    throw new ArgumentException("Invalid resume ID", nameof(referenceId));
                 }
 
-                var oldReference = await _context.Reference.FindAsync(resumeId);
+                var oldReference = await _context.Reference.FindAsync(referenceId);
 
                 if (oldReference == null)
                 {
-                    throw new KeyNotFoundException($"Reference for resume ID {resumeId} not found");
+                    throw new KeyNotFoundException($"Reference for resume ID {referenceId} not found");
                 }
 
                 oldReference.FirstName = reference.FirstName;
@@ -831,6 +837,222 @@ namespace BrainsToDo.Repositories
             {
                 await transaction.RollbackAsync();
                 throw new Exception("An error occurred while deleting resume", ex);
+            }
+        }
+
+        public async Task DeleteEducation(int educationId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (educationId <= 0)
+                {
+                    throw new ArgumentException("Invalid education ID", nameof(educationId));
+                }
+
+                var education = await _context.Education.AnyAsync(e => e.Id == educationId);
+
+                if (!education)
+                {
+                    throw new KeyNotFoundException($"Education with ID {educationId} not found");
+                }
+
+                await _context.Education
+                    .Where(e => e.Id == educationId)
+                    .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database error occurred while deleting education", ex);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An error occurred while deleting education", ex);
+            }
+        }
+        
+        public async Task DeleteProject(int projectId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (projectId <= 0)
+                {
+                    throw new ArgumentException("Invalid project ID", nameof(projectId));
+                }
+
+                var project = await _context.Project.AnyAsync(e => e.Id == projectId);
+
+                if (!project)
+                {
+                    throw new KeyNotFoundException($"Project with ID {projectId} not found");
+                }
+
+                await _context.Project
+                    .Where(e => e.Id == projectId)
+                    .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database error occurred while deleting education", ex);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An error occurred while deleting education", ex);
+            }
+        }
+        
+        public async Task DeleteSkill(int skillId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (skillId <= 0)
+                {
+                    throw new ArgumentException("Invalid skill ID", nameof(skillId));
+                }
+
+                var skill = await _context.InfoSkill.AnyAsync(s => s.Id == skillId);
+
+                if (!skill)
+                {
+                    throw new KeyNotFoundException($"Skill with ID {skillId} not found");
+                }
+
+                await _context.InfoSkill
+                    .Where(s => s.Id == skillId)
+                    .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database error occurred while deleting education", ex);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An error occurred while deleting education", ex);
+            }
+        }
+        
+        public async Task DeleteExperience(int experienceId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (experienceId <= 0)
+                {
+                    throw new ArgumentException("Invalid experience ID", nameof(experienceId));
+                }
+
+                var experience = await _context.Experience.AnyAsync(e => e.Id == experienceId);
+
+                if (!experience)
+                {
+                    throw new KeyNotFoundException($"Experience with ID {experienceId} not found");
+                }
+
+                await _context.Experience
+                    .Where(e => e.Id == experienceId)
+                    .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database error occurred while deleting education", ex);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An error occurred while deleting education", ex);
+            }
+        }
+        
+        public async Task DeleteCertification(int certificationId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (certificationId <= 0)
+                {
+                    throw new ArgumentException("Invalid certification ID", nameof(certificationId));
+                }
+
+                var certification = await _context.Certification.AnyAsync(e => e.Id == certificationId);
+
+                if (!certification)
+                {
+                    throw new KeyNotFoundException($"Certification with ID {certificationId} not found");
+                }
+
+                await _context.Certification
+                    .Where(e => e.Id == certificationId)
+                    .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database error occurred while deleting education", ex);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An error occurred while deleting education", ex);
+            }
+        }
+        
+        public async Task DeleteReference(int referenceId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                if (referenceId <= 0)
+                {
+                    throw new ArgumentException("Invalid reference ID", nameof(referenceId));
+                }
+
+                var reference = await _context.Reference.AnyAsync(e => e.Id == referenceId);
+
+                if (!reference)
+                {
+                    throw new KeyNotFoundException($"Reference with ID {referenceId} not found");
+                }
+
+                await _context.Reference
+                    .Where(e => e.Id == referenceId)
+                    .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("Database error occurred while deleting education", ex);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("An error occurred while deleting education", ex);
             }
         }
     }
